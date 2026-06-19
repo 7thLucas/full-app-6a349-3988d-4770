@@ -78,10 +78,55 @@ campaigns, exclusive drops, collectible merch — layers on top of this core loo
 ## 4. Loyalty System — Loyal-Tang
 
 - **Program name:** Loyal-Tang.
-- **Reward currency:** **Sugar Crystals** (earned on orders, redeemable for rewards).
-- **Structure:** tiered membership with tier progression; exclusive drops and
-  collectible merchandise for engaged members.
+- **Two distinct counters — do not conflate:**
+  - **Sugar Crystals** — the spendable reward *currency*. Earned on orders, redeemed in
+    the Rewards Store for vouchers / merch.
+  - **Bowls** — the tier-progression *counter* (one Bowl per qualifying item purchased),
+    measured over a **trailing 365-day window**. Bowls determine tier; Sugar Crystals do not.
 - **Purpose:** convert occasional mall visits into a repeat habit and lift order frequency.
+
+### 4.1 Tiers (escalating; each inherits all lower-tier benefits)
+
+Four named tiers, themed with metallic accents on the digital membership card:
+
+| Tier | Card theme | Earn multiplier |
+| --- | --- | --- |
+| **Tang Seeker** | Bronze | 1.0× |
+| **Tang Explorer** | Silver | 1.25× |
+| **Tang Pioneer** | Gold | 1.5× |
+| **Tang Master** | Platinum | 2.0× |
+
+- **Tier-up — real-time:** crossing a Bowls threshold (e.g. 10 → Explorer, 40 → Pioneer)
+  immediately upgrades the member and fires a tier-up notification.
+- **Downgrade — month-end recalc only:** never mid-month, max one tier per recalc. When
+  older Bowls age out of the 365-day window and the total drops below a threshold, the
+  member is downgraded **after a one-cycle grace period + advance notice**.
+
+### 4.2 Earning Sugar Crystals
+
+- **Rule:** 1 Sugar Crystal per **Rp 1,000 qualifying net spend × tier multiplier**, floored.
+  Net spend is taken **after any voucher discount** and **excludes PB1 / tax**.
+  - *Example:* net spend Rp 59.000 → 59 base × 1.5 (Pioneer) = 88.5 → floor = **88 Sugar Crystals**.
+- **Expiry:** each earned **batch keeps its own 365-day clock**; the app warns within
+  **7 days** of each batch's expiry.
+
+### 4.3 Per-tier benefit allocation
+
+| Benefit | Seeker | Explorer | Pioneer | Master |
+| --- | --- | --- | --- | --- |
+| Sugar Crystals earn multiplier | 1.0× | 1.25× | 1.5× | 2.0× |
+| Rewards Store access & redemption | ✓ | ✓ | ✓ | ✓ |
+| Welcome rewards (new user) | ✓ | ✓ | ✓ | ✓ |
+| Birthday gift | drink/dessert voucher | + merch voucher | + premium merch | + premium merch & surprise |
+| Early access to seasonal launches | — | ✓ | ✓ | ✓ |
+| Second-item discount voucher | — | occasional | ✓ | ✓ |
+| 15%-off-total-bill voucher | — | — | periodic | periodic (higher frequency) |
+| Free-item milestone reward | — | — | ✓ | ✓ |
+| Exclusive merchandise redemption | — | — | ✓ | ✓ |
+| VIP invites & member-only events | — | — | — | ✓ |
+| Priority support / concierge | — | — | — | ✓ |
+
+- **Members' Day Special** and exclusive membership events are run via the app.
 
 ## 5. Brand & Design Language — *Modern Oriental Minimalism*
 
