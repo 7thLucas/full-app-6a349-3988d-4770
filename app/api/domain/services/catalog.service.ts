@@ -1,0 +1,122 @@
+import { OutletModel } from "../models/outlet.model";
+import { MenuItemModel } from "../models/menu-item.model";
+
+function outletDto(o: any) {
+  return {
+    id: o._id.toString(),
+    slug: o.slug,
+    name: o.name,
+    mall: o.mall,
+    city: o.city,
+    address: o.address,
+    distanceKm: o.distanceKm,
+    openTime: o.openTime,
+    closeTime: o.closeTime,
+    lastOrderTime: o.lastOrderTime,
+    prepMinutes: o.prepMinutes,
+    isOpen: o.isOpen,
+    pickupEnabled: o.pickupEnabled,
+    lat: o.lat,
+    lng: o.lng,
+    soldOutItemIds: o.soldOutItemIds ?? [],
+  };
+}
+
+function itemDto(m: any) {
+  return {
+    id: m._id.toString(),
+    slug: m.slug,
+    name: m.name,
+    description: m.description,
+    category: m.category,
+    basePrice: m.basePrice,
+    imageUrl: m.imageUrl,
+    tags: m.tags ?? [],
+    isSignature: m.isSignature ?? false,
+    available: m.available ?? true,
+    optionGroups: m.optionGroups ?? [],
+    sortOrder: m.sortOrder ?? 0,
+  };
+}
+
+export class CatalogService {
+  static async listOutlets() {
+    const outlets = await OutletModel.find().sort({ distanceKm: 1 }).lean();
+    return outlets.map(outletDto);
+  }
+
+  static async getOutlet(id: string) {
+    const o = await OutletModel.findById(id).lean();
+    return o ? outletDto(o) : null;
+  }
+
+  static async listMenu() {
+    const items = await MenuItemModel.find().sort({ sortOrder: 1 }).lean();
+    return items.map(itemDto);
+  }
+
+  static async getItem(id: string) {
+    const m = await MenuItemModel.findById(id).lean();
+    return m ? itemDto(m) : null;
+  }
+
+  // ── Operations Console: menu CRUD ─────────────────────────────────────────
+  static async createItem(data: any) {
+    const created = await MenuItemModel.create({
+      slug: data.slug || `item-${Date.now()}`,
+      name: data.name,
+      description: data.description ?? "",
+      category: data.category,
+      basePrice: Number(data.basePrice) || 0,
+      imageUrl: data.imageUrl ?? "",
+      tags: data.tags ?? [],
+      isSignature: !!data.isSignature,
+      available: data.available ?? true,
+      optionGroups: data.optionGroups ?? [],
+      sortOrder: Number(data.sortOrder) || 0,
+    });
+    return itemDto(created.toObject());
+  }
+
+  static async updateItem(id: string, data: any) {
+    const update: any = {};
+    for (const k of ["name", "description", "category", "imageUrl", "tags", "optionGroups"]) {
+      if (data[k] !== undefined) update[k] = data[k];
+    }
+    if (data.basePrice !== undefined) update.basePrice = Number(data.basePrice);
+    if (data.isSignature !== undefined) update.isSignature = !!data.isSignature;
+    if (data.available !== undefined) update.available = !!data.available;
+    if (data.sortOrder !== undefined) update.sortOrder = Number(data.sortOrder);
+    const updated = await MenuItemModel.findByIdAndUpdate(id, update, { new: true }).lean();
+    return updated ? itemDto(updated) : null;
+  }
+
+  static async deleteItem(id: string) {
+    await MenuItemModel.findByIdAndDelete(id);
+    return true;
+  }
+
+  // ── Operations Console: outlet management ─────────────────────────────────
+  static async updateOutlet(id: string, data: any) {
+    const update: any = {};
+    for (const k of ["openTime", "closeTime", "lastOrderTime", "name", "address"]) {
+      if (data[k] !== undefined) update[k] = data[k];
+    }
+    if (data.isOpen !== undefined) update.isOpen = !!data.isOpen;
+    if (data.pickupEnabled !== undefined) update.pickupEnabled = !!data.pickupEnabled;
+    if (data.prepMinutes !== undefined) update.prepMinutes = Number(data.prepMinutes);
+    const updated = await OutletModel.findByIdAndUpdate(id, update, { new: true }).lean();
+    return updated ? outletDto(updated) : null;
+  }
+
+  static async toggleSoldOut(outletId: string, itemId: string, soldOut: boolean) {
+    const outlet = await OutletModel.findById(outletId);
+    if (!outlet) return null;
+    const set = new Set(outlet.soldOutItemIds ?? []);
+    if (soldOut) set.add(itemId);
+    else set.delete(itemId);
+    outlet.soldOutItemIds = [...set];
+    await outlet.save();
+    return outletDto(outlet.toObject());
+  }
+}
