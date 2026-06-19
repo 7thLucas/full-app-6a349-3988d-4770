@@ -8,7 +8,7 @@ import { LoyaltyJobs } from "../services/loyalty.jobs";
 import { ReferralService } from "../services/referral.service";
 import { NotificationService } from "../services/notification.service";
 import { ProfileService, PreferenceService, AccountDeletionService } from "../services/profile.service";
-import { REWARDS } from "../rewards.catalog";
+import { MerchandisingService } from "../services/merchandising.service";
 
 function ok(res: Response, data: any) {
   res.json({ success: true, data });
@@ -52,8 +52,27 @@ export async function listMenu(req: Request, res: Response) {
     fail(res, e);
   }
 }
+export async function listCategories(_req: Request, res: Response) {
+  try {
+    ok(res, await CatalogService.listCategories());
+  } catch (e) {
+    fail(res, e);
+  }
+}
+export async function getHome(req: Request, res: Response) {
+  try {
+    const country = req.query.country ? String(req.query.country) : "ID";
+    ok(res, await MerchandisingService.home(req.user?.id ?? null, country));
+  } catch (e) {
+    fail(res, e);
+  }
+}
 export async function listRewards(_req: Request, res: Response) {
-  ok(res, REWARDS);
+  try {
+    ok(res, await RewardsService.catalog());
+  } catch (e) {
+    fail(res, e);
+  }
 }
 
 // ── Member (auth) ─────────────────────────────────────────────────────────────

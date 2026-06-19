@@ -5,6 +5,7 @@ import { htApi } from "~/lib/ht-api";
 import { useAppStore } from "~/state/app-store";
 import type { MenuItem } from "~/lib/domain.types";
 import { CATEGORIES, formatIDR } from "~/lib/domain.types";
+import type { CategoryDef } from "~/lib/domain.types";
 import { AppHeader } from "~/components/app/phone-shell";
 import { Skeleton, Badge, Pill, EmptyState, Button } from "~/components/ui/primitives";
 import { cn } from "~/lib/utils";
@@ -14,12 +15,20 @@ export default function MenuList() {
   const [params, setParams] = useSearchParams();
   const { outlet } = useAppStore();
   const [menu, setMenu] = useState<MenuItem[] | null>(null);
+  const [categories, setCategories] = useState<CategoryDef[]>(CATEGORIES);
   const [query, setQuery] = useState("");
   const activeCat = params.get("cat") ?? "all";
 
   useEffect(() => {
     htApi.menu(outlet?.id).then((r) => setMenu(r.success && r.data ? r.data : []));
   }, [outlet?.id]);
+
+  // Category order is admin-managed (Sprint 13) — drives the pill bar order.
+  useEffect(() => {
+    htApi.categories().then((r) => {
+      if (r.success && r.data?.length) setCategories(r.data as CategoryDef[]);
+    });
+  }, []);
 
   // Sold-out resolved from the server's per-outlet flag, with the cached outlet
   // matrix as a fallback before the menu refetch lands.
@@ -80,7 +89,7 @@ export default function MenuList() {
           <Pill active={activeCat === "all"} onClick={() => setCat("all")}>
             All
           </Pill>
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <Pill key={c.key} active={activeCat === c.key} onClick={() => setCat(c.key)}>
               {c.name}
             </Pill>

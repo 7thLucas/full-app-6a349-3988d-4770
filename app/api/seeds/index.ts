@@ -106,6 +106,16 @@ export async function runSeeds(): Promise<void> {
     const { seedCatalog } = await import("~/api/domain/seeds/catalog.seed");
     await seedCatalog();
 
+    // Admin config singletons + DB catalogs (Sprints 13–15).
+    const { LoyaltyConfigService } = await import("~/api/domain/services/loyalty-config.service");
+    const { RewardAdminService } = await import("~/api/domain/services/reward-admin.service");
+    const { CatalogAdminService } = await import("~/api/domain/services/catalog-admin.service");
+    const { MarketingConfigService } = await import("~/api/domain/services/marketing-config.service");
+    await LoyaltyConfigService.init();
+    await RewardAdminService.seedFromStatic();
+    await CatalogAdminService.seedCategories();
+    await MarketingConfigService.ensure();
+
     logger.info("✅ All seed operations completed successfully");
   } catch (error) {
     logger.error("❌ Seed operations failed:", error);

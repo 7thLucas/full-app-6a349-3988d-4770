@@ -1,6 +1,8 @@
 import { Router } from "express";
-import { requireAuth, requireAdmin } from "~/modules/authentication/authentication.middleware";
+import { requireAuth, requireAdmin, optionalAuth } from "~/modules/authentication/authentication.middleware";
+import { permissionGuard } from "../admin/permission.guard";
 import * as c from "../controllers/domain.controller";
+import * as a from "../controllers/admin.controller";
 
 const router = Router();
 
@@ -8,7 +10,9 @@ const router = Router();
 router.get("/outlets", c.listOutlets);
 router.get("/outlets/:id", c.getOutlet);
 router.get("/menu", c.listMenu);
+router.get("/categories", c.listCategories);
 router.get("/rewards", c.listRewards);
+router.get("/home", optionalAuth, c.getHome); // Sprint 11 — personalized when authed
 
 // ── Member (auth) ──────────────────────────────────────────────────────────────
 router.get("/member/me", requireAuth, c.getMember);
@@ -46,14 +50,64 @@ router.get("/orders/:id", requireAuth, c.getOrder);
 router.post("/orders/:id/advance", requireAuth, c.advanceOrder);
 router.post("/orders/:id/cancel", requireAuth, c.cancelOrder);
 
-// ── Operations Console (admin) ───────────────────────────────────────────────────
-router.post("/admin/menu", requireAdmin, c.adminCreateItem);
-router.put("/admin/menu/:id", requireAdmin, c.adminUpdateItem);
-router.delete("/admin/menu/:id", requireAdmin, c.adminDeleteItem);
-router.put("/admin/outlets/:id", requireAdmin, c.adminUpdateOutlet);
-router.post("/admin/outlets/:id/sold-out", requireAdmin, c.adminToggleSoldOut);
+// ── Operations Console (legacy scaffold endpoints) ────────────────────────────
 router.get("/admin/outlets/:id/orders", requireAdmin, c.adminListOutletOrders);
 router.post("/admin/orders/:id/advance", requireAdmin, c.adminAdvanceOrder);
-router.post("/admin/jobs/loyalty", requireAdmin, c.runLoyaltyJob);
+router.post("/admin/jobs/loyalty", permissionGuard("loyalty.manage"), c.runLoyaltyJob);
+
+// ── Admin Console — RBAC + Dashboard + Orders (Sprint 12) ─────────────────────
+router.get("/admin/dashboard", permissionGuard("dashboard.view"), a.getDashboard);
+router.get("/admin/dashboard/export", permissionGuard("dashboard.view"), a.exportDashboardCsv);
+router.get("/admin/orders/board", permissionGuard("orders.view"), a.adminBoard);
+router.get("/admin/orders/search", permissionGuard("orders.view"), a.adminSearchOrders);
+router.post("/admin/orders/:id/override", permissionGuard("orders.manage"), a.adminOverrideOrder);
+router.post("/admin/orders/:id/cancel-refund", permissionGuard("orders.manage"), a.adminCancelRefund);
+router.get("/admin/audit", permissionGuard("audit.view"), a.listAudit);
+router.post("/admin/users/:id/role", permissionGuard("rbac.manage"), a.assignRole);
+
+// ── Admin Console — Catalog + Outlets (Sprint 13) ─────────────────────────────
+router.get("/admin/catalog/items", permissionGuard("catalog.manage"), a.adminListItems);
+router.post("/admin/catalog/items", permissionGuard("catalog.manage"), a.adminCreateItem);
+router.put("/admin/catalog/items/:id", permissionGuard("catalog.manage"), a.adminUpdateItem);
+router.post("/admin/catalog/items/:id/publish", permissionGuard("catalog.manage"), a.adminPublishItem);
+router.post("/admin/catalog/items/:id/price-override", permissionGuard("catalog.manage"), a.adminPriceOverride);
+router.delete("/admin/catalog/items/:id", permissionGuard("catalog.manage"), a.adminDeleteItem);
+router.get("/admin/catalog/categories", permissionGuard("catalog.manage"), a.adminListCategories);
+router.post("/admin/catalog/categories", permissionGuard("catalog.manage"), a.adminCreateCategory);
+router.post("/admin/catalog/categories/reorder", permissionGuard("catalog.manage"), a.adminReorderCategories);
+router.get("/admin/outlets", permissionGuard("outlets.manage"), a.adminListOutlets);
+router.post("/admin/outlets", permissionGuard("outlets.manage"), a.adminCreateOutlet);
+router.put("/admin/outlets/:id", permissionGuard("outlets.manage"), a.adminUpdateOutlet);
+router.post("/admin/outlets/:id/sold-out", permissionGuard("outlets.manage"), a.adminToggleSoldOut);
+
+// ── Admin Console — Loyalty + Rewards config (Sprint 14) ──────────────────────
+router.get("/admin/loyalty/config", permissionGuard("loyalty.manage"), a.getLoyaltyConfig);
+router.put("/admin/loyalty/config", permissionGuard("loyalty.manage"), a.updateLoyaltyConfig);
+router.get("/admin/loyalty/config/versions", permissionGuard("loyalty.manage"), a.getLoyaltyVersions);
+router.post("/admin/loyalty/config/revert", permissionGuard("loyalty.manage"), a.revertLoyaltyConfig);
+router.get("/admin/rewards", permissionGuard("rewards.manage"), a.adminListRewards);
+router.post("/admin/rewards", permissionGuard("rewards.manage"), a.adminCreateReward);
+router.put("/admin/rewards/:slug", permissionGuard("rewards.manage"), a.adminUpdateReward);
+router.delete("/admin/rewards/:slug", permissionGuard("rewards.manage"), a.adminDeleteReward);
+router.get("/admin/rewards-monitor", permissionGuard("rewards.manage"), a.rewardMonitor);
+
+// ── Admin Console — Vouchers / Promos / Referral config (Sprint 15) ───────────
+router.get("/admin/vouchers", permissionGuard("vouchers.manage"), a.adminListVouchers);
+router.post("/admin/vouchers", permissionGuard("vouchers.manage"), a.adminCreateVoucher);
+router.post("/admin/vouchers/:code/approve", permissionGuard("vouchers.manage"), a.approveVoucher);
+router.post("/admin/vouchers/batch", permissionGuard("vouchers.manage"), a.generateBatch);
+router.post("/admin/vouchers/preview", permissionGuard("vouchers.manage"), a.previewVoucher);
+router.get("/admin/vouchers/:code/performance", permissionGuard("vouchers.manage"), a.voucherPerformance);
+router.get("/admin/welcome-offer", permissionGuard("vouchers.manage"), a.getWelcomeOffer);
+router.put("/admin/welcome-offer", permissionGuard("vouchers.manage"), a.updateWelcomeOffer);
+router.get("/admin/referral-config", permissionGuard("referral.manage"), a.getReferralConfig);
+router.put("/admin/referral-config", permissionGuard("referral.manage"), a.updateReferralConfig);
+
+// ── Admin Console — Banners + Campaigns (Sprint 11) ───────────────────────────
+router.get("/admin/banners", permissionGuard("banners.manage"), a.adminListBanners);
+router.post("/admin/banners", permissionGuard("banners.manage"), a.adminCreateBanner);
+router.put("/admin/banners/:id", permissionGuard("banners.manage"), a.adminUpdateBanner);
+router.delete("/admin/banners/:id", permissionGuard("banners.manage"), a.adminDeleteBanner);
+router.post("/admin/campaigns/send", permissionGuard("campaigns.manage"), a.sendCampaign);
 
 export default router;

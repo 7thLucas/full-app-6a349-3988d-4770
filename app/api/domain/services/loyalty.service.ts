@@ -243,6 +243,51 @@ export class LoyaltyService {
     profile.bowlEvents = (profile.bowlEvents as BowlEvent[]).filter((e) => e.qty > 0);
   }
 
+  /** Admin grant: add a crystal batch (normal TTL) + earned ledger entry. */
+  static grant(profile: Record<string, any>, amount: number, note: string, now: Date = new Date()) {
+    LoyaltyService.ensure(profile);
+    if (amount <= 0) return;
+    profile.crystalBatches.push({
+      id: uid("batch"),
+      amount,
+      remaining: amount,
+      earnedAt: now.toISOString(),
+      expiresAt: new Date(now.getTime() + batchTtlMs()).toISOString(),
+    });
+    profile.ledger.push({
+      id: uid("led"),
+      type: "earned",
+      amount,
+      at: now.toISOString(),
+      balanceAfter: LoyaltyService.balance(profile),
+      note,
+    });
+  }
+
+  /** Admin adjust Bowls by a signed delta (affects rolling window + tier). */
+  static adjustBowls(profile: Record<string, any>, delta: number, now: Date = new Date()) {
+    LoyaltyService.ensure(profile);
+    if (delta > 0) {
+      profile.bowlEvents.push({ itemId: "admin-adjust", qty: delta, at: now.toISOString() });
+    } else if (delta < 0) {
+      let toRemove = -delta;
+      for (let i = profile.bowlEvents.length - 1; i >= 0 && toRemove > 0; i--) {
+        const e = profile.bowlEvents[i] as BowlEvent;
+        const take = Math.min(e.qty, toRemove);
+        e.qty -= take;
+        toRemove -= take;
+      }
+      profile.bowlEvents = (profile.bowlEvents as BowlEvent[]).filter((e) => e.qty > 0);
+    }
+  }
+
+  /** Admin set tier explicitly (records tier history). */
+  static setTier(profile: Record<string, any>, tier: TierKey, now: Date = new Date()) {
+    LoyaltyService.ensure(profile);
+    profile.tier = tier;
+    profile.tierHistory.push({ tier, at: now.toISOString(), reason: "admin" });
+  }
+
   /** Spend crystals FIFO (oldest batch first). Throws if insufficient. */
   static redeem(profile: Record<string, any>, cost: number, note: string, now: Date = new Date()) {
     LoyaltyService.ensure(profile);

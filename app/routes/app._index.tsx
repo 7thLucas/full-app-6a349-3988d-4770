@@ -19,10 +19,21 @@ export default function Home() {
 
   const [menu, setMenu] = useState<MenuItem[] | null>(null);
   const [bannerIdx, setBannerIdx] = useState(0);
+  const [cmsBanners, setCmsBanners] = useState<
+    { imageUrl: string; title: string; subtitle?: string; deepLink?: string }[] | null
+  >(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     htApi.menu().then((r) => setMenu(r.success && r.data ? r.data : []));
+    // Scheduled, priority-ordered CMS banners (Sprint 11).
+    htApi.home().then((r) => {
+      if (r.success && r.data) {
+        setCmsBanners(
+          r.data.banners.map((b) => ({ imageUrl: b.imageUrl, title: b.title, subtitle: b.caption, deepLink: b.deepLink })),
+        );
+      }
+    });
     // Auto-select nearest outlet if none chosen yet
     if (!outlet) {
       htApi.outlets().then((r) => {
@@ -31,7 +42,13 @@ export default function Home() {
     }
   }, []);
 
-  const banners = config?.heroBanners ?? [];
+  // Prefer CMS-managed banners; fall back to configurables.
+  const banners = (cmsBanners && cmsBanners.length ? cmsBanners : config?.heroBanners ?? []) as {
+    imageUrl: string;
+    title: string;
+    subtitle?: string;
+    deepLink?: string;
+  }[];
 
   useEffect(() => {
     if (banners.length <= 1) return;
@@ -74,8 +91,10 @@ export default function Home() {
               {banners.map((b, i) => (
                 <div
                   key={i}
+                  onClick={() => b.deepLink && (b.deepLink.startsWith("http") ? window.open(b.deepLink, "_blank") : navigate(b.deepLink))}
                   className={cn(
                     "absolute inset-0 transition-opacity duration-700",
+                    b.deepLink && "cursor-pointer",
                     i === bannerIdx ? "opacity-100" : "opacity-0 pointer-events-none",
                   )}
                 >

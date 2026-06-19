@@ -69,6 +69,26 @@ export interface ReferralStats {
   referrals: { status: string; at: string }[];
 }
 
+export interface HomeBanner {
+  id: string;
+  title: string;
+  imageUrl: string;
+  caption: string;
+  deepLink: string;
+  priority: number;
+}
+export interface HomePayload {
+  greeting: string;
+  banners: HomeBanner[];
+  coreActions: { pickup: boolean; delivery: boolean };
+  personalized: {
+    recentItems: { itemId: string; name: string; imageUrl: string; unitPrice: number; options: any[] }[];
+    loyalty: { crystals: number; bowls: number; tier: string } | null;
+  };
+  firstRun: boolean;
+  promoRows: { key: string; title: string }[];
+}
+
 export const htApi = {
   // catalog
   outlets: (opts?: { country?: string; near?: { lat: number; lng: number } }) => {
@@ -81,6 +101,8 @@ export const htApi = {
   outlet: (id: string) => apiGet<Outlet>(`/api/outlets/${id}`),
   menu: (outletId?: string) =>
     apiGet<MenuItem[]>(`/api/menu${outletId ? `?outletId=${encodeURIComponent(outletId)}` : ""}`),
+  categories: () => apiGet<{ key: string; name: string }[]>("/api/categories"),
+  home: () => apiGet<HomePayload>("/api/home"),
   rewards: () => apiGet<RewardProduct[]>("/api/rewards"),
 
   // auth (phone OTP)

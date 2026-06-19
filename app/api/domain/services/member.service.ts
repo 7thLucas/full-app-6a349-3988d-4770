@@ -57,9 +57,14 @@ export class MemberService {
     LoyaltyService.expireSweep(p);
 
     // Welcome grant once after onboarding (referee bonus if referred).
+    // Templates come from admin WelcomeOfferConfig / referral config (Sprint 15).
     if (p.onboarded && !p.welcomeGranted) {
-      (p.vouchers as Voucher[]).push(welcomeVoucher());
-      if (p.referredBy) (p.vouchers as Voucher[]).push(referralWelcomeVoucher());
+      const welcome = await MarketingConfigService.welcomeOffer();
+      for (const t of welcome) (p.vouchers as Voucher[]).push(voucherFromTemplate(t, "WELCOME"));
+      if (p.referredBy) {
+        const refCfg = await MarketingConfigService.referral();
+        (p.vouchers as Voucher[]).push(voucherFromTemplate(refCfg.refereeReward, "FRIEND"));
+      }
       p.welcomeGranted = true;
     }
 

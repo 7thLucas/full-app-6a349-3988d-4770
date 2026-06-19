@@ -50,6 +50,11 @@ export class Outlet extends CommonTypegooseEntity {
   @prop({ type: Boolean, default: true })
   pickupEnabled!: boolean;
 
+  // Delivery is tracking-only (PRD §13) and off by default — Home collapses the
+  // delivery action card where no outlet enables it (Sprint 11).
+  @prop({ type: Boolean, default: false })
+  deliveryEnabled!: boolean;
+
   @prop({ type: Number, default: 0 })
   lat!: number;
 

@@ -30,6 +30,22 @@ export class Transaction extends CommonTypegooseEntity {
   // Idempotency key passed by the client to dedupe retries.
   @prop({ type: String, required: false, default: null, index: true, sparse: true })
   idempotencyKey?: string | null;
+
+  // Refund approval workflow (Sprint 17): none | pending | approved | rejected
+  @prop({ type: String, default: "none" })
+  refundStatus!: string;
+
+  @prop({ type: String, default: null })
+  refundReason!: string | null;
+
+  @prop({ type: String, default: null })
+  refundRequestedBy!: string | null;
+
+  @prop({ type: String, default: null })
+  refundApprovedBy!: string | null;
+
+  @prop({ type: String, default: null })
+  outletId!: string | null; // denormalized for finance filtering
 }
 
 export const TransactionModel = getModelForClass(Transaction);

@@ -10,6 +10,8 @@ import { LoyaltyService } from "./loyalty.service";
 import { NotificationService } from "./notification.service";
 import { ReferralService } from "./referral.service";
 import { VoucherEngine, type VoucherLine } from "./voucher.engine";
+import { PromoCodeModel } from "../models/promo-code.model";
+import { promoToVoucher } from "./voucher-admin.service";
 import { TIERS } from "~/lib/domain.types";
 import { breakdown, resolveOptions, unitPrice as calcUnitPrice } from "~/lib/price";
 import type { Voucher, CartLine, OrderStatus, SelectedOption } from "~/lib/domain.types";
@@ -120,38 +122,27 @@ export class OrderService {
     if (!user) throw makeError("User not found", 404);
     const vouchers: Voucher[] = user.profile?.vouchers ?? [];
     const normalized = code.trim().toUpperCase();
-    const voucher = vouchers.find((v) => v.code.toUpperCase() === normalized && !v.used);
+    const walletVoucher = vouchers.find((v) => v.code.toUpperCase() === normalized && !v.used);
 
-    // Promo codes (not in wallet) — accept a couple of simulated public codes.
-    const PROMO: Record<string, Voucher> = {
-      TANG10: {
-        id: "promo-tang10",
-        code: "TANG10",
-        title: "Promo: 10% Off",
-        description: "10% off this order.",
-        discountType: "percent",
-        discountValue: 10,
-        minSpend: 30000,
-        expiresAt: new Date(Date.now() + 86400_000).toISOString(),
-        used: false,
-        source: "promo",
-      },
-      PEARLFREE: {
-        id: "promo-pearlfree",
-        code: "PEARLFREE",
-        title: "Promo: Rp 6.000 Off",
-        description: "Rp 6.000 off — pearls on us.",
-        discountType: "fixed",
-        discountValue: 6000,
-        minSpend: 25000,
-        expiresAt: new Date(Date.now() + 86400_000).toISOString(),
-        used: false,
-        source: "promo",
-      },
-    };
+    let resolved: Voucher | null = walletVoucher ?? null;
 
-    const resolved = voucher ?? PROMO[normalized];
-    if (!resolved) throw makeError("Code not found or already used", 404);
+    // Admin-built promo codes (Sprint 15) live in the DB; enforce caps + window.
+    if (!resolved) {
+      const promo = await PromoCodeModel.findOne({ code: normalized }).lean();
+      if (!promo) throw makeError("Code not found or already used", 404);
+      if (promo.status !== "active") throw makeError("This code is not active", 400);
+      const now = Date.now();
+      if (promo.validFrom && new Date(promo.validFrom).getTime() > now) throw makeError("This code isn't active yet", 400);
+      if (promo.validUntil && new Date(promo.validUntil).getTime() < now) throw makeError("This code has expired", 400);
+      if (promo.usageCapGlobal != null && promo.usedGlobal >= promo.usageCapGlobal) {
+        throw makeError("This code has reached its usage limit", 400);
+      }
+      if (promo.usageCapPerUser != null && (promo.usedByUser?.[userId] ?? 0) >= promo.usageCapPerUser) {
+        throw makeError("You've already used this code", 400);
+      }
+      resolved = promoToVoucher(promo);
+    }
+
     // VoucherEngine enforces expiry, eligibility (items/categories), mode, min-spend.
     VoucherEngine.assertApplicable(resolved, { lines, fulfillmentMode: "pickup" });
     return resolved;
@@ -262,14 +253,21 @@ export class OrderService {
       status: charge.status,
       gatewayRef: charge.gatewayRef,
       idempotencyKey,
+      outletId: payload.outletId,
     });
     order.transactionId = txn._id.toString();
     await order.save();
 
-    // Consume wallet voucher (promo codes are not in wallet) + notify received.
+    // Consume wallet voucher; or increment admin promo-code usage caps (Sprint 15).
     if (voucher && Array.isArray(profile.vouchers)) {
       const v = (profile.vouchers as Voucher[]).find((x) => x.code === voucher!.code);
       if (v) v.used = true;
+    }
+    if (voucher && voucher.source === "promo") {
+      await PromoCodeModel.updateOne(
+        { code: voucher.code.toUpperCase() },
+        { $inc: { usedGlobal: 1, [`usedByUser.${userId}`]: 1 } },
+      );
     }
     NotificationService.emit(profile, {
       ...STATUS_PUSH.received,

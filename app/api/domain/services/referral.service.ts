@@ -1,21 +1,15 @@
 import crypto from "node:crypto";
 import { UserModel } from "~/modules/authentication/authentication.model";
 import { ReferralModel } from "../models/referral.model";
-import { referrerRewardVoucher } from "../rewards.catalog";
+import { voucherFromTemplate } from "../rewards.catalog";
 import { LoyaltyService } from "./loyalty.service";
 import { NotificationService } from "./notification.service";
+import { MarketingConfigService } from "./marketing-config.service";
 import type { Voucher } from "~/lib/domain.types";
 
 function makeError(message: string, statusCode: number): Error {
   return Object.assign(new Error(message), { statusCode });
 }
-
-// ── AntiAbusePolicy (Sprint 9) ───────────────────────────────────────────────
-// Campaign-tunable caps (admin-configurable in Sprint 15). Conservative defaults.
-const AntiAbusePolicy = {
-  perUserRewardCap: 20, // lifetime rewards a single referrer can earn
-  dailyVelocityCap: 5, // rewards per referrer per rolling 24h
-};
 
 export class ReferralService {
   static generateCode(): string {
@@ -82,12 +76,13 @@ export class ReferralService {
     const referrer = await UserModel.findById(referral.referrerId);
     if (!referrer) return { rewarded: false };
 
-    // Anti-abuse: lifetime cap + 24h velocity.
+    // Anti-abuse caps are admin-configurable (Sprint 15, DIP).
+    const cfg = await MarketingConfigService.referral();
     const rewardedCount = await ReferralModel.countDocuments({
       referrerId: referral.referrerId,
       status: "rewarded",
     });
-    if (rewardedCount >= AntiAbusePolicy.perUserRewardCap) {
+    if (rewardedCount >= cfg.perUserRewardCap) {
       referral.status = "qualified"; // qualified but capped — no reward
       await referral.save();
       return { rewarded: false, reason: "cap" };
@@ -98,16 +93,16 @@ export class ReferralService {
       status: "rewarded",
       rewardedAt: { $gte: since },
     });
-    if (recent >= AntiAbusePolicy.dailyVelocityCap) {
+    if (recent >= cfg.dailyVelocityCap) {
       referral.status = "qualified";
       await referral.save();
       return { rewarded: false, reason: "velocity" };
     }
 
-    // Grant the referrer reward voucher + notify.
+    // Grant the configured referrer reward voucher + notify.
     const p = LoyaltyService.ensure((referrer.profile ?? {}) as Record<string, any>);
     if (!Array.isArray(p.vouchers)) p.vouchers = [];
-    (p.vouchers as Voucher[]).push(referrerRewardVoucher());
+    (p.vouchers as Voucher[]).push(voucherFromTemplate(cfg.referrerReward, "THANKS"));
     NotificationService.emit(p, {
       type: "referral_reward",
       title: "Referral reward earned! 🎁",

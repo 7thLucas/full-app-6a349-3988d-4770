@@ -14,6 +14,13 @@ import "./domain/models/order.model";
 import "./domain/models/transaction.model";
 import "./domain/models/referral.model";
 import "./domain/models/reward-redemption.model";
+import "./domain/models/audit-log.model";
+import "./domain/models/loyalty-config.model";
+import "./domain/models/reward.model";
+import "./domain/models/category.model";
+import "./domain/models/promo-code.model";
+import "./domain/models/marketing-config.model";
+import "./domain/models/banner.model";
 import domainRoutes from "./domain/routes/domain.routes";
 
 const router = Router();

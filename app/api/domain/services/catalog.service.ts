@@ -106,10 +106,13 @@ export class CatalogService {
       tags: data.tags ?? [],
       isSignature: !!data.isSignature,
       available: data.available ?? true,
+      published: data.published ?? true,
+      calories: data.calories ?? null,
+      allergens: data.allergens ?? [],
       optionGroups: data.optionGroups ?? [],
       sortOrder: Number(data.sortOrder) || 0,
     });
-    return itemDto(created.toObject());
+    return { ...itemDto(created.toObject()), published: created.published };
   }
 
   static async updateItem(id: string, data: any) {
