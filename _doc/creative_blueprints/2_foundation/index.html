@@ -1,0 +1,52 @@
+<style>
+  .mode-landscape .sl-found { flex-direction: row; }
+  .mode-portrait  .sl-found { flex-direction: column; }
+  .mode-landscape .sl-text { width: 60%; }
+  .mode-portrait  .sl-text { width: 100%; }
+  .mode-landscape .sl-side { width: 40%; height: 100%; }
+  .mode-portrait  .sl-side { width: 100%; height: 30%; }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="sl-found flex w-full h-full">
+    <div class="sl-text flex flex-col justify-center p-12">
+      <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">The Foundation</p>
+      <h2 class="font-bold leading-tight mb-8" style="color:#3A2A22; font-size:2.4rem;">
+        Hong Tang earns the visit. The hard part is earning the next one.
+      </h2>
+
+      <div class="grid gap-5">
+        <!-- Problem -->
+        <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs font-bold tracking-widest uppercase" style="color:#B23B2E;">The Problem</span>
+          </div>
+          <p class="text-lg leading-relaxed" style="color:#5C463A;">
+            At peak mall hours customers queue at the counter — and some simply walk away.
+            Loyalty is invisible and unrewarded, and the brand captures no first-party data
+            and has no direct channel to bring guests back.
+          </p>
+        </div>
+
+        <!-- Solution -->
+        <div class="rounded-2xl p-6" style="background:#3A2A22;">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs font-bold tracking-widest uppercase" style="color:#E9C9A3;">The Solution</span>
+          </div>
+          <p class="text-lg leading-relaxed" style="color:#F3E7DA;">
+            A premium app that bridges online convenience and offline craftsmanship:
+            order ahead, skip the queue with self-pickup, and earn through the
+            <span class="font-semibold" style="color:#E9C9A3;">Loyal-Tang</span> rewards program —
+            turning an occasional treat into a repeat habit.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sl-side relative overflow-hidden" style="background:#F5EFE6;">
+      <img class="w-full h-full object-cover"
+           src="https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=elegant%20hand%20holding%20smartphone%20ordering%20oriental%20dessert%2C%20modern%20minimalist%20cafe%2C%20warm%20brown%20sugar%20tones%2C%20premium%20lifestyle%20photography%2C%20soft%20light"
+           alt="Ordering Hong Tang desserts on mobile" />
+      <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(58,42,34,0), rgba(58,42,34,0.22));"></div>
+    </div>
+  </div>
+</section>
