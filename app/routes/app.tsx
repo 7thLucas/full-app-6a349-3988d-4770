@@ -37,6 +37,16 @@ function Guard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function AnimatedOutlet() {
+  const location = useLocation();
+  // Re-key on the route segment so each navigation replays the page-in motion
+  return (
+    <div key={location.pathname} className="ht-page">
+      <Outlet />
+    </div>
+  );
+}
+
 export default function AppLayout() {
   return (
     <AppStoreProvider>
@@ -46,7 +56,7 @@ export default function AppLayout() {
             <div className="relative w-full max-w-md bg-background min-h-screen shadow-xl">
               <Guard>
                 <main className="pb-28">
-                  <Outlet />
+                  <AnimatedOutlet />
                 </main>
                 <BottomNav />
               </Guard>

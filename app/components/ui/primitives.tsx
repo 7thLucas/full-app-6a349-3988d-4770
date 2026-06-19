@@ -30,7 +30,7 @@ export function Card({ className, children, onClick }: { className?: string; chi
       onClick={onClick}
       className={cn(
         "rounded-2xl bg-card border border-[#EFE6D8] shadow-[0_1px_3px_rgba(62,39,35,0.05)]",
-        onClick && "cursor-pointer transition-shadow hover:shadow-[0_4px_16px_rgba(62,39,35,0.08)]",
+        onClick && "ht-press cursor-pointer transition-shadow hover:shadow-[0_4px_16px_rgba(62,39,35,0.08)]",
         className,
       )}
     >
@@ -55,7 +55,7 @@ export function Pill({
     <button
       onClick={onClick}
       className={cn(
-        "whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors min-h-[40px]",
+        "ht-press whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors min-h-[40px]",
         active
           ? "bg-primary text-primary-foreground"
           : "bg-secondary text-muted-foreground hover:text-foreground",

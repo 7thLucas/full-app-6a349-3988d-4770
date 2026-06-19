@@ -238,6 +238,61 @@
 .ht-sheet-up { animation: ht-sheet-up 0.34s cubic-bezier(0.22, 1, 0.36, 1) both; }
 .ht-overlay-in { animation: ht-overlay-in 0.25s ease both; }
 
+/* Splash — native app launch motion */
+@keyframes ht-pop {
+  0% { opacity: 0; transform: scale(0.82); }
+  55% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes ht-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ht-bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+@keyframes ht-ring {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes ht-splash-out {
+  to { opacity: 0; transform: scale(1.04); }
+}
+.ht-pop { animation: ht-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ht-rise { animation: ht-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ht-ring { animation: ht-ring 1.8s ease-out infinite; }
+.ht-bounce { animation: ht-bounce 1.2s ease-in-out infinite both; }
+.ht-splash-out { animation: ht-splash-out 0.4s ease forwards; }
+
+/* Page transition on route change */
+@keyframes ht-page-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.ht-page { animation: ht-page-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Tap/press feedback — apply to any tappable surface */
+.ht-press { transition: transform 0.14s cubic-bezier(0.22, 1, 0.36, 1); -webkit-tap-highlight-color: transparent; }
+.ht-press:active { transform: scale(0.97); }
+
+/* Staggered children reveal — parent gets .ht-stagger */
+.ht-stagger > * { animation: ht-rise 0.46s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.ht-stagger > *:nth-child(1) { animation-delay: 0.02s; }
+.ht-stagger > *:nth-child(2) { animation-delay: 0.07s; }
+.ht-stagger > *:nth-child(3) { animation-delay: 0.12s; }
+.ht-stagger > *:nth-child(4) { animation-delay: 0.17s; }
+.ht-stagger > *:nth-child(5) { animation-delay: 0.22s; }
+.ht-stagger > *:nth-child(6) { animation-delay: 0.27s; }
+.ht-stagger > *:nth-child(7) { animation-delay: 0.32s; }
+.ht-stagger > *:nth-child(8) { animation-delay: 0.37s; }
+.ht-stagger > *:nth-child(9) { animation-delay: 0.42s; }
+.ht-stagger > *:nth-child(n+10) { animation-delay: 0.47s; }
+
+/* Image fade-in once loaded */
+@keyframes ht-img-in { from { opacity: 0; } to { opacity: 1; } }
+.ht-img-in { animation: ht-img-in 0.4s ease both; }
+
 /* Skeleton shimmer */
 @keyframes ht-shimmer {
   0% { background-position: -400px 0; }

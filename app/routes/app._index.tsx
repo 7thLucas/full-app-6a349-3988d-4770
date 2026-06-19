@@ -43,7 +43,7 @@ export default function Home() {
   const warm = (menu ?? []).filter((m) => m.category === "warm-desserts");
 
   return (
-    <div className="ht-fade-in">
+    <div className="ht-stagger">
       {/* Top bar: greeting + outlet */}
       <div className="px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-2">
         <div className="flex items-center justify-between">
@@ -55,7 +55,7 @@ export default function Home() {
           </div>
           <button
             onClick={() => navigate("/app/outlets")}
-            className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-2 text-sm max-w-[55%]"
+            className="ht-press flex items-center gap-1.5 rounded-full bg-secondary px-3 py-2 text-sm max-w-[55%]"
           >
             <MapPin className="h-4 w-4 shrink-0 text-accent" />
             <span className="truncate text-foreground">{outlet ? outlet.mall : "Choose outlet"}</span>
@@ -105,7 +105,7 @@ export default function Home() {
       {/* Membership snapshot */}
       <div className="px-4 mt-5">
         {member ? (
-          <button onClick={() => navigate("/app/me")} className="block w-full text-left">
+          <button onClick={() => navigate("/app/me")} className="ht-press block w-full text-left">
             <MembershipCard name={member.name} tier={member.tier} bowls={member.bowls} crystals={member.crystals} />
           </button>
         ) : (
@@ -209,9 +209,15 @@ function PromoRow({
               </div>
             ))
           : items.map((m) => (
-              <button key={m.id} onClick={() => onItem(m.id)} className="w-36 shrink-0 text-left">
+              <button key={m.id} onClick={() => onItem(m.id)} className="ht-press w-36 shrink-0 text-left">
                 <div className="relative h-36 w-36 overflow-hidden rounded-2xl bg-secondary">
-                  <img src={m.imageUrl} alt={m.name} className="h-full w-full object-cover" />
+                  <img
+                    src={m.imageUrl}
+                    alt={m.name}
+                    loading="lazy"
+                    onLoad={(e) => e.currentTarget.classList.add("ht-img-in")}
+                    className="h-full w-full object-cover transition-transform duration-500"
+                  />
                   {m.tags?.[0] && (
                     <span className="absolute left-2 top-2">
                       <Badge tone="accent">{m.tags[0]}</Badge>

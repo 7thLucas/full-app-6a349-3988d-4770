@@ -118,10 +118,16 @@ export default function MenuList() {
                 <button
                   key={m.id}
                   onClick={() => !out && navigate(`/app/menu/${m.id}`)}
-                  className={cn("text-left", out && "opacity-60")}
+                  className={cn("text-left", out ? "opacity-60" : "ht-press")}
                 >
                   <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-secondary">
-                    <img src={m.imageUrl} alt={m.name} className="h-full w-full object-cover" />
+                    <img
+                      src={m.imageUrl}
+                      alt={m.name}
+                      loading="lazy"
+                      onLoad={(e) => e.currentTarget.classList.add("ht-img-in")}
+                      className="h-full w-full object-cover"
+                    />
                     {m.tags?.[0] && !out && (
                       <span className="absolute left-2 top-2">
                         <Badge tone="accent">{m.tags[0]}</Badge>
