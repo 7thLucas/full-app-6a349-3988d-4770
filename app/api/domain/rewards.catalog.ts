@@ -63,6 +63,9 @@ export const REWARDS: RewardProduct[] = [
     crystalCost: 350,
     type: "merch",
     imageUrl: IMG("minimalist canvas tote bag with oriental brown sugar branding, premium product photography, cream background"),
+    stockCap: 50,
+    perUserLimit: 1,
+    tierGate: "explorer",
   },
   {
     id: "rw-mug",

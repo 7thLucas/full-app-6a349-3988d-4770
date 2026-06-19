@@ -1,42 +1,48 @@
 import { UserModel } from "~/modules/authentication/authentication.model";
 import { PhoneOtpService } from "~/modules/authentication/phone-otp.service";
-import { tierForBowls } from "~/lib/domain.types";
+import { LoyaltyService } from "./loyalty.service";
+import { NotificationService } from "./notification.service";
+import { RewardsService } from "./rewards.service";
 import type { Voucher } from "~/lib/domain.types";
-import {
-  REWARDS,
-  welcomeVoucher,
-  referralWelcomeVoucher,
-  referrerRewardVoucher,
-} from "../rewards.catalog";
+import { welcomeVoucher, referralWelcomeVoucher } from "../rewards.catalog";
 
 function makeError(message: string, statusCode: number): Error {
   return Object.assign(new Error(message), { statusCode });
 }
 
 function ensureProfile(user: any) {
-  const p = (user.profile ?? {}) as Record<string, any>;
-  if (typeof p.crystals !== "number") p.crystals = 0;
-  if (typeof p.bowls !== "number") p.bowls = 0;
+  const p = LoyaltyService.ensure((user.profile ?? {}) as Record<string, any>);
   if (!Array.isArray(p.vouchers)) p.vouchers = [];
+  if (!Array.isArray(p.favorites)) p.favorites = [];
+  if (!Array.isArray(p.addresses)) p.addresses = [];
+  if (!Array.isArray(p.paymentMethods)) p.paymentMethods = [];
+  if (!p.notificationPreferences) p.notificationPreferences = NotificationService.defaultPreferences();
   if (!p.referralCode) p.referralCode = PhoneOtpService.genReferralCode();
   return p;
 }
 
 export function memberSnapshot(user: any) {
   const p = ensureProfile(user);
-  const bowls = p.bowls as number;
+  const bowls = LoyaltyService.bowlsWindow(p);
   return {
     name: p.name ?? "Tang Member",
     phone: user.phone ?? "",
     birthday: p.birthday ?? null,
+    email: user.email?.endsWith("@phone.hongtang.id") ? null : user.email,
+    gender: p.gender ?? null,
     referralCode: p.referralCode,
-    crystals: p.crystals as number,
+    crystals: LoyaltyService.balance(p),
     bowls,
-    tier: tierForBowls(bowls).key,
+    tier: LoyaltyService.effectiveTier(p),
     joinedAt: (user.createdAt as Date)?.toISOString?.() ?? new Date().toISOString(),
     vouchers: (p.vouchers as Voucher[]) ?? [],
     favorites: (p.favorites as string[]) ?? [],
+    addresses: p.addresses ?? [],
+    paymentMethods: p.paymentMethods ?? [],
+    notificationPreferences: p.notificationPreferences,
+    expiringSoon: LoyaltyService.expiringSoon(p).map((b) => ({ amount: b.remaining, expiresAt: b.expiresAt })),
     onboarded: !!p.onboarded,
+    deletionRequested: !!p.deletionRequested,
   };
 }
 
@@ -45,30 +51,33 @@ export class MemberService {
     const user = await UserModel.findById(userId);
     if (!user) throw makeError("User not found", 404);
     const p = ensureProfile(user);
-    // First-ever fetch: grant welcome voucher if member has none and is onboarded.
+
+    // Expire aged-out crystal batches on read.
+    LoyaltyService.expireSweep(p);
+
+    // Welcome grant once after onboarding (referee bonus if referred).
     if (p.onboarded && !p.welcomeGranted) {
       (p.vouchers as Voucher[]).push(welcomeVoucher());
+      if (p.referredBy) (p.vouchers as Voucher[]).push(referralWelcomeVoucher());
       p.welcomeGranted = true;
-      // Referral: referee gets a bonus voucher, referrer gets rewarded once.
-      if (p.referredBy) {
-        (p.vouchers as Voucher[]).push(referralWelcomeVoucher());
-        await MemberService.rewardReferrer(p.referredBy);
-      }
-      user.profile = p;
-      user.markModified("profile");
-      await user.save();
     }
+
+    user.profile = p;
+    user.markModified("profile");
+    await user.save();
     return memberSnapshot(user);
   }
 
-  static async rewardReferrer(referralCode: string) {
-    const referrer = await UserModel.findOne({ "profile.referralCode": referralCode });
-    if (!referrer) return;
-    const p = ensureProfile(referrer);
-    (p.vouchers as Voucher[]).push(referrerRewardVoucher());
-    referrer.profile = p;
-    referrer.markModified("profile");
-    await referrer.save();
+  /** Sugar Crystal transaction history (earned/redeemed/expired) + running balance. */
+  static async crystalHistory(userId: string) {
+    const user = await UserModel.findById(userId);
+    if (!user) throw makeError("User not found", 404);
+    const p = ensureProfile(user);
+    return {
+      balance: LoyaltyService.balance(p),
+      batches: p.crystalBatches ?? [],
+      ledger: [...(p.ledger ?? [])].reverse(), // newest first
+    };
   }
 
   static async toggleFavorite(userId: string, itemId: string) {
@@ -85,53 +94,9 @@ export class MemberService {
     return p.favorites as string[];
   }
 
-  static async redeemReward(userId: string, rewardId: string) {
-    const reward = REWARDS.find((r) => r.id === rewardId);
-    if (!reward) throw makeError("Reward not found", 404);
+  static async redeemReward(userId: string, rewardId: string, idempotencyKey?: string) {
+    await RewardsService.redeem(userId, rewardId, idempotencyKey);
     const user = await UserModel.findById(userId);
-    if (!user) throw makeError("User not found", 404);
-    const p = ensureProfile(user);
-    if ((p.crystals as number) < reward.crystalCost) {
-      throw makeError("Not enough Sugar Crystals", 400);
-    }
-    // Spending Crystals NEVER lowers tier (tier is bowls-only).
-    p.crystals = (p.crystals as number) - reward.crystalCost;
-
-    if (reward.type === "voucher" && reward.voucherTemplate) {
-      const t = reward.voucherTemplate;
-      const voucher: Voucher = {
-        id: "v-" + Date.now() + Math.random().toString(36).slice(2, 6),
-        code: reward.id.toUpperCase() + "-" + Date.now().toString(36).toUpperCase().slice(-4),
-        title: t.title,
-        description: t.description,
-        discountType: t.discountType,
-        discountValue: t.discountValue,
-        minSpend: t.minSpend,
-        expiresAt: new Date(Date.now() + t.validDays * 86400_000).toISOString(),
-        used: false,
-        source: "reward",
-      };
-      (p.vouchers as Voucher[]).push(voucher);
-    } else {
-      // Merch redemption — record a collection voucher to show in wallet/in-store.
-      const voucher: Voucher = {
-        id: "v-merch-" + Date.now(),
-        code: "MERCH-" + Date.now().toString(36).toUpperCase().slice(-4),
-        title: `Collect: ${reward.title}`,
-        description: "Show this at the counter to collect your merch.",
-        discountType: "fixed",
-        discountValue: 0,
-        minSpend: 0,
-        expiresAt: new Date(Date.now() + 60 * 86400_000).toISOString(),
-        used: false,
-        source: "reward",
-      };
-      (p.vouchers as Voucher[]).push(voucher);
-    }
-
-    user.profile = p;
-    user.markModified("profile");
-    await user.save();
     return memberSnapshot(user);
   }
 }

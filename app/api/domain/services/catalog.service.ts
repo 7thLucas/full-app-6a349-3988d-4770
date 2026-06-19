@@ -1,28 +1,10 @@
 import { OutletModel } from "../models/outlet.model";
 import { MenuItemModel } from "../models/menu-item.model";
+import { OutletService } from "./outlet.service";
 
-function outletDto(o: any) {
-  return {
-    id: o._id.toString(),
-    slug: o.slug,
-    name: o.name,
-    mall: o.mall,
-    city: o.city,
-    address: o.address,
-    distanceKm: o.distanceKm,
-    openTime: o.openTime,
-    closeTime: o.closeTime,
-    lastOrderTime: o.lastOrderTime,
-    prepMinutes: o.prepMinutes,
-    isOpen: o.isOpen,
-    pickupEnabled: o.pickupEnabled,
-    lat: o.lat,
-    lng: o.lng,
-    soldOutItemIds: o.soldOutItemIds ?? [],
-  };
-}
+const outletDto = (o: any) => OutletService.toDto(o);
 
-function itemDto(m: any) {
+function itemDto(m: any, soldOut = false) {
   return {
     id: m._id.toString(),
     slug: m.slug,
@@ -34,6 +16,7 @@ function itemDto(m: any) {
     tags: m.tags ?? [],
     isSignature: m.isSignature ?? false,
     available: m.available ?? true,
+    soldOut,
     optionGroups: m.optionGroups ?? [],
     sortOrder: m.sortOrder ?? 0,
   };
@@ -50,9 +33,26 @@ export class CatalogService {
     return o ? outletDto(o) : null;
   }
 
-  static async listMenu() {
+  /**
+   * Menu for an outlet (Sprint 4): merges item master with the outlet's
+   * availability matrix. Globally-unavailable items are hidden; items the
+   * outlet marked sold-out are flagged `soldOut` (UI dims + disables "+").
+   * With no outletId, returns the full published catalog.
+   */
+  static async listMenu(outletId?: string) {
     const items = await MenuItemModel.find().sort({ sortOrder: 1 }).lean();
-    return items.map(itemDto);
+    let soldOutSet = new Set<string>();
+    if (outletId) {
+      const outlet = await OutletModel.findById(outletId).lean();
+      soldOutSet = new Set((outlet?.soldOutItemIds ?? []).map(String));
+    }
+    return items
+      .filter((m) => m.available ?? true)
+      .map((m) => itemDto(m, soldOutSet.has(m._id.toString())));
+  }
+
+  static async menuForOutlet(outletId: string) {
+    return CatalogService.listMenu(outletId);
   }
 
   static async getItem(id: string) {

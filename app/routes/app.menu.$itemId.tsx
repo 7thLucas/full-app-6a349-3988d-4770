@@ -7,6 +7,7 @@ import { useMember } from "~/state/member-context";
 import { useToast } from "~/state/toast";
 import type { MenuItem, OptionGroup, SelectedOption } from "~/lib/domain.types";
 import { formatIDR } from "~/lib/domain.types";
+import { unitPrice as calcUnitPrice } from "~/lib/price";
 import { Skeleton, StickyCTA, Button, Badge } from "~/components/ui/primitives";
 import { cn } from "~/lib/utils";
 
@@ -71,7 +72,7 @@ export default function ItemDetail() {
     return out;
   }, [item, selections]);
 
-  const unitPrice = (item?.basePrice ?? 0) + selectedOptions.reduce((s, o) => s + o.priceDelta, 0);
+  const unitPrice = calcUnitPrice(item?.basePrice ?? 0, selectedOptions);
 
   const valid = useMemo(() => {
     if (!item) return false;

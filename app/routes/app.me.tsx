@@ -12,6 +12,9 @@ import {
   Cake,
   Phone,
   Share2,
+  Settings as SettingsIcon,
+  Bell,
+  Trash2,
 } from "lucide-react";
 import { htApi } from "~/lib/ht-api";
 import { useMember } from "~/state/member-context";
@@ -29,7 +32,27 @@ export default function Me() {
   const [menu, setMenu] = useState<MenuItem[] | null>(null);
   const [perksOpen, setPerksOpen] = useState(false);
   const [referOpen, setReferOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [prefs, setPrefs] = useState<Record<string, boolean>>({});
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  useEffect(() => {
+    if (member?.notificationPreferences) setPrefs(member.notificationPreferences);
+  }, [member?.notificationPreferences]);
+
+  const togglePref = async (key: string) => {
+    const next = { ...prefs, [key]: !prefs[key] };
+    setPrefs(next);
+    await htApi.updatePreferences({ [key]: next[key] });
+    notify("Preferences updated", next[key] ? "You'll receive these notifications." : "These notifications are off.");
+  };
+
+  const deleteAccount = async () => {
+    await htApi.requestDeletion("user requested");
+    await htApi.logout();
+    window.location.href = "/onboarding";
+  };
 
   useEffect(() => {
     htApi.menu().then((r) => setMenu(r.success && r.data ? r.data : []));
@@ -193,6 +216,20 @@ export default function Me() {
           )}
         </div>
 
+        {/* Settings */}
+        <Card className="p-4" onClick={() => setSettingsOpen(true)}>
+          <div className="flex items-center gap-3">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-secondary">
+              <SettingsIcon className="h-5 w-5 text-foreground" />
+            </span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">Settings</p>
+              <p className="text-xs text-muted-foreground">Notifications, privacy & account</p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </div>
+        </Card>
+
         {/* Logout */}
         <button
           onClick={logout}
@@ -234,6 +271,78 @@ export default function Me() {
               {next.minBowls - member.bowls} more Bowls to reach {next.name}.
             </p>
           )}
+        </div>
+      </Sheet>
+
+      {/* Settings sheet */}
+      <Sheet open={settingsOpen} onClose={() => setSettingsOpen(false)} title="Settings">
+        <div className="px-5 pb-8 pt-3 space-y-5">
+          <div>
+            <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+              <Bell className="h-4 w-4 text-accent" /> Marketing notifications
+            </p>
+            <p className="mb-3 text-xs text-muted-foreground">
+              Order updates always arrive. These control promotional pushes only.
+            </p>
+            <div className="space-y-2">
+              {[
+                { key: "new_launches", label: "New launches" },
+                { key: "promotions", label: "Promotions & offers" },
+                { key: "loyalty_news", label: "Loyalty & rewards news" },
+              ].map((c) => (
+                <button
+                  key={c.key}
+                  onClick={() => togglePref(c.key)}
+                  className="flex w-full items-center justify-between rounded-xl border border-[#EFE6D8] px-4 py-3"
+                >
+                  <span className="text-sm text-foreground">{c.label}</span>
+                  <span
+                    className={
+                      prefs[c.key] !== false
+                        ? "relative h-6 w-11 rounded-full bg-accent transition-colors"
+                        : "relative h-6 w-11 rounded-full bg-[#D8CBB8] transition-colors"
+                    }
+                  >
+                    <span
+                      className={
+                        "absolute top-0.5 h-5 w-5 rounded-full bg-white transition-all " +
+                        (prefs[c.key] !== false ? "left-[22px]" : "left-0.5")
+                      }
+                    />
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="h-px bg-[#EFE6D8]" />
+
+          <div>
+            <p className="mb-2 text-sm font-semibold text-foreground">Account</p>
+            {member.deletionRequested ? (
+              <p className="rounded-xl bg-secondary px-4 py-3 text-sm text-muted-foreground">
+                Account deletion requested — our team will process it shortly.
+              </p>
+            ) : !confirmDelete ? (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="flex w-full items-center gap-2 rounded-xl border border-[#EFE6D8] px-4 py-3 text-sm font-medium text-accent"
+              >
+                <Trash2 className="h-4 w-4" /> Delete account
+              </button>
+            ) : (
+              <div className="rounded-xl border border-accent/30 bg-accent/5 p-4">
+                <p className="text-sm font-semibold text-foreground">Delete your account?</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  This is permanent (UU PDP). Your data and rewards will be removed.
+                </p>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <Button variant="outline" onClick={() => setConfirmDelete(false)}>Keep account</Button>
+                  <Button onClick={deleteAccount}>Delete</Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </Sheet>
 

@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Sparkles, Gift, Check, Lock } from "lucide-react";
-import { htApi } from "~/lib/ht-api";
+import { htApi, type RewardDto } from "~/lib/ht-api";
 import { useMember } from "~/state/member-context";
 import { useToast } from "~/state/toast";
-import type { RewardProduct } from "~/lib/domain.types";
-import { formatIDR } from "~/lib/domain.types";
 import { AppHeader } from "~/components/app/phone-shell";
 import { Card, Skeleton, Button, Badge, Sheet, EmptyState } from "~/components/ui/primitives";
 import { cn } from "~/lib/utils";
@@ -14,27 +12,35 @@ export default function Rewards() {
   const navigate = useNavigate();
   const { member, refresh } = useMember();
   const { notify } = useToast();
-  const [rewards, setRewards] = useState<RewardProduct[] | null>(null);
-  const [selected, setSelected] = useState<RewardProduct | null>(null);
+  const [rewards, setRewards] = useState<RewardDto[] | null>(null);
+  const [selected, setSelected] = useState<RewardDto | null>(null);
   const [redeeming, setRedeeming] = useState(false);
+  const idemRef = useRef<string>("");
+
+  const loadRewards = () =>
+    htApi.memberRewards().then((r) => setRewards(r.success && r.data ? r.data : []));
 
   useEffect(() => {
-    htApi.rewards().then((r) => setRewards(r.success && r.data ? r.data : []));
-  }, []);
+    loadRewards();
+  }, [member?.crystals, member?.tier]);
 
   const crystals = member?.crystals ?? 0;
 
   const redeem = async () => {
     if (!selected) return;
+    if (!idemRef.current) idemRef.current = crypto.randomUUID();
     setRedeeming(true);
-    const res = await htApi.redeem(selected.id);
+    const res = await htApi.redeem(selected.id, idemRef.current);
     setRedeeming(false);
     if (res.success) {
+      idemRef.current = "";
       setSelected(null);
       await refresh();
+      await loadRewards();
       notify("Reward redeemed!", `${selected.title} is now in your vouchers.`);
       navigate("/app/vouchers");
     } else {
+      idemRef.current = "";
       notify("Could not redeem", res.message ?? "Please try again");
     }
   };
@@ -80,7 +86,7 @@ export default function Rewards() {
           />
         ) : (
           rewards.map((r) => {
-            const affordable = crystals >= r.crystalCost;
+            const affordable = r.redeemable;
             return (
               <Card
                 key={r.id}
@@ -105,9 +111,9 @@ export default function Rewards() {
                     >
                       <Sparkles className="h-3.5 w-3.5" /> {r.crystalCost.toLocaleString("id-ID")}
                     </span>
-                    {!affordable && (
+                    {!affordable && r.reason && (
                       <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
-                        <Lock className="h-3 w-3" /> {(r.crystalCost - crystals).toLocaleString("id-ID")} more
+                        <Lock className="h-3 w-3" /> {r.reason}
                       </span>
                     )}
                   </div>
@@ -139,13 +145,13 @@ export default function Rewards() {
               </span>
             </div>
 
-            {crystals >= selected.crystalCost ? (
+            {selected.redeemable ? (
               <Button full className="mt-5" onClick={redeem} disabled={redeeming}>
                 {redeeming ? "Redeeming…" : "Confirm redemption"}
               </Button>
             ) : (
               <div className="mt-5 rounded-xl bg-accent/10 px-4 py-3 text-center text-sm font-medium text-accent">
-                You need {(selected.crystalCost - crystals).toLocaleString("id-ID")} more Crystals.
+                {selected.reason ?? "Not available right now."}
               </div>
             )}
             <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">

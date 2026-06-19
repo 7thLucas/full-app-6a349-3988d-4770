@@ -138,6 +138,8 @@ export interface MenuItem {
   optionGroups: OptionGroup[];
   isSignature?: boolean;
   available?: boolean;
+  soldOut?: boolean;
+  sortOrder?: number;
 }
 
 // ── Outlets ──────────────────────────────────────────────────────────────────
@@ -146,13 +148,16 @@ export interface Outlet {
   name: string;
   mall: string;
   city: string;
+  country?: string;
+  region?: string; // WIB | WITA | WIT
   address: string;
   distanceKm: number;
   openTime: string; // "10:00"
   closeTime: string; // "22:00"
   lastOrderTime: string; // "21:30"
   prepMinutes: number;
-  isOpen: boolean;
+  isOpen: boolean; // computed: within open–close hours now
+  acceptingOrders?: boolean; // open + pickup + before last-order cutoff
   pickupEnabled: boolean;
   lat: number;
   lng: number;
@@ -214,6 +219,7 @@ export interface Order {
   bowlsEarned: number;
   voucherCode: string | null;
   paymentMethod: string;
+  paymentStatus?: string;
   etaMinutes: number;
   createdAt: string;
   statusHistory: { status: OrderStatus; at: string }[];
@@ -233,6 +239,10 @@ export interface Voucher {
   expiresAt: string; // ISO
   used: boolean;
   source: "welcome" | "reward" | "referral" | "birthday" | "promo";
+  // Eligibility (Sprint 8). Empty/undefined = applies to any item/mode.
+  eligibleItemIds?: string[];
+  eligibleCategories?: CategoryKey[];
+  fulfillmentModes?: ("pickup" | "delivery")[];
 }
 
 // ── Rewards Store ──────────────────────────────────────────────────────────
@@ -241,8 +251,11 @@ export interface RewardProduct {
   title: string;
   description: string;
   crystalCost: number;
-  type: "voucher" | "merch";
+  type: "voucher" | "merch" | "experience";
   imageUrl: string;
+  stockCap?: number; // total redeemable across all members (omit = unlimited)
+  perUserLimit?: number; // max redemptions per member (omit = unlimited)
+  tierGate?: TierKey; // minimum tier required to redeem
   voucherTemplate?: Omit<Voucher, "id" | "code" | "used" | "expiresAt"> & {
     validDays: number;
   };

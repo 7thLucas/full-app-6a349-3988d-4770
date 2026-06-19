@@ -56,7 +56,7 @@ export default function Outlets() {
 
         {outlets?.map((o) => {
           const selected = outlet?.id === o.id;
-          const available = o.isOpen && o.pickupEnabled;
+          const available = o.acceptingOrders ?? (o.isOpen && o.pickupEnabled);
           return (
             <Card
               key={o.id}

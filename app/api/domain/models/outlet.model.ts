@@ -18,6 +18,14 @@ export class Outlet extends CommonTypegooseEntity {
   @prop({ type: String, required: true })
   city!: string;
 
+  // ISO country code driving menu/currency scope (PRD §8.9). Default Indonesia.
+  @prop({ type: String, default: "ID" })
+  country!: string;
+
+  // Timezone region: WIB (+7) | WITA (+8) | WIT (+9) — drives open/closed math.
+  @prop({ type: String, default: "WIB" })
+  region!: string;
+
   @prop({ type: String, required: true })
   address!: string;
 

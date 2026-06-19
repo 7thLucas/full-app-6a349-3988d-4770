@@ -11,6 +11,9 @@ await initializeModels();
 import "./domain/models/outlet.model";
 import "./domain/models/menu-item.model";
 import "./domain/models/order.model";
+import "./domain/models/transaction.model";
+import "./domain/models/referral.model";
+import "./domain/models/reward-redemption.model";
 import domainRoutes from "./domain/routes/domain.routes";
 
 const router = Router();

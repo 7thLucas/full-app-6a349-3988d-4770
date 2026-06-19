@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { ChevronLeft, Check, Sparkles, Clock, MapPin } from "lucide-react";
 import { htApi } from "~/lib/ht-api";
 import { useMember } from "~/state/member-context";
+import { useAppStore } from "~/state/app-store";
 import { useToast } from "~/state/toast";
 import type { Order } from "~/lib/domain.types";
 import { formatIDR, ORDER_STEPS } from "~/lib/domain.types";
@@ -21,6 +22,7 @@ export default function OrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { refresh } = useMember();
+  const { addToCart } = useAppStore();
   const { notify } = useToast();
   const [order, setOrder] = useState<Order | null>(null);
   const [notFound, setNotFound] = useState(false);
@@ -73,6 +75,27 @@ export default function OrderDetail() {
     refresh();
     load();
   };
+
+  // Reorder: rebuild the cart from this order's lines (Sprint 6/10).
+  const reorder = () => {
+    if (!order) return;
+    for (const l of order.lines) {
+      const optTotal = l.options.reduce((s, o) => s + o.priceDelta, 0);
+      addToCart({
+        itemId: l.itemId,
+        name: l.name,
+        imageUrl: l.imageUrl,
+        basePrice: l.unitPrice - optTotal,
+        quantity: l.quantity,
+        options: l.options,
+        unitPrice: l.unitPrice,
+      });
+    }
+    notify("Added to cart", "Your previous order is ready to checkout.");
+    navigate("/app/cart");
+  };
+
+  const rate = () => notify("Thanks for your feedback!", "Rating saved (preview).");
 
   if (notFound) {
     return (
@@ -229,6 +252,16 @@ export default function OrderDetail() {
           <button onClick={cancel} className="w-full py-2 text-sm font-medium text-accent">
             Cancel order
           </button>
+        )}
+
+        {/* Terminal-state actions (Sprint 6): Reorder + Rate */}
+        {(order.status === "collected" || cancelled) && (
+          <div className="flex gap-2">
+            <Button full onClick={reorder}>Reorder</Button>
+            {order.status === "collected" && (
+              <Button full variant="outline" onClick={rate}>Rate</Button>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -38,8 +38,14 @@ Vertical-slice breakdown of `_doc/product-overview.md` (PRD v1.4). Each sprint c
 | 10 | Profile/Account, Settings & Notification Prefs | 2, 5 |
 | 11 | Home Merchandising (CMS Banners) & Marketing Notifications | 6, 7 |
 | 12 | Admin Console — RBAC, Dashboard & Order Management | 5, 6 |
-| 13 | Admin Console — Catalog, Outlet, Loyalty, Rewards, Voucher & Referral Config | 4, 7, 8, 9, 12 |
-| 14 | Admin Console — CRM, Payments/Finance, Reports, Compliance & CMS | 7, 11, 12, 13 |
+| 13 | Admin Console — Catalog & Outlet Management | 4, 12 |
+| 14 | Admin Console — Loyalty Engine & Rewards Store Config | 7, 8, 12 |
+| 15 | Admin Console — Vouchers, Promos & Referral Config | 8, 9, 12 |
+| 16 | Admin Console — CRM & Support Tooling | 7, 12 |
+| 17 | Admin Console — Payments/Finance & Reports | 5, 7, 12 |
+| 18 | Admin Console — Compliance, CMS & Notifications/Campaigns | 10, 11, 12, 16 |
+
+Admin sprints 13–18 all build on **12** (RBAC, audit, console shell) and otherwise depend only on the consumer feature each configures — so they parallelize across teams once 12 lands.
 
 ```
 1 ──► 2 ──► 3 ──► 4 ──► 5 ──► 6 ──► 7 ──► 8
@@ -47,7 +53,12 @@ Vertical-slice breakdown of `_doc/product-overview.md` (PRD v1.4). Each sprint c
       │           └───────────┤     ├──► 9
       ├──────────────────────►10    │
                                      └──► 11 ──┐
-5,6 ──────────────────────────────► 12 ──► 13 ──► 14
+5,6 ──────────────────────────────► 12 ──┬──► 13   (catalog + outlet)
+                                          ├──► 14   (loyalty + rewards)
+                                          ├──► 15   (vouchers + referral)
+                                          ├──► 16   (CRM + support)
+                                          ├──► 17   (finance + reports)
+                                          └──► 18   (compliance + CMS; also needs 10,11,16)
 ```
 
 ## Cross-cutting assumptions

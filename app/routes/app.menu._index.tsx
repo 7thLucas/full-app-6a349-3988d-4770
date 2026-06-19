@@ -18,10 +18,16 @@ export default function MenuList() {
   const activeCat = params.get("cat") ?? "all";
 
   useEffect(() => {
-    htApi.menu().then((r) => setMenu(r.success && r.data ? r.data : []));
-  }, []);
+    htApi.menu(outlet?.id).then((r) => setMenu(r.success && r.data ? r.data : []));
+  }, [outlet?.id]);
 
-  const soldOut = useMemo(() => new Set(outlet?.soldOutItemIds ?? []), [outlet]);
+  // Sold-out resolved from the server's per-outlet flag, with the cached outlet
+  // matrix as a fallback before the menu refetch lands.
+  const soldOut = useMemo(() => {
+    const set = new Set(outlet?.soldOutItemIds ?? []);
+    for (const m of menu ?? []) if (m.soldOut) set.add(m.id);
+    return set;
+  }, [outlet, menu]);
 
   const filtered = useMemo(() => {
     let list = menu ?? [];

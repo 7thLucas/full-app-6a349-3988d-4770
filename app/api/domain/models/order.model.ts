@@ -45,6 +45,22 @@ export class Order extends CommonTypegooseEntity {
   @prop({ type: Number, default: 0 })
   bowlsEarned!: number;
 
+  // Loyalty is credited on completion (Sprint 7), not at checkout.
+  @prop({ type: Boolean, default: false })
+  loyaltyAccrued!: boolean;
+
+  // Order channel — "third-party" earns no Crystals/Bowls (PRD §10 exclusions).
+  @prop({ type: String, default: "app" })
+  channel!: string;
+
+  @prop({ type: String, default: null })
+  cancellationReason!: string | null;
+
+  // Set when the order proceeded during a peak-hour warning — excluded from
+  // auto wait-time cancellation (PRD §18.5).
+  @prop({ type: Boolean, default: false })
+  peakHourProceeded!: boolean;
+
   @prop({ type: String, default: null })
   voucherCode!: string | null;
 
@@ -53,6 +69,17 @@ export class Order extends CommonTypegooseEntity {
 
   @prop({ type: Number, default: 15 })
   etaMinutes!: number;
+
+  // Payment lifecycle: authorized | paid | failed | refunded
+  @prop({ type: String, default: "paid" })
+  paymentStatus!: string;
+
+  @prop({ type: String, default: null })
+  transactionId!: string | null;
+
+  // Idempotency: same key + user returns the existing order (no double charge).
+  @prop({ type: String, required: false, default: null, index: true, sparse: true })
+  idempotencyKey?: string | null;
 
   @prop({ type: Object, default: [] })
   statusHistory!: any[];

@@ -43,6 +43,18 @@ export class User extends CommonTypegooseEntity {
   @prop({ type: Date, required: false, default: null })
   phone_otp_expires?: Date | null;
 
+  // Failed verify attempts on the active code (resets on a new code / success).
+  @prop({ type: Number, default: 0 })
+  phone_otp_attempts?: number;
+
+  // Lockout window after too many failures (PRD §12/§18.2).
+  @prop({ type: Date, required: false, default: null })
+  phone_otp_locked_until?: Date | null;
+
+  // Last code-send time — enforces resend cooldown.
+  @prop({ type: Date, required: false, default: null })
+  phone_otp_last_sent?: Date | null;
+
   @prop({ type: String, enum: UserRole, default: UserRole.Authenticated })
   role!: UserRole;
 

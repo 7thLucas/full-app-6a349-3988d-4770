@@ -2,17 +2,38 @@ import crypto from "node:crypto";
 import { UserModel } from "~/modules/authentication/authentication.model";
 import { OrderModel } from "../models/order.model";
 import { OutletModel } from "../models/outlet.model";
-import { tierForBowls, computeCrystals } from "~/lib/domain.types";
-import type { Voucher, CartLine, OrderStatus } from "~/lib/domain.types";
+import { MenuItemModel } from "../models/menu-item.model";
+import { TransactionModel } from "../models/transaction.model";
+import { OutletService } from "./outlet.service";
+import { paymentGateway } from "./payment.gateway";
+import { LoyaltyService } from "./loyalty.service";
+import { NotificationService } from "./notification.service";
+import { ReferralService } from "./referral.service";
+import { VoucherEngine, type VoucherLine } from "./voucher.engine";
+import { computeCrystals, TIERS } from "~/lib/domain.types";
+import { breakdown, resolveOptions, unitPrice as calcUnitPrice } from "~/lib/price";
+import type { Voucher, CartLine, OrderStatus, SelectedOption } from "~/lib/domain.types";
+
+// Status → push copy for transactional notifications (Sprint 6).
+const STATUS_PUSH: Record<string, { type: any; title: string; body: string }> = {
+  received: { type: "order_received", title: "Order received", body: "We've got your order — sit tight!" },
+  preparing: { type: "order_preparing", title: "Preparing your order", body: "Our team is making it fresh." },
+  ready: { type: "order_ready", title: "Your order is ready! 🎉", body: "Show your pickup code at the counter." },
+  collected: { type: "order_collected", title: "Enjoy! 🍮", body: "Thanks for choosing Hong Tang." },
+  cancelled: { type: "order_cancelled", title: "Order cancelled", body: "Any payment is refunded within 15 working days." },
+};
 
 function makeError(message: string, statusCode: number): Error {
   return Object.assign(new Error(message), { statusCode });
 }
 
-const TAX_RATE = 0.1; // PB1 10% — excluded from Crystal accrual
-
 function genPickupCode(): string {
   return "HT-" + crypto.randomInt(100, 1000) + "-" + crypto.randomInt(100, 1000);
+}
+
+// Voucher discount via the shared VoucherEngine (eligibility-aware).
+function voucherDiscount(lines: VoucherLine[], voucher: Voucher | null): number {
+  return voucher ? VoucherEngine.discount(voucher, lines) : 0;
 }
 
 interface CartTotals {
@@ -25,24 +46,45 @@ interface CartTotals {
 
 export function computeTotals(lines: CartLine[], voucher: Voucher | null): CartTotals {
   const subtotal = lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0);
-  let discount = 0;
-  if (voucher && subtotal >= voucher.minSpend) {
-    if (voucher.discountType === "percent") {
-      discount = Math.round((subtotal * voucher.discountValue) / 100);
-    } else if (voucher.discountType === "fixed") {
-      discount = Math.min(voucher.discountValue, subtotal);
-    } else if (voucher.discountType === "bogo") {
-      // Cheapest unit free (per voucher, one item).
-      const cheapest = lines.length
-        ? Math.min(...lines.map((l) => l.unitPrice))
-        : 0;
-      discount = cheapest;
-    }
+  return breakdown(subtotal, voucherDiscount(lines, voucher));
+}
+
+interface ResolvedLine {
+  itemId: string;
+  name: string;
+  imageUrl: string;
+  quantity: number;
+  unitPrice: number;
+  options: SelectedOption[];
+}
+
+/**
+ * Re-derive every line from the catalog: real base price, validated options,
+ * server-computed unit price. Rejects unavailable / sold-out items. Client-sent
+ * prices are ignored entirely (Sprint 5 — never trust client totals).
+ */
+async function resolveLines(rawLines: CartLine[], outlet: any): Promise<ResolvedLine[]> {
+  const soldOut = new Set((outlet.soldOutItemIds ?? []).map(String));
+  const resolved: ResolvedLine[] = [];
+
+  for (const line of rawLines) {
+    const item = await MenuItemModel.findById(line.itemId).lean();
+    if (!item) throw makeError(`An item in your cart is no longer available`, 409);
+    if (item.available === false) throw makeError(`"${item.name}" is currently unavailable`, 409);
+    if (soldOut.has(item._id.toString())) throw makeError(`"${item.name}" is sold out at this outlet`, 409);
+
+    const qty = Math.max(1, Math.floor(Number(line.quantity) || 0));
+    const options = resolveOptions(item.optionGroups ?? [], line.options ?? []);
+    resolved.push({
+      itemId: item._id.toString(),
+      name: item.name,
+      imageUrl: item.imageUrl,
+      quantity: qty,
+      unitPrice: calcUnitPrice(item.basePrice, options),
+      options,
+    });
   }
-  const netSpend = Math.max(0, subtotal - discount); // before tax
-  const tax = Math.round(netSpend * TAX_RATE);
-  const total = netSpend + tax;
-  return { subtotal, discount, netSpend, tax, total };
+  return resolved;
 }
 
 function orderDto(o: any) {
@@ -62,6 +104,9 @@ function orderDto(o: any) {
     bowlsEarned: o.bowlsEarned,
     voucherCode: o.voucherCode ?? null,
     paymentMethod: o.paymentMethod,
+    paymentStatus: o.paymentStatus ?? "paid",
+    channel: o.channel ?? "app",
+    cancellationReason: o.cancellationReason ?? null,
     etaMinutes: o.etaMinutes,
     createdAt: (o.createdAt as Date)?.toISOString?.() ?? new Date().toISOString(),
     statusHistory: o.statusHistory ?? [],
@@ -74,8 +119,6 @@ export class OrderService {
     const user = await UserModel.findById(userId);
     if (!user) throw makeError("User not found", 404);
     const vouchers: Voucher[] = user.profile?.vouchers ?? [];
-    const subtotal = lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0);
-
     const normalized = code.trim().toUpperCase();
     const voucher = vouchers.find((v) => v.code.toUpperCase() === normalized && !v.used);
 
@@ -109,14 +152,12 @@ export class OrderService {
 
     const resolved = voucher ?? PROMO[normalized];
     if (!resolved) throw makeError("Code not found or already used", 404);
-    if (new Date(resolved.expiresAt) < new Date()) throw makeError("This code has expired", 400);
-    if (subtotal < resolved.minSpend) {
-      throw makeError(`Minimum spend Rp ${resolved.minSpend.toLocaleString("id-ID")} required`, 400);
-    }
+    // VoucherEngine enforces expiry, eligibility (items/categories), mode, min-spend.
+    VoucherEngine.assertApplicable(resolved, { lines, fulfillmentMode: "pickup" });
     return resolved;
   }
 
-  /** Place + pay (simulated) → create order, accrue Crystals & Bowls, consume voucher. */
+  /** Place + pay → re-validate, recompute server-side, charge (idempotent), accrue loyalty. */
   static async checkout(
     userId: string,
     payload: {
@@ -124,67 +165,111 @@ export class OrderService {
       lines: CartLine[];
       voucherCode: string | null;
       paymentMethod: string;
+      idempotencyKey?: string;
+      channel?: string;
     },
   ) {
     const user = await UserModel.findById(userId);
     if (!user) throw makeError("User not found", 404);
     if (!payload.lines?.length) throw makeError("Cart is empty", 400);
 
-    const outlet = await OutletModel.findById(payload.outletId).lean();
-    if (!outlet) throw makeError("Outlet not found", 404);
-    if (!outlet.isOpen || !outlet.pickupEnabled) {
-      throw makeError("This outlet is not accepting pickup orders right now", 409);
+    // Idempotency: a retry with the same key returns the original order — no
+    // second order, no second charge (Sprint 5 verification 3).
+    const idempotencyKey = payload.idempotencyKey?.trim() || null;
+    if (idempotencyKey) {
+      const existing = await OrderModel.findOne({ userId, idempotencyKey }).lean();
+      if (existing) return orderDto(existing);
     }
+
+    // Re-validate outlet open + accepting pickup before last-order cutoff.
+    const outlet = await OutletService.assertAcceptingOrders(payload.outletId);
+
+    // Re-derive lines + totals server-side. Client prices are never trusted.
+    const lines = await resolveLines(payload.lines, outlet);
 
     let voucher: Voucher | null = null;
     if (payload.voucherCode) {
       voucher = await OrderService.validateVoucher(userId, payload.voucherCode, payload.lines);
     }
+    const subtotal = lines.reduce((s, l) => s + l.unitPrice * l.quantity, 0);
+    const totals = breakdown(subtotal, voucherDiscount(lines, voucher));
 
-    const totals = computeTotals(payload.lines, voucher);
+    // Charge via gateway (idempotent). Failure keeps cart, creates no order.
+    const charge = await paymentGateway.charge({
+      idempotencyKey: idempotencyKey ?? crypto.randomUUID(),
+      amount: totals.total,
+      method: payload.paymentMethod || "QRIS",
+      orderRef: genPickupCode(),
+    });
+    if (charge.status === "failed") {
+      throw makeError("Payment was declined. Please try another method.", 402);
+    }
 
-    // Loyalty: tier multiplier from current bowls; crystals on net spend (excl tax).
-    const profile = (user.profile ?? {}) as Record<string, any>;
-    const currentBowls = (profile.bowls as number) ?? 0;
-    const tier = tierForBowls(currentBowls);
-    const crystalsEarned = computeCrystals(totals.netSpend, tier.multiplier);
-    const bowlsEarned = payload.lines.reduce((s, l) => s + l.quantity, 0);
+    // Projected loyalty (display only). Actual credit happens on completion
+    // (Sprint 7). Third-party-channel orders earn nothing (PRD §10 exclusions).
+    const profile = LoyaltyService.ensure((user.profile ?? {}) as Record<string, any>);
+    const channel = payload.channel || "app";
+    const qualifies = channel !== "third-party" && totals.netSpend > 0;
+    const tier = TIERS.find((t) => t.key === LoyaltyService.effectiveTier(profile))!;
+    const crystalsEarned = qualifies ? computeCrystals(totals.netSpend, tier.multiplier) : 0;
+    const bowlsEarned = qualifies ? lines.reduce((s, l) => s + l.quantity, 0) : 0;
 
     const now = new Date();
-    const order = await OrderModel.create({
-      userId,
-      pickupCode: genPickupCode(),
-      outletId: payload.outletId,
-      outletName: outlet.name,
-      status: "received",
-      lines: payload.lines.map((l) => ({
-        itemId: l.itemId,
-        name: l.name,
-        imageUrl: l.imageUrl,
-        quantity: l.quantity,
-        unitPrice: l.unitPrice,
-        options: l.options,
-      })),
-      subtotal: totals.subtotal,
-      discount: totals.discount,
-      tax: totals.tax,
-      total: totals.total,
-      netSpend: totals.netSpend,
-      crystalsEarned,
-      bowlsEarned,
-      voucherCode: voucher?.code ?? null,
-      paymentMethod: payload.paymentMethod || "QRIS",
-      etaMinutes: outlet.prepMinutes,
-      statusHistory: [{ status: "received", at: now.toISOString() }],
-    });
+    let order;
+    try {
+      order = await OrderModel.create({
+        userId,
+        pickupCode: genPickupCode(),
+        outletId: payload.outletId,
+        outletName: outlet.name,
+        status: "received",
+        lines,
+        subtotal: totals.subtotal,
+        discount: totals.discount,
+        tax: totals.tax,
+        total: totals.total,
+        netSpend: totals.netSpend,
+        crystalsEarned,
+        bowlsEarned,
+        voucherCode: voucher?.code ?? null,
+        paymentMethod: payload.paymentMethod || "QRIS",
+        paymentStatus: charge.status,
+        idempotencyKey,
+        channel,
+        loyaltyAccrued: false,
+        etaMinutes: outlet.prepMinutes,
+        statusHistory: [{ status: "received", at: now.toISOString() }],
+      });
+    } catch (e: any) {
+      // Unique-index race on idempotencyKey → return the winning order.
+      if (e?.code === 11000 && idempotencyKey) {
+        const existing = await OrderModel.findOne({ userId, idempotencyKey }).lean();
+        if (existing) return orderDto(existing);
+      }
+      throw e;
+    }
 
-    // Apply loyalty + consume wallet voucher (promo codes are not in wallet).
-    profile.crystals = ((profile.crystals as number) ?? 0) + crystalsEarned;
-    profile.bowls = currentBowls + bowlsEarned;
+    const txn = await TransactionModel.create({
+      userId,
+      orderId: order._id.toString(),
+      method: payload.paymentMethod || "QRIS",
+      amount: totals.total,
+      status: charge.status,
+      gatewayRef: charge.gatewayRef,
+      idempotencyKey,
+    });
+    order.transactionId = txn._id.toString();
+    await order.save();
+
+    // Consume wallet voucher (promo codes are not in wallet) + notify received.
     if (voucher && Array.isArray(profile.vouchers)) {
       const v = (profile.vouchers as Voucher[]).find((x) => x.code === voucher!.code);
       if (v) v.used = true;
     }
+    NotificationService.emit(profile, {
+      ...STATUS_PUSH.received,
+      data: { orderId: order._id.toString() },
+    });
     user.profile = profile;
     user.markModified("profile");
     await user.save();
@@ -202,7 +287,7 @@ export class OrderService {
     return o ? orderDto(o) : null;
   }
 
-  /** Advance order to the next status (simulated kitchen progression / ops override). */
+  /** Advance order status; emits push, credits loyalty + referral on completion. */
   static async advanceStatus(orderId: string, target?: OrderStatus) {
     const order = await OrderModel.findById(orderId);
     if (!order) throw makeError("Order not found", 404);
@@ -214,32 +299,103 @@ export class OrderService {
       const idx = flow.indexOf(order.status as OrderStatus);
       next = flow[Math.min(idx + 1, flow.length - 1)];
     }
+    if (next === order.status) return orderDto(order.toObject());
+
     order.status = next;
     order.statusHistory = [
       ...(order.statusHistory ?? []),
       { status: next, at: new Date().toISOString() },
     ];
     await order.save();
+
+    // Load member once for notification + completion side-effects.
+    const user = await UserModel.findById(order.userId);
+    if (user) {
+      const profile = LoyaltyService.ensure((user.profile ?? {}) as Record<string, any>);
+
+      if (next === "collected" && !order.loyaltyAccrued) {
+        await OrderService.creditCompletion(order, profile, user.id);
+      }
+
+      const push = STATUS_PUSH[next];
+      if (push) {
+        NotificationService.emit(profile, { ...push, data: { orderId: order.id } });
+      }
+      user.profile = profile;
+      user.markModified("profile");
+      await user.save();
+    }
+
     return orderDto(order.toObject());
   }
 
-  static async cancelOrder(userId: string, orderId: string) {
+  /** Credit Sugar Crystals + Bowls + fire referral qualification on completion. */
+  private static async creditCompletion(order: any, profile: Record<string, any>, userId: string) {
+    if (order.channel !== "third-party" && order.netSpend > 0) {
+      const result = LoyaltyService.accrue(profile, {
+        netSpend: order.netSpend,
+        bowlItems: (order.lines ?? []).map((l: any) => ({ itemId: l.itemId, qty: l.quantity })),
+      });
+      order.crystalsEarned = result.crystalsEarned; // actual (multiplier at completion)
+      order.bowlsEarned = result.bowlsEarned;
+
+      if (result.crystalsEarned > 0) {
+        NotificationService.emit(profile, {
+          type: "crystals_earned",
+          title: `You earned ${result.crystalsEarned} Sugar Crystals 💎`,
+          body: "Crystals added to your balance.",
+          data: { orderId: order.id },
+        });
+      }
+      if (result.tieredUp) {
+        const name = TIERS.find((t) => t.key === result.tierAfter)?.name ?? "a new tier";
+        NotificationService.emit(profile, {
+          type: "tier_up",
+          title: `Welcome to ${name}! 🎉`,
+          body: "You've unlocked new member perks.",
+          data: { tier: result.tierAfter },
+        });
+      }
+    }
+    order.loyaltyAccrued = true;
+    await order.save();
+
+    // First qualifying purchase fires referrer reward (Sprint 9).
+    await ReferralService.qualify(userId).catch(() => {});
+  }
+
+  static async cancelOrder(userId: string, orderId: string, reason?: string) {
     const order = await OrderModel.findOne({ _id: orderId, userId });
     if (!order) throw makeError("Order not found", 404);
     if (order.status === "collected") throw makeError("Order already collected", 409);
     if (order.status === "cancelled") return orderDto(order.toObject());
 
-    // Reverse loyalty accrual on cancellation + refund (simulated).
+    // Reverse loyalty only if it was actually credited (completion).
     const user = await UserModel.findById(userId);
     if (user) {
-      const p = (user.profile ?? {}) as Record<string, any>;
-      p.crystals = Math.max(0, ((p.crystals as number) ?? 0) - order.crystalsEarned);
-      p.bowls = Math.max(0, ((p.bowls as number) ?? 0) - order.bowlsEarned);
+      const p = LoyaltyService.ensure((user.profile ?? {}) as Record<string, any>);
+      if (order.loyaltyAccrued) {
+        LoyaltyService.reverse(p, order.crystalsEarned, order.bowlsEarned);
+        order.loyaltyAccrued = false;
+      }
+      NotificationService.emit(p, { ...STATUS_PUSH.cancelled, data: { orderId: order.id } });
       user.profile = p;
       user.markModified("profile");
       await user.save();
     }
 
+    // Refund through the gateway seam + mark the transaction refunded.
+    if (order.transactionId) {
+      const txn = await TransactionModel.findById(order.transactionId);
+      if (txn && txn.status === "paid") {
+        await paymentGateway.refund(txn.gatewayRef ?? "", txn.amount);
+        txn.status = "refunded";
+        await txn.save();
+        order.paymentStatus = "refunded";
+      }
+    }
+
+    order.cancellationReason = reason ?? null;
     order.status = "cancelled";
     order.statusHistory = [
       ...(order.statusHistory ?? []),

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { ChevronLeft, MapPin, Clock, Ticket, X, Check } from "lucide-react";
 import { useAppStore } from "~/state/app-store";
@@ -56,21 +56,29 @@ export default function Checkout() {
     }
   };
 
+  // Stable per attempt: a network retry of the same submit dedupes server-side
+  // (no double charge); after a failure we rotate so the next try is fresh.
+  const idemRef = useRef<string>("");
+
   const placeOrder = async () => {
-    if (!outlet) return;
+    if (!outlet || placing) return;
+    if (!idemRef.current) idemRef.current = crypto.randomUUID();
     setPlacing(true);
     const res = await htApi.checkout({
       outletId: outlet.id,
       lines: cart,
       voucherCode: voucher?.code ?? null,
       paymentMethod: payment,
+      idempotencyKey: idemRef.current,
     });
     setPlacing(false);
     if (res.success && res.data) {
+      idemRef.current = "";
       clearCart();
       refresh();
       navigate(`/app/orders/${res.data.id}`, { replace: true });
     } else {
+      idemRef.current = ""; // allow a fresh charge on the next attempt
       notify("Payment failed", res.message ?? "Please try again");
     }
   };

@@ -1,6 +1,10 @@
 import type { Request, Response } from "express";
 import { PhoneOtpService } from "./phone-otp.service";
 import { signJwt, buildAuthCookie } from "./authentication.server";
+import { ReferralService } from "~/api/domain/services/referral.service";
+import { createLogger } from "~/lib/logger";
+
+const logger = createLogger("PhoneOtp");
 
 function jwtPayload(user: { id: string; role: any; username: string; email: string; email_verified: boolean }) {
   return {
@@ -45,8 +49,21 @@ export async function completeProfile(req: Request, res: Response): Promise<void
       return;
     }
     const { name, birthday, referredBy } = req.body ?? {};
-    const user = await PhoneOtpService.completeProfile(req.user.id, { name, birthday, referredBy });
-    res.json({ success: true, data: { user } });
+
+    // Attribute referral BEFORE onboarding flips (attribute requires first-timer).
+    let referralWarning: string | null = null;
+    if (referredBy && String(referredBy).trim()) {
+      try {
+        await ReferralService.attribute(req.user.id, String(referredBy).trim());
+      } catch (e: any) {
+        // Invalid/duplicate code must not block sign-up — surface as a warning.
+        referralWarning = e?.message ?? "Referral code could not be applied";
+        logger.warn(`Referral attribution skipped: ${referralWarning}`);
+      }
+    }
+
+    const user = await PhoneOtpService.completeProfile(req.user.id, { name, birthday });
+    res.json({ success: true, data: { user, referralWarning } });
   } catch (error: any) {
     res.status(error.statusCode ?? 500).json({ success: false, message: error.message ?? "Failed to save profile" });
   }

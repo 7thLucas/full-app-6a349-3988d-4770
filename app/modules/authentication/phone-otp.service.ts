@@ -36,6 +36,12 @@ function toPublicUser(user: any): PublicUser {
   };
 }
 
+// ── OTP security policy (PRD §12 / §18.2) ────────────────────────────────────
+const OTP_TTL_MS = 5 * 60_000; // code lifetime
+const RESEND_COOLDOWN_MS = 30_000; // min gap between sends
+const MAX_VERIFY_ATTEMPTS = 5; // wrong codes before lockout
+const LOCKOUT_MS = 15 * 60_000; // lockout duration after max attempts
+
 export interface RequestOtpResult {
   // In production this is never returned. For the simulated flow we surface the
   // code so the user can complete the flow end-to-end without a live SMS gateway.
@@ -54,10 +60,21 @@ export class PhoneOtpService {
 
     const code = crypto.randomInt(100000, 1000000).toString();
     const codeHash = sha256(code);
-    const expires = new Date(Date.now() + 5 * 60_000);
+    const now = Date.now();
+    const expires = new Date(now + OTP_TTL_MS);
 
     let user = await UserModel.findOne({ phone });
     const isNewUser = !user;
+
+    // Respect an active lockout, then enforce resend cooldown.
+    if (user?.phone_otp_locked_until && user.phone_otp_locked_until > new Date()) {
+      const mins = Math.ceil((user.phone_otp_locked_until.getTime() - now) / 60_000);
+      throw makeError(`Too many attempts. Try again in ${mins} minute${mins === 1 ? "" : "s"}.`, 429);
+    }
+    if (user?.phone_otp_last_sent && now - user.phone_otp_last_sent.getTime() < RESEND_COOLDOWN_MS) {
+      const secs = Math.ceil((RESEND_COOLDOWN_MS - (now - user.phone_otp_last_sent.getTime())) / 1000);
+      throw makeError(`Please wait ${secs}s before requesting a new code.`, 429);
+    }
 
     if (!user) {
       // Pre-create a shell user keyed by phone. Profile is completed after verify.
@@ -71,11 +88,16 @@ export class PhoneOtpService {
         phone,
         phone_otp_token: codeHash,
         phone_otp_expires: expires,
+        phone_otp_attempts: 0,
+        phone_otp_locked_until: null,
+        phone_otp_last_sent: new Date(now),
         profile: { onboarded: false },
       });
     } else {
       user.phone_otp_token = codeHash;
       user.phone_otp_expires = expires;
+      user.phone_otp_attempts = 0; // a fresh code resets the failure counter
+      user.phone_otp_last_sent = new Date(now);
       await user.save();
     }
 
@@ -89,6 +111,11 @@ export class PhoneOtpService {
     const phone = normalizePhone(rawPhone);
     const user = await UserModel.findOne({ phone });
     if (!user) throw makeError("Phone number not found. Request a new code.", 404);
+
+    if (user.phone_otp_locked_until && user.phone_otp_locked_until > new Date()) {
+      const mins = Math.ceil((user.phone_otp_locked_until.getTime() - Date.now()) / 60_000);
+      throw makeError(`Too many attempts. Try again in ${mins} minute${mins === 1 ? "" : "s"}.`, 429);
+    }
     if (!user.phone_otp_token || !user.phone_otp_expires) {
       throw makeError("No active code. Request a new one.", 400);
     }
@@ -96,11 +123,25 @@ export class PhoneOtpService {
       throw makeError("Code expired. Request a new one.", 400);
     }
     if (sha256(code.trim()) !== user.phone_otp_token) {
-      throw makeError("Incorrect code. Please try again.", 400);
+      const attempts = (user.phone_otp_attempts ?? 0) + 1;
+      user.phone_otp_attempts = attempts;
+      if (attempts >= MAX_VERIFY_ATTEMPTS) {
+        // Burn the code and lock out further tries.
+        user.phone_otp_token = null;
+        user.phone_otp_expires = null;
+        user.phone_otp_locked_until = new Date(Date.now() + LOCKOUT_MS);
+        await user.save();
+        throw makeError("Too many incorrect codes. Account locked for 15 minutes.", 429);
+      }
+      await user.save();
+      const left = MAX_VERIFY_ATTEMPTS - attempts;
+      throw makeError(`Incorrect code. ${left} attempt${left === 1 ? "" : "s"} left.`, 400);
     }
 
     user.phone_otp_token = null;
     user.phone_otp_expires = null;
+    user.phone_otp_attempts = 0;
+    user.phone_otp_locked_until = null;
     const isNewUser = !user.profile?.onboarded;
     await user.save();
 
