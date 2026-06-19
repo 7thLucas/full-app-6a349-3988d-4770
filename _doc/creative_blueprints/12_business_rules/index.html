@@ -1,54 +1,53 @@
 <style>
-  .mode-landscape .sl-rules { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  .mode-portrait  .sl-rules { grid-template-columns: repeat(1, minmax(0,1fr)); }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .ht-rule h3{ font-family:'Marcellus',Georgia,serif; color:var(--ink); font-size:1.05rem; margin-bottom:.35rem; }
+  .ht-rule p{ color:var(--ink-soft); font-size:.88rem; line-height:1.55; }
+  .ht-rule .n{ font-family:'Marcellus',Georgia,serif; color:var(--gold); font-size:1.05rem; }
+  .mode-landscape .ht-rules{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .mode-portrait  .ht-rules{ grid-template-columns: 1fr; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Business Rules &amp; Logic</p>
-    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      The rules that keep money and trust correct
-    </h2>
-    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
-      Resolved decisions, no open questions at this revision. Idempotent order placement; no double-charge.
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">12</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.2rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">Business Rules &amp; Logic</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.12;">The rules that keep money and trust correct</h2>
+    <p style="color:var(--ink-soft);font-size:.96rem;line-height:1.55;max-width:50rem;margin-top:.6rem;">
+      Resolved decisions, no open questions at this revision. Order placement is idempotent; no double-charge.
     </p>
 
-    <div class="sl-rules grid gap-5 flex-1">
-      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Vouchers</p>
-        <p class="text-base leading-relaxed" style="color:#5C463A;">
-          No stacking — exactly one voucher OR one promo code per order. Applying a new one replaces the current. Validated at checkout against cart + fulfillment mode.
-        </p>
-      </div>
-      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Order Lock</p>
-        <p class="text-base leading-relaxed" style="color:#5C463A;">
-          No edits after payment — items, customization, store, mode all locked. To change: cancel within the cancellation window (refund to original method), then reorder.
-        </p>
-      </div>
-      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Payments &amp; Refunds</p>
-        <p class="text-base leading-relaxed" style="color:#5C463A;">
-          QRIS, e-wallets (GoPay/OVO/DANA/ShopeePay/LinkAja), Visa/Mastercard. Refunds to original method, up to 15 working days. No card data on-device.
-        </p>
-      </div>
-      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Cancellation</p>
-        <p class="text-base leading-relaxed" style="color:#5C463A;">
-          "Cancelled" = system auto-cancel + refund. If extended peak-hour wait was shown and the user knowingly proceeded, wait-time cancellation doesn't apply.
-        </p>
-      </div>
-      <div class="rounded-2xl p-6" style="background:#3E2723;">
-        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#E9C9A3;">Earning Exclusions</p>
-        <p class="text-base leading-relaxed" style="color:#F3E7DA;">
-          No crystals/Bowls on free, Rp 0, trial/tasting, special-discount items — or any order via GoFood / GrabFood / ShopeeFood. Walk-in: member QR must be scanned at the till; no retroactive points.
-        </p>
-      </div>
-      <div class="rounded-2xl p-6" style="background:#3E2723;">
-        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#E9C9A3;">Referrals</p>
-        <p class="text-base leading-relaxed" style="color:#F3E7DA;">
-          Unique code, optional, first-time registrants only (copy-paste recommended). Referrer earns once referee completes first qualifying purchase; referee keeps welcome vouchers. Anti-abuse caps per campaign.
-        </p>
-      </div>
+    <div class="ht-rules grid gap-x-10 gap-y-6" style="margin-top:1.7rem;flex:1;align-content:center;">
+      <div class="ht-rule flex gap-3"><span class="n">01</span><div><h3>Vouchers</h3><p>No stacking. Exactly one voucher OR one promo code per order; a new one replaces the current. Validated at checkout against cart + fulfillment mode.</p></div></div>
+      <div class="ht-rule flex gap-3"><span class="n">02</span><div><h3>Order Lock</h3><p>No edits after payment: items, customization, store, mode all locked. To change, cancel within the window (refund to original method), then reorder.</p></div></div>
+      <div class="ht-rule flex gap-3"><span class="n">03</span><div><h3>Payments &amp; Refunds</h3><p>QRIS, e-wallets (GoPay/OVO/DANA/ShopeePay/LinkAja), Visa/Mastercard. Refunds to original method, up to 15 working days. No card data on-device.</p></div></div>
+      <div class="ht-rule flex gap-3"><span class="n">04</span><div><h3>Cancellation</h3><p>“Cancelled” = system auto-cancel + refund. If an extended peak-hour wait was shown and the guest knowingly proceeded, wait-time cancellation does not apply.</p></div></div>
+      <div class="ht-rule flex gap-3"><span class="n" style="color:var(--red);">05</span><div><h3>Earning Exclusions</h3><p>No crystals or Bowls on free, Rp 0, trial, special-discount items, or any order via GoFood / GrabFood / ShopeeFood. Walk-in: member QR must be scanned at the till.</p></div></div>
+      <div class="ht-rule flex gap-3"><span class="n">06</span><div><h3>Referrals</h3><p>Unique code, optional, first-time registrants only. Referrer earns once the referee completes a first qualifying purchase; referee keeps welcome vouchers. Anti-abuse caps per campaign.</p></div></div>
+    </div>
+
+    <div class="flex items-center justify-between" style="margin-top:1.2rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Resolved decisions · §10 / §16</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">12<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

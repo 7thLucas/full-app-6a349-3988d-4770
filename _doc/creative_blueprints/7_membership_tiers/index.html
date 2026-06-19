@@ -1,58 +1,88 @@
 <style>
-  .mode-landscape .sl-tiers { grid-template-columns: repeat(4, minmax(0,1fr)); }
-  .mode-portrait  .sl-tiers { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .mode-landscape .ht-tiers{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .mode-portrait  .ht-tiers{ grid-template-columns: repeat(2, minmax(0,1fr)); }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Tiered Membership</p>
-    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      Four tiers, set by Bowls — benefits escalate
-    </h2>
-    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
-      Tier-up is real-time the moment Bowls cross a threshold. Downgrades only at month-end recalc (max one tier, one-cycle grace). Each tier inherits all lower benefits.
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">07</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.2rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">Tiered Membership</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.12;">Four tiers, set by Bowls. Benefits escalate.</h2>
+    <p style="color:var(--ink-soft);font-size:1rem;line-height:1.65;max-width:50rem;margin-top:.7rem;">
+      Tier-up is real-time the moment Bowls cross a threshold. Downgrades only at month-end recalc (one tier max, one-cycle grace). Each tier inherits all benefits below it.
     </p>
 
-    <!-- Tier columns -->
-    <div class="sl-tiers grid gap-4 mb-6">
+    <div class="ht-tiers grid gap-4" style="margin-top:1.7rem;flex:1;">
       <!-- Seeker -->
-      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#F3E6D8,#E4CDB4); border:1px solid #DBC2A6;">
-        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#8A6A4A;">Bronze</span>
-        <h3 class="text-lg font-bold" style="color:#3E2723;">Tang Seeker</h3>
-        <p class="text-sm mb-3" style="color:#7A4E2D;">0–9 Bowls</p>
-        <p class="text-2xl font-bold mb-3" style="color:#3E2723;">1.0×</p>
-        <p class="text-sm leading-relaxed" style="color:#5C463A;">Auto-enroll floor. Rewards Store, welcome rewards, birthday drink/dessert voucher.</p>
+      <div class="rounded-2xl flex flex-col" style="background:linear-gradient(165deg,#EBD8C2,#D7BB9C);padding:1.3rem 1.3rem 1.4rem;">
+        <p class="ht-kick" style="color:#8A6440;">Bronze</p>
+        <h3 class="ht-serif" style="color:#3A271D;font-size:1.25rem;margin-top:.2rem;">Tang Seeker</h3>
+        <p style="color:#7A5536;font-size:.78rem;margin-bottom:.7rem;">0 – 9 Bowls</p>
+        <p class="ht-serif" style="color:#3A271D;font-size:2rem;line-height:1;margin-bottom:.8rem;">1.0×</p>
+        <div style="height:1px;background:rgba(58,39,29,.18);margin-bottom:.8rem;"></div>
+        <p style="color:#5C3F2A;font-size:.86rem;line-height:1.5;">Auto-enroll floor. Rewards Store, welcome rewards, birthday drink/dessert voucher.</p>
       </div>
       <!-- Explorer -->
-      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#EFEFF1,#D2D5DA); border:1px solid #C4C8CF;">
-        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#6E727A;">Silver</span>
-        <h3 class="text-lg font-bold" style="color:#3E2723;">Tang Explorer</h3>
-        <p class="text-sm mb-3" style="color:#6E727A;">10–39 Bowls</p>
-        <p class="text-2xl font-bold mb-3" style="color:#3E2723;">1.25×</p>
-        <p class="text-sm leading-relaxed" style="color:#5C463A;">+ Merch birthday voucher, early access to seasonal launches, occasional 2nd-item discount.</p>
+      <div class="rounded-2xl flex flex-col" style="background:linear-gradient(165deg,#E8E9EC,#C9CDD4);padding:1.3rem 1.3rem 1.4rem;">
+        <p class="ht-kick" style="color:#6A6E77;">Silver</p>
+        <h3 class="ht-serif" style="color:#2E3236;font-size:1.25rem;margin-top:.2rem;">Tang Explorer</h3>
+        <p style="color:#5E636B;font-size:.78rem;margin-bottom:.7rem;">10 – 39 Bowls</p>
+        <p class="ht-serif" style="color:#2E3236;font-size:2rem;line-height:1;margin-bottom:.8rem;">1.25×</p>
+        <div style="height:1px;background:rgba(46,50,54,.16);margin-bottom:.8rem;"></div>
+        <p style="color:#4A4F57;font-size:.86rem;line-height:1.5;">+ Merch birthday voucher, early access to seasonal launches, occasional 2nd-item discount.</p>
       </div>
       <!-- Pioneer -->
-      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#F7E7C4,#E3C277); border:1px solid #D9B65F;">
-        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#9A7A2E;">Gold</span>
-        <h3 class="text-lg font-bold" style="color:#3E2723;">Tang Pioneer</h3>
-        <p class="text-sm mb-3" style="color:#9A7A2E;">40–79 Bowls</p>
-        <p class="text-2xl font-bold mb-3" style="color:#3E2723;">1.5×</p>
-        <p class="text-sm leading-relaxed" style="color:#5C463A;">+ Premium merch, periodic 15%-off-bill, free-item milestone, exclusive merch redemption.</p>
+      <div class="rounded-2xl flex flex-col" style="background:linear-gradient(165deg,#F4DFA9,#DDB45F);padding:1.3rem 1.3rem 1.4rem;">
+        <p class="ht-kick" style="color:#8A6A1E;">Gold</p>
+        <h3 class="ht-serif" style="color:#3A2A0E;font-size:1.25rem;margin-top:.2rem;">Tang Pioneer</h3>
+        <p style="color:#7A5C16;font-size:.78rem;margin-bottom:.7rem;">40 – 79 Bowls</p>
+        <p class="ht-serif" style="color:#3A2A0E;font-size:2rem;line-height:1;margin-bottom:.8rem;">1.5×</p>
+        <div style="height:1px;background:rgba(58,42,14,.2);margin-bottom:.8rem;"></div>
+        <p style="color:#5A430F;font-size:.86rem;line-height:1.5;">+ Premium merch, periodic 15%-off-bill, free-item milestone, exclusive merch redemption.</p>
       </div>
       <!-- Master -->
-      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#4E382C,#2C1E17); border:1px solid #5E463A;">
-        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#E9C9A3;">Platinum</span>
-        <h3 class="text-lg font-bold" style="color:#fff;">Tang Master</h3>
-        <p class="text-sm mb-3" style="color:#E9C9A3;">80+ Bowls</p>
-        <p class="text-2xl font-bold mb-3" style="color:#fff;">2.0×</p>
-        <p class="text-sm leading-relaxed" style="color:#F3E7DA;">+ Higher-frequency 15%-off, VIP invites & member-only events, priority concierge support.</p>
+      <div class="rounded-2xl flex flex-col" style="background:linear-gradient(165deg,#3E2D24,#241712);padding:1.3rem 1.3rem 1.4rem;box-shadow:0 16px 36px rgba(39,24,17,.28);">
+        <p class="ht-kick" style="color:#E7CE9E;">Platinum</p>
+        <h3 class="ht-serif" style="color:#FBF1DD;font-size:1.25rem;margin-top:.2rem;">Tang Master</h3>
+        <p style="color:#C9AE84;font-size:.78rem;margin-bottom:.7rem;">80+ Bowls</p>
+        <p class="ht-serif" style="color:#F4E7CE;font-size:2rem;line-height:1;margin-bottom:.8rem;">2.0×</p>
+        <div style="height:1px;background:rgba(217,180,119,.28);margin-bottom:.8rem;"></div>
+        <p style="color:#E0CFB4;font-size:.86rem;line-height:1.5;">+ Higher-frequency 15%-off, VIP invites &amp; member-only events, priority concierge support.</p>
       </div>
     </div>
 
-    <div class="rounded-2xl p-5 mt-auto" style="background:#3E2723;">
-      <p class="text-base leading-relaxed" style="color:#F3E7DA;">
-        <span class="font-bold" style="color:#E9C9A3;">Welcome offer —</span>
-        new App registrants get ONE set of New User Welcome Rewards in My Vouchers (App-only; Mini Program/H5 excluded; unused vouchers expire, non-extendable). Members' Day specials & VIP events run via the App.
+    <div class="rounded-2xl flex items-center gap-4" style="background:rgba(176,39,31,.05);border:1px solid rgba(176,39,31,.2);padding:1rem 1.3rem;margin-top:1.2rem;">
+      <span class="ht-serif flex items-center justify-center rounded-full" style="width:34px;height:34px;background:var(--red);color:#F6E7C9;font-size:.9rem;flex-shrink:0;">礼</span>
+      <p style="color:var(--ink-soft);font-size:.92rem;line-height:1.55;">
+        <span style="color:var(--ink);font-weight:600;">Welcome offer —</span>
+        new App registrants receive one set of New User Welcome Rewards in My Vouchers (App-only; Mini Program / H5 excluded; unused vouchers expire, non-extendable). Members' Day specials and VIP events run via the App.
       </p>
+    </div>
+
+    <div class="flex items-center justify-between" style="margin-top:1rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Tiered Membership · by Bowls</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">07<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

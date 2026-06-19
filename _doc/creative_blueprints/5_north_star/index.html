@@ -1,68 +1,90 @@
 <style>
-  .mode-landscape .sl-ns { flex-direction: row; }
-  .mode-portrait  .sl-ns { flex-direction: column; }
-  .mode-landscape .sl-ns-left { width: 48%; }
-  .mode-portrait  .sl-ns-left { width: 100%; }
-  .mode-landscape .sl-ns-right { width: 52%; }
-  .mode-portrait  .sl-ns-right { width: 100%; }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 0% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 100% 100%, rgba(176,39,31,.08), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .mode-landscape .ht-ns{ flex-direction:row; }
+  .mode-portrait  .ht-ns{ flex-direction:column; }
+  .mode-landscape .ht-ns-l{ width:46%; }
+  .mode-portrait  .ht-ns-l{ width:100%; }
+  .mode-landscape .ht-ns-r{ width:54%; }
+  .mode-portrait  .ht-ns-r{ width:100%; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <div class="flex items-center justify-between mb-1">
-      <p class="text-sm font-semibold tracking-widest uppercase" style="color:#A86B3C;">The North Star</p>
-      <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:#F5EFE6; color:#7A4E2D;">Projected impact — based on your inputs</span>
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.4rem 4rem;">
+    <div class="flex items-center justify-between mb-2">
+      <div class="flex items-center gap-3">
+        <span style="width:32px;height:1px;background:var(--gold);"></span>
+        <span class="ht-kick">The North Star</span>
+      </div>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-mute);font-size:.66rem;letter-spacing:.06em;padding:.34rem .85rem;">Projected · based on your inputs</span>
     </div>
-    <h2 class="font-bold leading-tight mb-6" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.9rem,3.2vw,2.6rem);line-height:1.12;">
       One number to watch: Weekly Verified Orders
     </h2>
 
-    <div class="sl-ns flex gap-7 flex-1">
-      <!-- Definition -->
-      <div class="sl-ns-left flex flex-col">
-        <div class="rounded-2xl p-6 mb-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">The Verified Operation</p>
-          <p class="text-lg font-semibold mb-1" style="color:#3E2723;">An app order placed, paid, and picked up</p>
-          <p class="text-base leading-relaxed" style="color:#5C463A;">
-            Not downloads, not menu views — a real, completed dessert order fulfilled
-            through self-pickup. That is the event this app exists to produce.
-          </p>
-        </div>
-        <div class="rounded-2xl p-6" style="background:#3E2723;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#E9C9A3;">Weekly Verified Orders</p>
-          <p class="text-base leading-relaxed mb-3" style="color:#F3E7DA;">
-            <span class="font-semibold" style="color:#fff;">30 outlets</span> ×
-            <span class="font-semibold" style="color:#fff;">40 app orders/day</span> ×
-            <span class="font-semibold" style="color:#fff;">7 days</span>
-          </p>
-          <p class="font-bold" style="color:#fff; font-size:2.4rem;">= 8,400 orders / week</p>
+    <div class="ht-ns flex gap-10 flex-1" style="margin-top:1.9rem;">
+      <div class="ht-ns-l flex flex-col justify-center">
+        <p class="ht-kick" style="margin-bottom:.8rem;">The Verified Operation</p>
+        <p class="ht-serif" style="color:var(--ink);font-size:1.45rem;line-height:1.25;margin-bottom:.8rem;">
+          An app order placed, paid,<br/>and picked up.
+        </p>
+        <p style="color:var(--ink-soft);font-size:1.02rem;line-height:1.7;max-width:24rem;">
+          Not downloads, not menu views. A real, completed dessert order fulfilled through
+          self-pickup. That is the event this app exists to produce.
+        </p>
+        <div class="flex items-center gap-4" style="margin-top:1.8rem;">
+          <span class="ht-serif" style="color:var(--ink);font-size:1.3rem;">26 outlets</span>
+          <span style="color:var(--gold);">×</span>
+          <span class="ht-serif" style="color:var(--ink);font-size:1.3rem;">40 / day</span>
+          <span style="color:var(--gold);">×</span>
+          <span class="ht-serif" style="color:var(--ink);font-size:1.3rem;">7 days</span>
         </div>
       </div>
 
-      <!-- Value -->
-      <div class="sl-ns-right flex flex-col">
-        <div class="rounded-2xl p-6 mb-5 flex-1" style="background:#F5EFE6;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#A86B3C;">Projected Value</p>
-          <p class="text-base leading-relaxed mb-2" style="color:#5C463A;">
-            8,400 orders/week × <span class="font-semibold" style="color:#3E2723;">IDR 55,000 AOV</span>
+      <div class="ht-ns-r flex flex-col gap-5">
+        <!-- the number -->
+        <div class="rounded-2xl flex-1 flex flex-col justify-center" style="background:var(--lacquer);padding:2rem 2.2rem;box-shadow:0 20px 46px rgba(39,24,17,.24);">
+          <p class="ht-kick" style="color:#D9B477;margin-bottom:.5rem;">Weekly Verified Orders</p>
+          <p class="ht-serif" style="color:#FBF1DD;font-size:clamp(2.4rem,4.4vw,3.4rem);line-height:1;">7,280 <span style="font-size:1.1rem;color:#C9AE84;">orders / week</span></p>
+          <div style="height:1px;background:rgba(217,180,119,.25);margin:1.3rem 0;"></div>
+          <p style="color:#E4D3B9;font-size:1rem;line-height:1.6;">
+            × <span class="ht-serif" style="color:#F1DFBF;">IDR 55,000</span> AOV =
+            <span class="ht-serif" style="color:#F1DFBF;">IDR 400M</span> / week
           </p>
-          <p class="font-bold mb-1" style="color:#3E2723; font-size:2.2rem;">IDR 462,000,000 / week</p>
-          <div class="h-px my-4" style="background:#DBC7B3;"></div>
-          <p class="text-base leading-relaxed mb-1" style="color:#5C463A;">× 52 weeks</p>
-          <p class="font-bold" style="color:#7A4E2D; font-size:2.6rem;">≈ IDR 24.0 B / year</p>
-          <p class="text-sm mt-2" style="color:#9A8575;">App-attributed revenue routed through the app instead of lost to the queue.</p>
+          <p class="ht-serif" style="color:#E7CE9E;font-size:1.9rem;margin-top:.5rem;">≈ IDR 20.8 B / year</p>
+          <p style="color:#A98C6B;font-size:.8rem;margin-top:.5rem;">App-attributed revenue routed through the app instead of lost to the queue.</p>
         </div>
-
-        <!-- Assumption chips -->
-        <div class="rounded-2xl p-5" style="background:#fff; border:1px dashed #C8915A;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#A86B3C;">Assumptions — adjust these</p>
+        <!-- assumptions -->
+        <div class="rounded-2xl" style="border:1px dashed var(--gold);padding:1.1rem 1.3rem;">
+          <p class="ht-kick" style="margin-bottom:.7rem;">Assumptions · adjust to lock the projection</p>
           <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Outlets: 30</span>
-            <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">App orders/day/outlet: 40</span>
-            <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">AOV: IDR 55,000</span>
+            <span class="rounded-full" style="background:rgba(176,138,79,.12);color:var(--ink-soft);font-size:.74rem;padding:.34rem .8rem;">Outlets 26 · verified</span>
+            <span class="rounded-full" style="background:rgba(176,138,79,.12);color:var(--ink-soft);font-size:.74rem;padding:.34rem .8rem;">App orders/day/outlet 40 · est.</span>
+            <span class="rounded-full" style="background:rgba(176,138,79,.12);color:var(--ink-soft);font-size:.74rem;padding:.34rem .8rem;">AOV IDR 55,000 · est.</span>
           </div>
-          <p class="text-xs mt-3" style="color:#9A8575;">Placeholders — replace with Hong Tang's real outlet count, app order volume, and average order value to lock the projection.</p>
         </div>
       </div>
+    </div>
+
+    <div class="flex items-center justify-between" style="margin-top:1.1rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Outlet count verified · replace app volume &amp; AOV with Hong Tang actuals</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">05<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

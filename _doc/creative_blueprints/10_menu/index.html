@@ -1,82 +1,93 @@
 <style>
-  .mode-landscape .sl-menu { flex-direction: row; }
-  .mode-portrait  .sl-menu { flex-direction: column; }
-  .mode-landscape .sl-menu-l { width: 62%; }
-  .mode-portrait  .sl-menu-l { width: 100%; }
-  .mode-landscape .sl-menu-r { width: 38%; }
-  .mode-portrait  .sl-menu-r { width: 100%; }
-  .mode-landscape .sl-cats { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  .mode-portrait  .sl-cats { grid-template-columns: repeat(1, minmax(0,1fr)); }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .ht-cat h3{ font-family:'Marcellus',Georgia,serif; color:var(--ink); font-size:1.02rem; }
+  .ht-cat .pr{ font-family:'Marcellus',Georgia,serif; color:var(--gold); font-size:.8rem; }
+  .ht-cat p{ color:var(--ink-soft); font-size:.8rem; line-height:1.45; margin-top:.2rem; }
+  .mode-landscape .ht-menu{ flex-direction:row; }
+  .mode-portrait  .ht-menu{ flex-direction:column; }
+  .mode-landscape .ht-menu-l{ width:62%; }
+  .mode-portrait  .ht-menu-l{ width:100%; }
+  .mode-landscape .ht-menu-r{ width:38%; }
+  .mode-portrait  .ht-menu-r{ width:100%; }
+  .mode-landscape .ht-cats{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .mode-portrait  .ht-cats{ grid-template-columns: 1fr; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">The Menu · Real Catalog</p>
-    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      Taiwanese cold &amp; Hong Kong warm desserts
-    </h2>
-    <p class="text-base leading-relaxed mb-6" style="color:#5C463A; max-width:52rem;">
-      Items tagged warm vs. cold so users filter by serving temperature. Prices below are reference (Grand Indonesia, Jun 2026) — vary by outlet & promo, maintained centrally in the Admin Panel.
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">10</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.2rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">The Menu · Real Catalog</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.12;">Taiwanese cold &amp; Hong Kong warm desserts</h2>
+    <p style="color:var(--ink-soft);font-size:.96rem;line-height:1.55;max-width:52rem;margin-top:.6rem;">
+      Items are tagged warm vs. cold for serving-temperature filtering. Prices below are reference (Grand Indonesia, Jun 2026); they vary by outlet and promo, maintained centrally in the Admin Panel.
     </p>
 
-    <div class="sl-menu flex gap-6 flex-1">
-      <div class="sl-menu-l flex flex-col">
-        <div class="sl-cats grid gap-3">
-          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Signatures &amp; Series <span class="text-xs font-normal" style="color:#A86B3C;">Rp 41–54k</span></p>
-            <p class="text-xs leading-relaxed" style="color:#5C463A;">Grass Jelly · Soya · Taro — Signature / Classic / Favorite. Taiwan Ice Pudding (3 Mix).</p>
-          </div>
-          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Durian &amp; Mango <span class="text-xs font-normal" style="color:#A86B3C;">Rp 43–69k</span></p>
-            <p class="text-xs leading-relaxed" style="color:#5C463A;">Durian Coco Pudding, Durian Grassjelly; Mango Soup + pudding/grass jelly/ice cream.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Thai Series <span class="text-xs font-normal" style="color:#A86B3C;">Rp 39–50k</span></p>
-            <p class="text-xs leading-relaxed" style="color:#5C463A;">Thai Mango Coco (choose topping); Thai Coconut Ice — Coco Peach / Mango / Durian.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Classic Warm <span class="text-xs font-normal" style="color:#A86B3C;">Rp 35–39k</span></p>
-            <p class="text-xs leading-relaxed" style="color:#5C463A;">Ginger Soup, Red Bean Soup, Ketan Hitam — Hong Kong-style warm desserts.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Fresh Milk Series <span class="text-xs font-normal" style="color:#A86B3C;">Rp 35k</span></p>
-            <p class="text-xs leading-relaxed" style="color:#5C463A;">Grass Jelly QQ 28, Tiger Pudding, Taro Soy, Ginger Tangyuan.</p>
-          </div>
-          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Beverages <span class="text-xs font-normal" style="color:#A86B3C;">Rp 19–35k</span></p>
-            <p class="text-xs leading-relaxed" style="color:#5C463A;">Tiger Milk, Royal Milk Tea, Choco Lava, Strawberry Lemonade, Coffee Tiger. + Karaage Curry Rice (savory).</p>
-          </div>
+    <div class="ht-menu flex gap-7 flex-1" style="margin-top:1.5rem;">
+      <div class="ht-menu-l">
+        <div class="ht-cats grid gap-x-7 gap-y-4">
+          <div class="ht-cat" style="border-top:1px solid var(--line);padding-top:.7rem;"><div class="flex items-baseline justify-between"><h3>Signatures &amp; Series</h3><span class="pr">Rp 41–54k</span></div><p>Grass Jelly · Soya · Taro — Signature / Classic / Favorite. Taiwan Ice Pudding (3 Mix).</p></div>
+          <div class="ht-cat" style="border-top:1px solid var(--line);padding-top:.7rem;"><div class="flex items-baseline justify-between"><h3>Durian &amp; Mango</h3><span class="pr">Rp 43–69k</span></div><p>Durian Coco Pudding, Durian Grassjelly; Mango Soup + pudding / grass jelly / ice cream.</p></div>
+          <div class="ht-cat" style="border-top:1px solid var(--line);padding-top:.7rem;"><div class="flex items-baseline justify-between"><h3>Thai Series</h3><span class="pr">Rp 39–50k</span></div><p>Thai Mango Coco (choose topping); Thai Coconut Ice — Coco Peach / Mango / Durian.</p></div>
+          <div class="ht-cat" style="border-top:1px solid var(--line);padding-top:.7rem;"><div class="flex items-baseline justify-between"><h3>Classic Warm</h3><span class="pr">Rp 35–39k</span></div><p>Ginger Soup, Red Bean Soup, Ketan Hitam — Hong Kong-style warm desserts.</p></div>
+          <div class="ht-cat" style="border-top:1px solid var(--line);padding-top:.7rem;"><div class="flex items-baseline justify-between"><h3>Fresh Milk Series</h3><span class="pr">Rp 35k</span></div><p>Grass Jelly QQ 28, Tiger Pudding, Taro Soy, Ginger Tangyuan.</p></div>
+          <div class="ht-cat" style="border-top:1px solid var(--line);padding-top:.7rem;"><div class="flex items-baseline justify-between"><h3>Beverages</h3><span class="pr">Rp 19–35k</span></div><p>Tiger Milk, Royal Milk Tea, Choco Lava, Strawberry Lemonade, Coffee Tiger. + Karaage Curry Rice.</p></div>
         </div>
       </div>
 
-      <div class="sl-menu-r flex flex-col gap-5">
-        <div class="rounded-2xl p-6 flex-1" style="background:#3E2723;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#E9C9A3;">Customization</p>
-          <p class="text-sm leading-relaxed mb-3" style="color:#F3E7DA;">
-            <span style="color:#E9C9A3;">Temperature:</span> Hot / Normal / Less / No Ice<br/>
-            <span style="color:#E9C9A3;">Sugar:</span> 100 / 70 / 50 / 30 / 0%
+      <div class="ht-menu-r flex flex-col gap-4">
+        <div class="rounded-2xl flex-1" style="background:var(--lacquer);padding:1.4rem 1.5rem;box-shadow:0 18px 40px rgba(39,24,17,.22);">
+          <p class="ht-kick" style="color:#D9B477;margin-bottom:.7rem;">Customization</p>
+          <p style="color:#E4D3B9;font-size:.88rem;line-height:1.6;margin-bottom:.7rem;">
+            <span style="color:#E7CE9E;">Temperature —</span> Hot / Normal / Less / No Ice<br/>
+            <span style="color:#E7CE9E;">Sugar —</span> 100 / 70 / 50 / 30 / 0%
           </p>
-          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#E9C9A3;">Toppings <span class="font-normal" style="color:#F3E7DA;">+Rp 5–8k</span></p>
+          <p class="ht-kick" style="color:#D9B477;margin-bottom:.6rem;">Toppings <span style="color:#C9AE84;text-transform:none;letter-spacing:0;">+Rp 5–8k</span></p>
           <div class="flex flex-wrap gap-1.5">
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Pearl/Bubble</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Q Ball</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Mochi</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Grass Jelly</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Mango Pudding</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Coconut Pudding</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">3 Mix</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Soya Pudding</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Peanut</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Red Bean</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Ketan</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Ronde</span>
-            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Ice Cream</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Pearl/Bubble</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Q Ball</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Mochi</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Grass Jelly</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Mango Pudding</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Coconut Pudding</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">3 Mix</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Soya Pudding</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Peanut</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Red Bean</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Ketan</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Ronde</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.68rem;padding:.24rem .6rem;">Ice Cream</span>
           </div>
         </div>
-        <div class="rounded-2xl p-5" style="background:#F5EFE6;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#A86B3C;">Categories drive the Menu page</p>
-          <p class="text-sm leading-relaxed" style="color:#5C463A;">Sticky pill bar with scroll-spy; sold-out items dimmed ("Habis"), store-unavailable hidden.</p>
+        <div class="rounded-2xl" style="background:rgba(176,138,79,.1);padding:1rem 1.2rem;">
+          <p class="ht-kick" style="margin-bottom:.3rem;">Categories drive the Menu page</p>
+          <p style="color:var(--ink-soft);font-size:.85rem;line-height:1.5;">Sticky pill bar with scroll-spy; sold-out items dimmed (“Habis”), store-unavailable hidden.</p>
         </div>
       </div>
+    </div>
+
+    <div class="flex items-center justify-between" style="margin-top:1.1rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Hong Tang Indonesia · reference menu</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">10<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

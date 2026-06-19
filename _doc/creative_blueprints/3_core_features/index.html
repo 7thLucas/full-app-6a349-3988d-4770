@@ -1,59 +1,85 @@
 <style>
-  .mode-landscape .sl-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
-  .mode-portrait  .sl-grid { grid-template-columns: repeat(1, minmax(0,1fr)); }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .mode-landscape .ht-feat{ grid-template-columns: 1.05fr 1.05fr .9fr; }
+  .mode-portrait  .ht-feat{ grid-template-columns: 1fr; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Core Features</p>
-    <h2 class="font-bold leading-tight mb-6" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      Built first for the customer who values their time
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">03</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.4rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">Core Features</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.9rem,3.2vw,2.6rem);line-height:1.12;max-width:34rem;">
+      Built first for the guest who values their time
     </h2>
 
-    <!-- Persona chips -->
-    <div class="flex flex-wrap gap-3 mb-8">
-      <span class="px-4 py-2 rounded-full text-sm font-semibold" style="background:#3E2723; color:#F3E7DA;">Busy Professionals &amp; Students</span>
-      <span class="px-4 py-2 rounded-full text-sm font-medium" style="background:#F5EFE6; color:#7A4E2D;">Modern Dessert Lovers</span>
-      <span class="px-4 py-2 rounded-full text-sm font-medium" style="background:#F5EFE6; color:#7A4E2D;">Brand Loyalists &amp; Enthusiasts</span>
+    <div class="flex flex-wrap gap-2.5" style="margin:1.4rem 0 1.9rem;">
+      <span class="rounded-full" style="background:var(--lacquer);color:#E7CE9E;font-size:.78rem;padding:.42rem 1rem;">Busy Professionals &amp; Students</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.78rem;padding:.42rem 1rem;">Modern Dessert Lovers</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.78rem;padding:.42rem 1rem;">Brand Loyalists &amp; Enthusiasts</span>
     </div>
 
-    <!-- Feature cards -->
-    <div class="sl-grid grid gap-5 flex-1">
-      <div class="rounded-2xl p-6 flex flex-col" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-        <div class="flex items-center justify-center w-11 h-11 rounded-xl mb-4" style="background:#A86B3C;">
-          <span class="text-lg" style="color:#fff;">☰</span>
+    <div class="ht-feat grid gap-7 flex-1">
+      <div class="flex flex-col">
+        <div class="flex items-baseline gap-3 mb-3">
+          <span class="ht-serif" style="color:var(--gold);font-size:1.6rem;">01</span>
+          <span style="flex:1;height:1px;background:var(--line);"></span>
         </div>
-        <h3 class="text-lg font-bold mb-2" style="color:#3E2723;">Browse the Crafted Menu</h3>
-        <p class="text-base leading-relaxed" style="color:#5C463A;">
-          Taiwanese cold desserts, Hong Kong warm desserts, and drinks — presented with
-          the calm, premium feel of the brand.
+        <h3 class="ht-serif" style="color:var(--ink);font-size:1.3rem;margin-bottom:.5rem;">Browse the Crafted Menu</h3>
+        <p style="color:var(--ink-soft);font-size:.98rem;line-height:1.65;">
+          Taiwanese cold desserts, Hong Kong warm desserts, and drinks, presented with
+          the calm, premium feel of the house.
         </p>
       </div>
 
-      <div class="rounded-2xl p-6 flex flex-col" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-        <div class="flex items-center justify-center w-11 h-11 rounded-xl mb-4" style="background:#A86B3C;">
-          <span class="text-lg" style="color:#fff;">⏱</span>
+      <div class="flex flex-col">
+        <div class="flex items-baseline gap-3 mb-3">
+          <span class="ht-serif" style="color:var(--gold);font-size:1.6rem;">02</span>
+          <span style="flex:1;height:1px;background:var(--line);"></span>
         </div>
-        <h3 class="text-lg font-bold mb-2" style="color:#3E2723;">Order Ahead &amp; Skip the Queue</h3>
-        <p class="text-base leading-relaxed" style="color:#5C463A;">
-          Pay seamlessly, receive a pickup code, and walk past the line — convenience
-          that shifts volume away from the counter.
+        <h3 class="ht-serif" style="color:var(--ink);font-size:1.3rem;margin-bottom:.5rem;">Order Ahead, Skip the Queue</h3>
+        <p style="color:var(--ink-soft);font-size:.98rem;line-height:1.65;">
+          Pay seamlessly, receive a pickup code, and walk past the line, shifting volume
+          away from the counter at peak hours.
         </p>
       </div>
 
-      <div class="rounded-2xl p-6 flex flex-col" style="background:#3E2723;">
-        <div class="flex items-center justify-center w-11 h-11 rounded-xl mb-4" style="background:#E9C9A3;">
-          <span class="text-lg" style="color:#3E2723;">✦</span>
+      <!-- highlighted -->
+      <div class="rounded-2xl flex flex-col" style="background:var(--lacquer);padding:1.7rem;box-shadow:0 18px 40px rgba(39,24,17,.22);">
+        <div class="flex items-baseline gap-3 mb-3">
+          <span class="ht-serif" style="color:#E7CE9E;font-size:1.6rem;">03</span>
+          <span style="flex:1;height:1px;background:rgba(217,180,119,.3);"></span>
         </div>
-        <h3 class="text-lg font-bold mb-2" style="color:#F3E7DA;">Earn with Loyal-Tang</h3>
-        <p class="text-base leading-relaxed" style="color:#E9C9A3;">
-          Sugar Crystals accrue from the first order. Four tiers — Tang Seeker → Master —
+        <h3 class="ht-serif" style="color:#F4E7CE;font-size:1.3rem;margin-bottom:.5rem;">Earn with Loyal-Tang</h3>
+        <p style="color:#E4D3B9;font-size:.98rem;line-height:1.65;">
+          Sugar Crystals accrue from the first order. Four tiers, Tang Seeker to Master,
           escalate earn rates and unlock exclusive drops and collectible merch.
         </p>
       </div>
     </div>
 
-    <p class="mt-6 text-sm" style="color:#9A8575;">
-      Loyalty, personalization, and direct campaigns layer on top of this core ordering loop.
-    </p>
+    <div class="flex items-center justify-between" style="margin-top:1.6rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Loyalty &amp; personalization layer atop the core ordering loop</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">03<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
+    </div>
   </div>
 </section>

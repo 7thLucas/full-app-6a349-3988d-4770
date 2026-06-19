@@ -1,65 +1,91 @@
 <style>
-  .mode-landscape .sl-cur { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  .mode-portrait  .sl-cur { grid-template-columns: repeat(1, minmax(0,1fr)); }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .ht-li{ color:var(--ink-soft); font-size:.96rem; line-height:1.55; }
+  .ht-lbl{ color:var(--gold-lt); }
+  .mode-landscape .ht-cur{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .mode-portrait  .ht-cur{ grid-template-columns: 1fr; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Loyal-Tang · The Engine</p>
-    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      Two currencies, two jobs
-    </h2>
-    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
-      Loyal-Tang deliberately splits the <span class="font-semibold" style="color:#3E2723;">spending</span> currency from the
-      <span class="font-semibold" style="color:#3E2723;">status</span> currency. Spending Sugar Crystals never lowers a member's tier —
-      tiers track Bowls independently. All users auto-enroll at sign-up.
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">06</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.2rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">Loyal-Tang · The Engine</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.12;">Two currencies, two jobs</h2>
+    <p style="color:var(--ink-soft);font-size:1rem;line-height:1.65;max-width:50rem;margin-top:.7rem;">
+      Loyal-Tang deliberately splits the <span class="ht-serif" style="color:var(--ink);">spending</span> currency from the
+      <span class="ht-serif" style="color:var(--ink);">status</span> currency. Spending Sugar Crystals never lowers a tier;
+      tiers track Bowls independently. All guests auto-enroll at sign-up.
     </p>
 
-    <div class="sl-cur grid gap-5 flex-1">
+    <div class="ht-cur grid gap-6 flex-1" style="margin-top:1.6rem;">
       <!-- Sugar Crystals -->
-      <div class="rounded-2xl p-7 flex flex-col" style="background:#3E2723;">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="flex items-center justify-center w-11 h-11 rounded-xl" style="background:#E9C9A3;">
-            <span class="text-lg" style="color:#3E2723;">◆</span>
-          </div>
+      <div class="rounded-2xl flex flex-col" style="background:var(--lacquer);padding:1.8rem;box-shadow:0 18px 40px rgba(39,24,17,.22);">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="ht-serif flex items-center justify-center" style="width:44px;height:44px;background:linear-gradient(140deg,#F0D9A8,#D9B477);color:var(--lacquer);font-size:1.2rem;transform:rotate(45deg);border-radius:8px;"><span style="transform:rotate(-45deg);">◆</span></span>
           <div>
-            <h3 class="text-xl font-bold" style="color:#fff;">Sugar Crystals</h3>
-            <p class="text-sm" style="color:#E9C9A3;">Spending currency · reward points</p>
+            <h3 class="ht-serif" style="color:#F4E7CE;font-size:1.35rem;">Sugar Crystals</h3>
+            <p style="color:#C9AE84;font-size:.78rem;letter-spacing:.04em;">Spending currency · reward points</p>
           </div>
         </div>
-        <ul class="space-y-3 text-base leading-relaxed" style="color:#F3E7DA;">
-          <li><span style="color:#E9C9A3;">Earn:</span> 1 crystal per Rp 1.000 net spend (after discounts, excl. PB1/tax/delivery).</li>
-          <li><span style="color:#E9C9A3;">Tier multiplier:</span> 1.0× / 1.25× / 1.5× / 2.0×, then floored per order.</li>
-          <li><span style="color:#E9C9A3;">Spend:</span> in the Rewards Store → produces a voucher in My Vouchers.</li>
-          <li><span style="color:#E9C9A3;">Expiry:</span> 365 days per batch; in-app reminders ≤7 days out.</li>
+        <ul class="space-y-2.5" style="color:#E4D3B9;">
+          <li class="ht-li" style="color:#E4D3B9;"><span style="color:#E7CE9E;">Earn —</span> 1 crystal per Rp 1.000 net spend (after discounts; excl. PB1/tax/delivery).</li>
+          <li class="ht-li" style="color:#E4D3B9;"><span style="color:#E7CE9E;">Multiplier —</span> 1.0× / 1.25× / 1.5× / 2.0× by tier, then floored per order.</li>
+          <li class="ht-li" style="color:#E4D3B9;"><span style="color:#E7CE9E;">Spend —</span> in the Rewards Store, producing a voucher in My Vouchers.</li>
+          <li class="ht-li" style="color:#E4D3B9;"><span style="color:#E7CE9E;">Expiry —</span> 365 days per batch; in-app reminders within 7 days.</li>
         </ul>
       </div>
 
       <!-- Bowls -->
-      <div class="rounded-2xl p-7 flex flex-col" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="flex items-center justify-center w-11 h-11 rounded-xl" style="background:#A86B3C;">
-            <span class="text-lg" style="color:#fff;">🥣</span>
-          </div>
+      <div class="rounded-2xl flex flex-col" style="border:1px solid var(--line);background:rgba(255,255,255,.35);padding:1.8rem;">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="ht-serif flex items-center justify-center rounded-full" style="width:44px;height:44px;background:var(--red);color:#F6E7C9;font-size:1.2rem;">碗</span>
           <div>
-            <h3 class="text-xl font-bold" style="color:#3E2723;">Bowls</h3>
-            <p class="text-sm" style="color:#A86B3C;">Status currency · tier counter</p>
+            <h3 class="ht-serif" style="color:var(--ink);font-size:1.35rem;">Bowls</h3>
+            <p style="color:var(--ink-mute);font-size:.78rem;letter-spacing:.04em;">Status currency · tier counter</p>
           </div>
         </div>
-        <ul class="space-y-3 text-base leading-relaxed" style="color:#5C463A;">
-          <li><span class="font-semibold" style="color:#7A4E2D;">Count:</span> 1 Bowl per qualifying item on a paid, completed order (2 of one = 2 Bowls).</li>
-          <li><span class="font-semibold" style="color:#7A4E2D;">Window:</span> rolling, trailing 365 days — older Bowls age out.</li>
-          <li><span class="font-semibold" style="color:#7A4E2D;">Sets tier only:</span> never spent, never affected by redemptions.</li>
-          <li><span class="font-semibold" style="color:#7A4E2D;">Excludes:</span> free / Rp 0 / trial / special-discount items & 3rd-party orders.</li>
+        <ul class="space-y-2.5">
+          <li class="ht-li"><span style="color:var(--red);">Count —</span> 1 Bowl per qualifying item on a paid, completed order (2 of one = 2).</li>
+          <li class="ht-li"><span style="color:var(--red);">Window —</span> rolling, trailing 365 days; older Bowls age out.</li>
+          <li class="ht-li"><span style="color:var(--red);">Sets tier only —</span> never spent, never affected by redemptions.</li>
+          <li class="ht-li"><span style="color:var(--red);">Excludes —</span> free / Rp 0 / trial / special-discount items &amp; 3rd-party orders.</li>
         </ul>
       </div>
     </div>
 
-    <div class="mt-6 rounded-2xl p-5" style="background:#F5EFE6;">
-      <p class="text-sm leading-relaxed" style="color:#5C463A;">
-        <span class="font-bold" style="color:#7A4E2D;">Worked example —</span>
+    <div class="rounded-2xl flex items-center gap-4" style="background:rgba(176,138,79,.1);padding:1rem 1.3rem;margin-top:1.2rem;">
+      <span class="ht-serif" style="color:var(--gold);font-size:1.5rem;flex-shrink:0;">例</span>
+      <p style="color:var(--ink-soft);font-size:.92rem;line-height:1.55;">
+        <span style="color:var(--ink);font-weight:600;">Worked example —</span>
         Grassjelly Signature Rp 50.000 + Royal Milk Tea Rp 19.000 = Rp 69.000; voucher −Rp 10.000 → net Rp 59.000.
-        At Seeker (1.0×) → <span class="font-semibold" style="color:#3E2723;">59 crystals</span>; at Pioneer (1.5×) → 88. Both add <span class="font-semibold" style="color:#3E2723;">+2 Bowls</span>.
+        At Seeker (1.0×) → <span class="ht-serif" style="color:var(--ink);">59 crystals</span>; at Pioneer (1.5×) → 88. Both add
+        <span class="ht-serif" style="color:var(--ink);">+2 Bowls</span>.
       </p>
+    </div>
+
+    <div class="flex items-center justify-between" style="margin-top:1rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Loyal-Tang · Two-Currency Model</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">06<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

@@ -1,69 +1,103 @@
 <style>
-  .mode-landscape .sl-ds { flex-direction: row; }
-  .mode-portrait  .sl-ds { flex-direction: column; }
-  .mode-landscape .sl-ds-l { width: 56%; }
-  .mode-portrait  .sl-ds-l { width: 100%; }
-  .mode-landscape .sl-ds-r { width: 44%; }
-  .mode-portrait  .sl-ds-r { width: 100%; }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 0% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 100% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .ht-sub{ color:var(--gold-lt); font-size:.62rem; letter-spacing:.3em; text-transform:uppercase; }
+  .mode-landscape .ht-ds{ flex-direction:row; }
+  .mode-portrait  .ht-ds{ flex-direction:column; }
+  .mode-landscape .ht-ds-l{ width:54%; }
+  .mode-portrait  .ht-ds-l{ width:100%; }
+  .mode-landscape .ht-ds-r{ width:46%; }
+  .mode-portrait  .ht-ds-r{ width:100%; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Design System</p>
-    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      Modern Oriental Minimalism
-    </h2>
-    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
-      Calm, crafted, premium, unhurried. One clear primary action per screen. Serif headers, soft shadows, restrained motion — never stark clinical white.
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">09</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.2rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">Design System</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.12;">Modern Oriental Minimalism</h2>
+    <p style="color:var(--ink-soft);font-size:1rem;line-height:1.6;max-width:50rem;margin-top:.6rem;">
+      Calm, crafted, premium, unhurried. One clear primary action per screen. Serif headers, soft shadows, restrained motion. Never stark, clinical white.
     </p>
 
-    <div class="sl-ds flex gap-6 flex-1">
-      <div class="sl-ds-l flex flex-col gap-5">
-        <!-- Color -->
-        <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#A86B3C;">Color</p>
-          <div class="flex flex-wrap gap-3">
-            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#FDFBF7; border:1px solid #E0D2C2;"></span><span class="text-sm" style="color:#5C463A;">Cream #FDFBF7</span></div>
-            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#3E2723;"></span><span class="text-sm" style="color:#5C463A;">Brown #3E2723</span></div>
-            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#C62828;"></span><span class="text-sm" style="color:#5C463A;">Hong Tang Red #C62828</span></div>
-            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#6F6258;"></span><span class="text-sm" style="color:#5C463A;">Warm grey #6F6258</span></div>
+    <div class="ht-ds flex gap-6 flex-1" style="margin-top:1.7rem;">
+      <div class="ht-ds-l flex flex-col gap-5">
+        <!-- color -->
+        <div>
+          <p class="ht-sub" style="margin-bottom:.8rem;">Palette</p>
+          <div class="flex gap-3">
+            <div class="flex-1 rounded-xl flex flex-col justify-end" style="height:88px;background:#FDFBF7;border:1px solid var(--line);padding:.6rem;"><span style="color:#3A271D;font-size:.66rem;">Cream</span><span class="ht-serif" style="color:#6E5849;font-size:.62rem;">FDFBF7</span></div>
+            <div class="flex-1 rounded-xl flex flex-col justify-end" style="height:88px;background:#3E2723;padding:.6rem;"><span style="color:#E7CE9E;font-size:.66rem;">Brown</span><span class="ht-serif" style="color:#C9AE84;font-size:.62rem;">3E2723</span></div>
+            <div class="flex-1 rounded-xl flex flex-col justify-end" style="height:88px;background:#C62828;padding:.6rem;"><span style="color:#FBE7DF;font-size:.66rem;">HT Red</span><span class="ht-serif" style="color:#F3C9BE;font-size:.62rem;">C62828</span></div>
+            <div class="flex-1 rounded-xl flex flex-col justify-end" style="height:88px;background:#B08A4F;padding:.6rem;"><span style="color:#FBF3E2;font-size:.66rem;">Gold</span><span class="ht-serif" style="color:#F1E2C4;font-size:.62rem;">B08A4F</span></div>
           </div>
-          <p class="text-sm mt-3 leading-relaxed" style="color:#5C463A;">Cream surface, brown content, red for the single most important action only. Tier metallics on tier surfaces.</p>
+          <p style="color:var(--ink-soft);font-size:.9rem;line-height:1.55;margin-top:.8rem;">
+            Cream surface, brown content, red for the single most important action only. Tier metallics on tier surfaces; semantics always pair color with a text label.
+          </p>
         </div>
-        <!-- Type & layout -->
-        <div class="rounded-2xl p-6" style="background:#F5EFE6;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Typography &amp; Layout</p>
-          <p class="text-sm leading-relaxed" style="color:#5C463A;">
-            Elegant serif display (~28–32pt) + clean sans body (~15–16pt). Tabular figures for crystals/prices.
-            8px grid, card containers, ~16pt padding. Sticky bottom CTAs above safe area. Soft corners (cards 16px, buttons 12px, pills full).
+        <!-- type -->
+        <div class="rounded-2xl" style="border:1px solid var(--line);padding:1.3rem 1.5rem;">
+          <p class="ht-sub" style="margin-bottom:.6rem;">Typography &amp; Layout</p>
+          <div class="flex items-baseline gap-4 mb-2">
+            <span class="ht-serif" style="color:var(--ink);font-size:2rem;line-height:1;">Marcellus</span>
+            <span style="color:var(--ink-soft);font-size:1rem;">Hanken Grotesk</span>
+            <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">Rp 38.000</span>
+          </div>
+          <p style="color:var(--ink-soft);font-size:.88rem;line-height:1.55;">
+            Refined serif display + clean sans body; tabular figures for crystals &amp; prices. 8px grid, card containers, sticky bottom CTAs above the safe area. Soft corners (cards 16px, buttons 12px, pills full).
           </p>
         </div>
       </div>
 
-      <div class="sl-ds-r flex flex-col gap-5">
-        <!-- Components -->
-        <div class="rounded-2xl p-6 flex-1" style="background:#3E2723;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#E9C9A3;">Core Components</p>
+      <div class="ht-ds-r flex flex-col gap-5">
+        <!-- components -->
+        <div class="rounded-2xl flex-1" style="background:var(--lacquer);padding:1.4rem 1.5rem;box-shadow:0 18px 40px rgba(39,24,17,.22);">
+          <p class="ht-sub" style="color:#D9B477;margin-bottom:.8rem;">Core Components</p>
           <div class="flex flex-wrap gap-2">
-            <span class="px-3 py-1 rounded-md text-xs font-semibold" style="background:#C62828; color:#fff;">Primary button</span>
-            <span class="px-3 py-1 rounded-md text-xs font-medium" style="background:transparent; color:#F3E7DA; border:1px solid #8A6E5E;">Ghost</span>
-            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Segmented</span>
-            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Stepper − N +</span>
-            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Chips</span>
-            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Bottom sheet</span>
-            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">OTP boxes</span>
-            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Status stepper</span>
+            <span class="rounded-lg" style="background:var(--red);color:#fff;font-size:.72rem;padding:.34rem .7rem;">Primary button</span>
+            <span class="rounded-lg" style="border:1px solid rgba(217,180,119,.4);color:#E4D3B9;font-size:.72rem;padding:.34rem .7rem;">Ghost</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.72rem;padding:.34rem .7rem;">Segmented</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.72rem;padding:.34rem .7rem;">Stepper − N +</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.72rem;padding:.34rem .7rem;">Chips</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.72rem;padding:.34rem .7rem;">Bottom sheet</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.72rem;padding:.34rem .7rem;">OTP boxes</span>
+            <span class="rounded-full" style="background:#3E2D24;color:#E7CE9E;font-size:.72rem;padding:.34rem .7rem;">Status stepper</span>
           </div>
-          <p class="text-sm mt-4 leading-relaxed" style="color:#F3E7DA;">Calm eased motion (cross-fade tabs, spring sheets), micro-interactions (cart-badge bump, card tilt). Honors reduce-motion.</p>
+          <p style="color:#E4D3B9;font-size:.86rem;line-height:1.55;margin-top:.9rem;">
+            Calm eased motion: cross-fade tabs, spring sheets, cart-badge bump, membership-card tilt. Honors reduce-motion.
+          </p>
         </div>
-        <!-- Accessibility -->
-        <div class="rounded-2xl p-6" style="background:#fff; border:1px dashed #C8915A;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Accessibility &amp; Localization</p>
-          <p class="text-sm leading-relaxed" style="color:#5C463A;">
-            AA contrast, ≥44×44pt taps, dynamic type, screen-reader labels, no color-only signals (expiry = red + text).
-            IDR "Rp 38.000", WIB/WITA/WIT, ~30% text-expansion headroom for future Bahasa Indonesia.
+        <!-- a11y -->
+        <div class="rounded-2xl" style="border:1px dashed var(--gold);padding:1.2rem 1.4rem;">
+          <p class="ht-sub" style="margin-bottom:.5rem;">Accessibility &amp; Localization</p>
+          <p style="color:var(--ink-soft);font-size:.86rem;line-height:1.55;">
+            AA contrast, ≥44×44pt taps, dynamic type, screen-reader labels, no color-only signals (expiry = red + text). IDR “Rp 38.000”, WIB/WITA/WIT, ~30% text-expansion headroom for future Bahasa Indonesia.
           </p>
         </div>
       </div>
+    </div>
+
+    <div class="flex items-center justify-between" style="margin-top:1.2rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Visual &amp; interaction contract</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">09<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

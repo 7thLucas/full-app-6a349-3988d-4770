@@ -1,50 +1,77 @@
 <style>
-  .mode-landscape .sl-cover { flex-direction: row; }
-  .mode-portrait  .sl-cover { flex-direction: column; }
-  .mode-landscape .sl-visual { width: 42%; height: 100%; }
-  .mode-portrait  .sl-visual { width: 100%; height: 38%; }
-  .mode-landscape .sl-content { width: 58%; }
-  .mode-portrait  .sl-content { width: 100%; }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht-cover{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#D9B477; --gold-pl:#EAD7B0; --red:#B0271F;
+    --lacquer:#271811; --line:rgba(217,180,119,.30);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(130% 110% at 78% 8%, rgba(217,180,119,.16), transparent 52%),
+      radial-gradient(90% 80% at 8% 100%, rgba(176,39,31,.12), transparent 55%),
+      var(--lacquer);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:16px; height:16px; opacity:.75; }
+  .mode-landscape .ht-cover-img{ width:42%; }
+  .mode-portrait  .ht-cover-img{ width:100%; height:36%; }
+  .mode-landscape .ht-cover-body{ width:58%; }
+  .mode-portrait  .ht-cover-body{ width:100%; }
+  .mode-landscape .ht-cover-wrap{ flex-direction:row; }
+  .mode-portrait  .ht-cover-wrap{ flex-direction:column; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="sl-cover flex w-full h-full">
-    <!-- Content column -->
-    <div class="sl-content flex flex-col justify-between p-12">
-      <div class="flex items-center gap-3">
-        <div class="flex items-center justify-center w-11 h-11 rounded-full" style="background:#3E2723;">
-          <span class="text-lg font-semibold" style="color:#E9C9A3;">红糖</span>
+<section class="ht-cover relative w-full h-full overflow-hidden">
+  <!-- gold corner ticks -->
+  <span class="ht-tick" style="top:22px;  left:22px;  border-top:1px solid var(--gold); border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;  right:22px; border-top:1px solid var(--gold); border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;  border-bottom:1px solid var(--gold); border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px; border-bottom:1px solid var(--gold); border-right:1px solid var(--gold);"></span>
+
+  <div class="ht-cover-wrap flex w-full h-full">
+    <!-- Body -->
+    <div class="ht-cover-body relative flex flex-col justify-between" style="padding:4.2rem 4rem 3.2rem;">
+      <!-- brand seal -->
+      <div class="flex items-center gap-4">
+        <div class="flex items-center justify-center rounded-full ht-serif" style="width:54px;height:54px;background:radial-gradient(circle at 35% 30%, #C8332A, #8E1F18);color:#F6E7C9;font-size:1.35rem;box-shadow:0 6px 22px rgba(176,39,31,.35);">红糖</div>
+        <div class="leading-tight">
+          <p class="ht-serif" style="color:#F4E7CE;font-size:1.15rem;letter-spacing:.02em;">Hong Tang</p>
+          <p style="color:var(--gold-lt);font-size:.62rem;letter-spacing:.42em;text-transform:uppercase;">Since 2012</p>
         </div>
-        <span class="text-sm font-semibold tracking-widest uppercase" style="color:#A86B3C;">Hong Tang</span>
       </div>
 
-      <div class="mt-8">
-        <p class="text-sm font-semibold tracking-widest uppercase mb-5" style="color:#A86B3C;">Oriental Dessert Culture, Now in Your Pocket</p>
-        <h1 class="font-bold leading-tight" style="color:#3E2723; font-size:3.4rem; letter-spacing:-0.01em; font-family: Georgia, 'Times New Roman', serif;">
+      <!-- title block -->
+      <div>
+        <div class="flex items-center gap-3 mb-7">
+          <span style="display:block;width:38px;height:1px;background:var(--gold);"></span>
+          <span style="color:var(--gold-lt);font-size:.7rem;letter-spacing:.34em;text-transform:uppercase;">Oriental Dessert Culture, Now in Your Pocket</span>
+        </div>
+        <h1 class="ht-serif" style="color:#FBF1DD;font-size:clamp(2.6rem,5vw,4.3rem);line-height:1.04;">
           The Hong Tang<br/>Mobile App
         </h1>
-        <p class="mt-6 text-xl leading-relaxed" style="color:#5C463A; max-width:34rem;">
-          A calm, crafted digital home for Indonesia's leading oriental dessert brand —
-          where premium desserts are ordered ahead, queues disappear, and loyalty is felt.
+        <p class="mt-7" style="color:#D9C6AC;font-size:1.1rem;line-height:1.75;max-width:33rem;">
+          A calm, crafted digital home for Indonesia's leading oriental dessert house.
+          Premium desserts ordered ahead, queues dissolved, loyalty made tangible.
         </p>
       </div>
 
-      <div class="mt-8">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full" style="background:#F5EFE6;">
-          <span class="w-2 h-2 rounded-full" style="background:#A86B3C;"></span>
-          <span class="text-sm font-medium" style="color:#7A4E2D;">Healthy Asian Desserts since 2012 · Upscale malls nationwide</span>
+      <!-- footer -->
+      <div class="flex items-end justify-between">
+        <div>
+          <p style="color:var(--gold-lt);font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;margin-bottom:.5rem;">Healthy Asian Desserts · Upscale malls nationwide</p>
+          <div style="color:#A98C6B;font-size:.75rem;"><data-attribution /></div>
         </div>
-        <div class="mt-6">
-          <data-attribution />
+        <div class="text-right ht-serif" style="color:var(--gold);">
+          <span style="font-size:1.4rem;">01</span><span style="color:#7A6244;font-size:.8rem;"> / 14</span>
         </div>
       </div>
     </div>
 
-    <!-- Visual column -->
-    <div class="sl-visual relative overflow-hidden" style="background:#F5EFE6;">
+    <!-- Visual -->
+    <div class="ht-cover-img relative overflow-hidden">
       <img class="w-full h-full object-cover"
-           src="https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=premium%20minimalist%20still%20life%20of%20Taiwanese%20shaved%20ice%20dessert%20and%20Hong%20Kong%20warm%20dessert%20with%20brown%20sugar%2C%20soft%20natural%20light%2C%20modern%20oriental%20minimalism%2C%20warm%20cream%20background%2C%20editorial%20food%20photography"
-           alt="Hong Tang oriental desserts" />
-      <div class="absolute inset-0" style="background:linear-gradient(120deg, rgba(58,42,34,0.18), rgba(58,42,34,0));"></div>
+           src="https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=overhead%20editorial%20photograph%20of%20Taiwanese%20grass%20jelly%20brown%20sugar%20dessert%20with%20pearls%20and%20shaved%20ice%20in%20an%20elegant%20ceramic%20bowl%2C%20dark%20lacquered%20wood%20table%2C%20dramatic%20moody%20side%20light%2C%20warm%20amber%20tones%2C%20luxury%20food%20photography"
+           alt="Hong Tang oriental dessert, plated on dark lacquered wood under warm light" />
+      <div class="absolute inset-0" style="background:linear-gradient(270deg, rgba(39,24,17,0) 40%, rgba(39,24,17,.55) 88%, var(--lacquer) 100%);"></div>
+      <div class="absolute inset-0" style="box-shadow:inset 0 0 0 1px var(--line);"></div>
     </div>
   </div>
 </section>

@@ -1,53 +1,67 @@
 <style>
-  .mode-landscape .sl-out { flex-direction: row; }
-  .mode-portrait  .sl-out { flex-direction: column; }
-  .mode-landscape .sl-out-l { width: 40%; height: 100%; }
-  .mode-portrait  .sl-out-l { width: 100%; height: 28%; }
-  .mode-landscape .sl-out-r { width: 60%; }
-  .mode-portrait  .sl-out-r { width: 100%; }
-  .mode-landscape .sl-cities { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  .mode-portrait  .sl-cities { grid-template-columns: repeat(1, minmax(0,1fr)); }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.85; z-index:3; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .ht-city h3{ font-family:'Marcellus',Georgia,serif; color:var(--ink); font-size:1rem; }
+  .ht-city p{ color:var(--ink-soft); font-size:.8rem; line-height:1.5; margin-top:.2rem; }
+  .mode-landscape .ht-out{ flex-direction:row; }
+  .mode-portrait  .ht-out{ flex-direction:column; }
+  .mode-landscape .ht-out-img{ width:38%; height:100%; }
+  .mode-portrait  .ht-out-img{ width:100%; height:26%; }
+  .mode-landscape .ht-out-body{ width:62%; }
+  .mode-portrait  .ht-out-body{ width:100%; }
+  .mode-landscape .ht-cities{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .mode-portrait  .ht-cities{ grid-template-columns: 1fr; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="sl-out flex w-full h-full">
-    <div class="sl-out-l relative overflow-hidden" style="background:#F5EFE6;">
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+
+  <div class="ht-out flex w-full h-full">
+    <!-- image -->
+    <div class="ht-out-img relative overflow-hidden">
       <img class="w-full h-full object-cover"
-           src="https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=elegant%20oriental%20dessert%20storefront%20inside%20an%20upscale%20Indonesian%20shopping%20mall%2C%20warm%20brown%20sugar%20brand%20tones%2C%20premium%20minimalist%20retail%2C%20soft%20light"
-           alt="Hong Tang mall outlet" />
-      <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(58,42,34,0), rgba(58,42,34,0.28));"></div>
+           src="https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=elegant%20oriental%20dessert%20boutique%20storefront%20inside%20an%20upscale%20Indonesian%20shopping%20mall%2C%20warm%20brown%20sugar%20and%20gold%20brand%20tones%2C%20premium%20minimalist%20retail%20interior%2C%20soft%20cinematic%20light"
+           alt="Hong Tang boutique storefront inside an upscale Indonesian mall" />
+      <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(39,24,17,.15), rgba(39,24,17,.45));"></div>
+      <div class="absolute" style="left:1.6rem;bottom:1.6rem;">
+        <p class="ht-serif" style="color:#FBF1DD;font-size:2.6rem;line-height:1;">~26</p>
+        <p style="color:#E7CE9E;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;margin-top:.3rem;">Outlets · 8 cities</p>
+      </div>
     </div>
 
-    <div class="sl-out-r flex flex-col p-12">
-      <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Outlet Footprint &amp; Store Locator</p>
-      <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.1rem; font-family: Georgia, 'Times New Roman', serif;">
-        ~26 upscale-mall outlets across 8 cities
-      </h2>
-      <p class="text-base leading-relaxed mb-6" style="color:#5C463A;">
-        Map-forward locator: branded pins, distance-sorted draggable list, hours, directions, and "Order from this store" to set the active outlet. Typical mall hours ~10:00–22:00 daily.
+    <!-- body -->
+    <div class="ht-out-body flex flex-col" style="padding:3.2rem 3.4rem;">
+      <div class="flex items-center gap-3 mb-2">
+        <span style="width:32px;height:1px;background:var(--gold);"></span>
+        <span class="ht-kick">Footprint &amp; Store Locator</span>
+      </div>
+      <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.7rem,2.8vw,2.3rem);line-height:1.12;">Upscale-mall outlets across Indonesia</h2>
+      <p style="color:var(--ink-soft);font-size:.96rem;line-height:1.6;margin-top:.6rem;max-width:34rem;">
+        A map-forward locator: branded pins, a distance-sorted draggable list, hours, directions, and “Order from this store” to set the active outlet. Typical mall hours ~10:00–22:00 daily.
       </p>
 
-      <div class="sl-cities grid gap-3 flex-1">
-        <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-          <p class="text-sm font-bold mb-1" style="color:#3E2723;">Jakarta</p>
-          <p class="text-xs leading-relaxed" style="color:#5C463A;">Grand Indonesia, Kelapa Gading 3, Central Park, Taman Anggrek, Artha Gading, MOI, Pondok Indah 2, Lotte, PIK Avenue, Gandaria City, Slipi.</p>
-        </div>
-        <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-          <p class="text-sm font-bold mb-1" style="color:#3E2723;">Tangerang</p>
-          <p class="text-xs leading-relaxed" style="color:#5C463A;">Summarecon Serpong, AEON Mall, Gading Serpong, Broadway Alam Sutera, Benda.</p>
-        </div>
-        <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-          <p class="text-sm font-bold mb-1" style="color:#3E2723;">Bekasi · Bandung · Karawang</p>
-          <p class="text-xs leading-relaxed" style="color:#5C463A;">Summarecon Bekasi; 23 Paskal & Cicendo (Bandung); The Grand Outlet Karawang.</p>
-        </div>
-        <div class="rounded-xl p-4" style="background:#F5EFE6;">
-          <p class="text-sm font-bold mb-1" style="color:#3E2723;">More cities</p>
-          <p class="text-xs leading-relaxed" style="color:#5C463A;">Bogor, Batam, Palembang, Surabaya — specific malls confirmed in master data.</p>
-        </div>
+      <div class="ht-cities grid gap-x-7 gap-y-4 flex-1" style="margin-top:1.5rem;align-content:center;">
+        <div class="ht-city" style="border-top:1px solid var(--line);padding-top:.7rem;"><h3>Jakarta</h3><p>Grand Indonesia, Kelapa Gading 3, Central Park, Taman Anggrek, Artha Gading, MOI, Pondok Indah 2, Lotte, PIK Avenue, Gandaria City, Slipi.</p></div>
+        <div class="ht-city" style="border-top:1px solid var(--line);padding-top:.7rem;"><h3>Tangerang</h3><p>Summarecon Serpong, AEON Mall, Gading Serpong, Broadway Alam Sutera, Benda.</p></div>
+        <div class="ht-city" style="border-top:1px solid var(--line);padding-top:.7rem;"><h3>Bekasi · Bandung · Karawang</h3><p>Summarecon Bekasi; 23 Paskal &amp; Cicendo (Bandung); The Grand Outlet Karawang.</p></div>
+        <div class="ht-city" style="border-top:1px solid var(--line);padding-top:.7rem;"><h3>More cities</h3><p>Bogor, Batam, Palembang, Surabaya — specific malls confirmed in master data.</p></div>
       </div>
 
-      <p class="mt-5 text-sm" style="color:#9A8575;">
-        Store selection is required before browsing; closed / past last-order outlets block checkout. App is multi-country — country drives outlet list, menu & currency.
-      </p>
+      <div class="flex items-center justify-between" style="margin-top:1.2rem;">
+        <span class="ht-kick" style="color:var(--ink-mute);">Store-first · closed / past last-order blocks checkout</span>
+        <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">11<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
+      </div>
     </div>
   </div>
 </section>

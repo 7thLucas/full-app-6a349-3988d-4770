@@ -1,52 +1,83 @@
 <style>
-  .mode-landscape .sl-found { flex-direction: row; }
-  .mode-portrait  .sl-found { flex-direction: column; }
-  .mode-landscape .sl-text { width: 60%; }
-  .mode-portrait  .sl-text { width: 100%; }
-  .mode-landscape .sl-side { width: 40%; height: 100%; }
-  .mode-portrait  .sl-side { width: 100%; height: 30%; }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .mode-landscape .ht-found{ flex-direction:row; }
+  .mode-portrait  .ht-found{ flex-direction:column; }
+  .mode-landscape .ht-found-l{ width:52%; }
+  .mode-portrait  .ht-found-l{ width:100%; }
+  .mode-landscape .ht-found-r{ width:48%; }
+  .mode-portrait  .ht-found-r{ width:100%; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="sl-found flex w-full h-full">
-    <div class="sl-text flex flex-col justify-center p-12">
-      <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">The Foundation</p>
-      <h2 class="font-bold leading-tight mb-8" style="color:#3E2723; font-size:2.4rem; font-family: Georgia, 'Times New Roman', serif;">
-        Hong Tang earns the visit. The hard part is earning the next one.
-      </h2>
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
 
-      <div class="grid gap-5">
-        <!-- Problem -->
-        <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="text-xs font-bold tracking-widest uppercase" style="color:#C62828;">The Problem</span>
+  <!-- ghost numeral -->
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);user-select:none;">02</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3.4rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">The Foundation</span>
+    </div>
+
+    <div class="ht-found flex gap-12 flex-1 items-center">
+      <div class="ht-found-l">
+        <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(2rem,3.4vw,2.9rem);line-height:1.1;">
+          Hong Tang earns the visit.<br/>The hard part is earning<br/>the next one.
+        </h2>
+        <p class="mt-7" style="color:var(--ink-soft);font-size:1.05rem;line-height:1.75;max-width:30rem;">
+          At peak mall hours guests queue at the counter, and some simply walk away.
+          Loyalty stays invisible, first-party data goes uncaptured, and the brand
+          holds no direct channel to bring a guest back.
+        </p>
+      </div>
+
+      <div class="ht-found-r flex flex-col gap-5">
+        <!-- problem -->
+        <div class="rounded-2xl" style="background:rgba(176,39,31,.05);border:1px solid rgba(176,39,31,.22);padding:1.6rem 1.7rem;">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="ht-serif flex items-center justify-center rounded-full" style="width:30px;height:30px;background:var(--red);color:#F6E7C9;font-size:.85rem;">问</span>
+            <span class="ht-kick" style="color:var(--red);">The Problem</span>
           </div>
-          <p class="text-lg leading-relaxed" style="color:#5C463A;">
-            At peak mall hours customers queue at the counter — and some simply walk away.
-            Loyalty is invisible and unrewarded, and the brand captures no first-party data
-            and has no direct channel to bring guests back.
+          <p style="color:var(--ink-soft);font-size:1rem;line-height:1.65;">
+            Convenience and loyalty live offline only. The queue caps throughput and
+            quietly leaks revenue at the brand's busiest moments.
           </p>
         </div>
-
-        <!-- Solution -->
-        <div class="rounded-2xl p-6" style="background:#3E2723;">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="text-xs font-bold tracking-widest uppercase" style="color:#E9C9A3;">The Solution</span>
+        <!-- solution -->
+        <div class="rounded-2xl" style="background:var(--lacquer);padding:1.7rem 1.8rem;box-shadow:0 18px 40px rgba(39,24,17,.22);">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="ht-serif flex items-center justify-center rounded-full" style="width:30px;height:30px;background:#E7CE9E;color:var(--lacquer);font-size:.85rem;">答</span>
+            <span class="ht-kick" style="color:#D9B477;">The Solution</span>
           </div>
-          <p class="text-lg leading-relaxed" style="color:#F3E7DA;">
-            A premium app that bridges online convenience and offline craftsmanship:
-            order ahead, skip the queue with self-pickup, and earn through the
-            <span class="font-semibold" style="color:#E9C9A3;">Loyal-Tang</span> rewards program —
-            turning an occasional treat into a repeat habit.
+          <p style="color:#E4D3B9;font-size:1.05rem;line-height:1.7;">
+            A premium app that bridges online convenience and offline craft: order ahead,
+            skip the queue with self-pickup, and earn through
+            <span class="ht-serif" style="color:#F1DFBF;">Loyal-Tang</span>, turning an
+            occasional treat into a repeat ritual.
           </p>
         </div>
       </div>
     </div>
 
-    <div class="sl-side relative overflow-hidden" style="background:#F5EFE6;">
-      <img class="w-full h-full object-cover"
-           src="https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=elegant%20hand%20holding%20smartphone%20ordering%20oriental%20dessert%2C%20modern%20minimalist%20cafe%2C%20warm%20brown%20sugar%20tones%2C%20premium%20lifestyle%20photography%2C%20soft%20light"
-           alt="Ordering Hong Tang desserts on mobile" />
-      <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(58,42,34,0), rgba(58,42,34,0.22));"></div>
+    <div class="flex items-end justify-between" style="margin-top:1rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">Hong Tang · The Foundation</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">02<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

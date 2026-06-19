@@ -1,47 +1,75 @@
 <style>
-  .mode-landscape .sl-adm { grid-template-columns: repeat(4, minmax(0,1fr)); }
-  .mode-portrait  .sl-adm { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 0% 100%, rgba(176,138,79,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .ht-mod h3{ font-family:'Marcellus',Georgia,serif; color:var(--ink); font-size:.94rem; }
+  .ht-mod p{ color:var(--ink-soft); font-size:.74rem; line-height:1.4; margin-top:.1rem; }
+  .mode-landscape .ht-mods{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .mode-portrait  .ht-mods{ grid-template-columns: repeat(2, minmax(0,1fr)); }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Admin Panel · Back-Office Console</p>
-    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      The operational twin of the app
-    </h2>
-    <p class="text-base leading-relaxed mb-6" style="color:#5C463A; max-width:54rem;">
-      Web console where every customer-facing object is created, configured, monitored & audited. Role-gated (RBAC), fully audit-logged, multi-country / multi-outlet aware. Shares the same backend, loyalty engine, CMS & payment gateway.
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">13</span>
+
+  <div class="flex flex-col w-full h-full" style="padding:3rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">Admin Panel · Back-Office Console</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.7rem,2.8vw,2.4rem);line-height:1.1;">The operational twin of the app</h2>
+    <p style="color:var(--ink-soft);font-size:.92rem;line-height:1.5;max-width:54rem;margin-top:.5rem;">
+      A web console where every customer-facing object is created, configured, monitored, and audited. Role-gated, fully audit-logged, multi-country / multi-outlet aware; sharing the same backend, loyalty engine, CMS, and payment gateway.
     </p>
 
-    <!-- Roles -->
-    <div class="flex flex-wrap gap-2 mb-6">
-      <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:#3E2723; color:#F3E7DA;">Super Admin</span>
-      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Ops Manager</span>
-      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Store Manager</span>
-      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Marketing / CRM</span>
-      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Loyalty Manager</span>
-      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Finance</span>
-      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Support / CS</span>
-      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Auditor (read-only)</span>
+    <!-- roles -->
+    <div class="flex flex-wrap gap-2" style="margin:1.1rem 0 1.3rem;">
+      <span class="rounded-full" style="background:var(--lacquer);color:#E7CE9E;font-size:.72rem;padding:.32rem .85rem;">Super Admin</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.72rem;padding:.32rem .85rem;">Ops Manager</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.72rem;padding:.32rem .85rem;">Store Manager</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.72rem;padding:.32rem .85rem;">Marketing / CRM</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.72rem;padding:.32rem .85rem;">Loyalty Manager</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.72rem;padding:.32rem .85rem;">Finance</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.72rem;padding:.32rem .85rem;">Support / CS</span>
+      <span class="rounded-full" style="border:1px solid var(--line);color:var(--ink-soft);font-size:.72rem;padding:.32rem .85rem;">Auditor · read-only</span>
     </div>
 
-    <!-- Modules -->
-    <div class="sl-adm grid gap-3 flex-1">
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Dashboard</p><p class="text-xs leading-relaxed" style="color:#5C463A;">KPIs, conversion funnel, loyalty & operational health, drill-down + export.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Order Mgmt</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Live board, state overrides, SLA alerts, cancel/refund, POS resend.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Menu &amp; Catalog</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Items CRUD, option groups, availability matrix, per-outlet pricing, draft/publish.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Outlets</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Hours, last-order cutoff, prep-capacity, fulfillment flags, POS health.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Membership / CRM</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Member directory, loyalty state, audited adjustments, segmentation.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Loyalty Engine</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Crystals rules, Bowls/tier config, thresholds, walk-in scan validation.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Rewards Store</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Catalog CRUD, voucher mapping, tier gating, stock & abuse monitoring.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Vouchers &amp; Promos</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Builder, code generation, welcome-offer config, campaign scheduling, ROI.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Referrals</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Reward config, code registry, attribution funnel, fraud detection.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Content / CMS</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Hero banners, promo rows, FAQ/ToS/Privacy, localized strings.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Notifications</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Transactional templates, campaigns, consent enforcement, delivery analytics.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Payments &amp; Finance</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Txn ledger, refunds workflow, reconciliation, tax/PB1, crystals liability.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Reports &amp; Export</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Sales, loyalty, ROI, retention/cohort, custom builder, scheduled CSV/Excel/API.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">System &amp; Compliance</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Feature flags, RBAC, UU PDP center, global audit log, incident banners.</p></div>
-      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Support / CS Tooling</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Member/order lookup, read-only impersonate-view, canned goodwill actions.</p></div>
-      <div class="rounded-xl p-4" style="background:#3E2723;"><p class="text-sm font-bold mb-1" style="color:#E9C9A3;">Maker-Checker</p><p class="text-xs leading-relaxed" style="color:#F3E7DA;">Dual approval on refunds, crystals/tier adjust, data export, deletion, live-config.</p></div>
+    <!-- modules -->
+    <div class="ht-mods grid gap-x-6 gap-y-3.5 flex-1" style="align-content:start;">
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Dashboard</h3><p>KPIs, conversion funnel, loyalty &amp; operational health, drill-down + export.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Order Mgmt</h3><p>Live board, state overrides, SLA alerts, cancel/refund, POS resend.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Menu &amp; Catalog</h3><p>Items CRUD, option groups, availability matrix, per-outlet pricing, draft/publish.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Outlets</h3><p>Hours, last-order cutoff, prep-capacity, fulfillment flags, POS health.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Membership / CRM</h3><p>Member directory, loyalty state, audited adjustments, segmentation.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Loyalty Engine</h3><p>Crystals rules, Bowls/tier config, thresholds, walk-in scan validation.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Rewards Store</h3><p>Catalog CRUD, voucher mapping, tier gating, stock &amp; abuse monitoring.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Vouchers &amp; Promos</h3><p>Builder, code generation, welcome-offer config, campaign scheduling, ROI.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Referrals</h3><p>Reward config, code registry, attribution funnel, fraud detection.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Content / CMS</h3><p>Hero banners, promo rows, FAQ/ToS/Privacy, localized strings.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Notifications</h3><p>Transactional templates, campaigns, consent enforcement, delivery analytics.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Payments &amp; Finance</h3><p>Txn ledger, refunds workflow, reconciliation, tax/PB1, crystals liability.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Reports &amp; Export</h3><p>Sales, loyalty, ROI, retention/cohort, custom builder, scheduled CSV/Excel/API.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>System &amp; Compliance</h3><p>Feature flags, RBAC, UU PDP center, global audit log, incident banners.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--line);padding-top:.5rem;"><h3>Support / CS Tooling</h3><p>Member/order lookup, read-only impersonate-view, canned goodwill actions.</p></div>
+      <div class="ht-mod" style="border-top:1px solid var(--red);padding-top:.5rem;"><h3 style="color:var(--red);">Maker-Checker</h3><p>Dual approval on refunds, crystals/tier adjust, data export, deletion, live-config.</p></div>
+    </div>
+
+    <div class="flex items-center justify-between" style="margin-top:1rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">RBAC · audit-logged · multi-country</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">13<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
     </div>
   </div>
 </section>

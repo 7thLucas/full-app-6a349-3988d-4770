@@ -1,56 +1,78 @@
 <style>
-  .mode-landscape .sl-sq { flex-direction: row; }
-  .mode-portrait  .sl-sq { flex-direction: column; }
-  .mode-landscape .sl-sq-l { width: 50%; }
-  .mode-portrait  .sl-sq-l { width: 100%; }
-  .mode-landscape .sl-sq-r { width: 50%; }
-  .mode-portrait  .sl-sq-r { width: 100%; }
+  @import url('https://fonts.googleapis.com/css2?family=Marcellus&family=Hanken+Grotesk:wght@300;400;500;600;700&display=swap');
+  .ht{
+    --paper:#FAF4EA; --ink:#3A271D; --ink-soft:#6E5849; --ink-mute:#9A7E62;
+    --gold:#B08A4F; --gold-lt:#C99B57; --red:#B0271F; --lacquer:#271811;
+    --line:rgba(176,138,79,.32);
+    font-family:'Hanken Grotesk',ui-sans-serif,system-ui,sans-serif;
+    background:
+      radial-gradient(120% 90% at 0% 0%, rgba(176,138,79,.12), transparent 55%),
+      radial-gradient(90% 80% at 100% 100%, rgba(176,39,31,.07), transparent 55%),
+      var(--paper);
+  }
+  .ht-serif{ font-family:'Marcellus',Georgia,'Times New Roman',serif; }
+  .ht-tick{ position:absolute; width:15px; height:15px; opacity:.7; }
+  .ht-kick{ color:var(--gold-lt); font-size:.66rem; letter-spacing:.34em; text-transform:uppercase; }
+  .mode-landscape .ht-sq{ flex-direction:row; }
+  .mode-portrait  .ht-sq{ flex-direction:column; }
+  .mode-landscape .ht-sq-l{ width:50%; }
+  .mode-portrait  .ht-sq-l{ width:100%; }
+  .mode-landscape .ht-sq-r{ width:50%; }
+  .mode-portrait  .ht-sq-r{ width:100%; }
 </style>
-<section class="w-full h-full overflow-auto bg-white">
-  <div class="flex flex-col w-full h-full p-12">
-    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Scope, Quality &amp; Roadmap</p>
-    <h2 class="font-bold leading-tight mb-7" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
-      What ships, what waits, what must hold
-    </h2>
+<section class="ht relative w-full h-full overflow-hidden">
+  <span class="ht-tick" style="top:22px;left:22px;border-top:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="top:22px;right:22px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;left:22px;border-bottom:1px solid var(--gold);border-left:1px solid var(--gold);"></span>
+  <span class="ht-tick" style="bottom:22px;right:22px;border-bottom:1px solid var(--gold);border-right:1px solid var(--gold);"></span>
+  <span class="ht-serif" style="position:absolute;top:-2.5rem;right:2.5rem;font-size:16rem;line-height:1;color:rgba(176,138,79,.07);">14</span>
 
-    <div class="sl-sq flex gap-6 flex-1">
-      <div class="sl-sq-l flex flex-col gap-5">
-        <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#C62828;">Out of Scope (this version)</p>
-          <ul class="space-y-2 text-base leading-relaxed" style="color:#5C463A;">
-            <li>• Native in-app delivery — purchase/fulfillment stays on GoFood / GrabFood / ShopeeFood (those orders earn no crystals/Bowls). In-app "Delivery" = status display only.</li>
-            <li>• In-app social feed / community.</li>
-            <li>• User-generated reviews / ratings.</li>
-            <li>• Web ordering / desktop experience.</li>
+  <div class="flex flex-col w-full h-full" style="padding:3.2rem 4rem;">
+    <div class="flex items-center gap-3 mb-2">
+      <span style="width:32px;height:1px;background:var(--gold);"></span>
+      <span class="ht-kick">Scope, Quality &amp; Roadmap</span>
+    </div>
+    <h2 class="ht-serif" style="color:var(--ink);font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.12;">What ships, what waits, what must hold</h2>
+
+    <div class="ht-sq flex gap-6 flex-1" style="margin-top:1.8rem;">
+      <div class="ht-sq-l flex flex-col gap-5">
+        <div class="rounded-2xl" style="border:1px solid rgba(176,39,31,.22);background:rgba(176,39,31,.04);padding:1.4rem 1.6rem;">
+          <p class="ht-kick" style="color:var(--red);margin-bottom:.8rem;">Out of Scope · this version</p>
+          <ul class="space-y-2" style="color:var(--ink-soft);font-size:.92rem;line-height:1.5;">
+            <li>· Native in-app delivery. Purchase/fulfillment stays on GoFood / GrabFood / ShopeeFood (no crystals/Bowls). In-app “Delivery” is status display only.</li>
+            <li>· In-app social feed / community.</li>
+            <li>· User-generated reviews / ratings.</li>
+            <li>· Web ordering / desktop experience.</li>
           </ul>
         </div>
-        <div class="rounded-2xl p-6" style="background:#F5EFE6;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#A86B3C;">Roadmap Items</p>
-          <p class="text-base leading-relaxed" style="color:#5C463A;">Native in-app delivery · Bahasa Indonesia localization (app is currently English).</p>
+        <div class="rounded-2xl" style="background:rgba(176,138,79,.1);padding:1.2rem 1.6rem;">
+          <p class="ht-kick" style="margin-bottom:.6rem;">Roadmap</p>
+          <p style="color:var(--ink-soft);font-size:.95rem;line-height:1.55;">Native in-app delivery · Bahasa Indonesia localization (the app is currently English).</p>
         </div>
       </div>
 
-      <div class="sl-sq-r flex flex-col gap-5">
-        <div class="rounded-2xl p-6 flex-1" style="background:#3E2723;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#E9C9A3;">Non-Functional Requirements</p>
-          <ul class="space-y-2 text-base leading-relaxed" style="color:#F3E7DA;">
-            <li><span style="color:#E9C9A3;">Performance:</span> menu &lt; 2s, 60fps on mid-tier, launch/Members'-Day traffic spikes.</li>
-            <li><span style="color:#E9C9A3;">Reliability:</span> graceful network loss, cached menu, idempotent order placement.</li>
-            <li><span style="color:#E9C9A3;">Security:</span> PCI DSS, TLS + at-rest encryption, OTP rate-limit/lockout, no on-device card data.</li>
-            <li><span style="color:#E9C9A3;">Platform:</span> React Native / Flutter, iOS + Android, current + prior 2 OS versions.</li>
+      <div class="ht-sq-r flex flex-col gap-5">
+        <div class="rounded-2xl flex-1" style="background:var(--lacquer);padding:1.5rem 1.7rem;box-shadow:0 20px 46px rgba(39,24,17,.24);">
+          <p class="ht-kick" style="color:#D9B477;margin-bottom:.9rem;">Non-Functional Requirements</p>
+          <ul class="space-y-2.5" style="color:#E4D3B9;font-size:.95rem;line-height:1.5;">
+            <li><span style="color:#E7CE9E;">Performance —</span> menu &lt; 2s, 60fps on mid-tier, launch / Members'-Day spikes.</li>
+            <li><span style="color:#E7CE9E;">Reliability —</span> graceful network loss, cached menu, idempotent placement.</li>
+            <li><span style="color:#E7CE9E;">Security —</span> PCI DSS, TLS + at-rest encryption, OTP rate-limit/lockout, no on-device card data.</li>
+            <li><span style="color:#E7CE9E;">Platform —</span> React Native / Flutter, iOS + Android, current + prior 2 OS versions.</li>
           </ul>
         </div>
-        <div class="rounded-2xl p-6" style="background:#fff; border:1px dashed #C8915A;">
-          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Privacy &amp; Compliance</p>
-          <p class="text-base leading-relaxed" style="color:#5C463A;">
-            Indonesia UU PDP (No. 27/2022): disclosed/consented data use, marketing-consent management, account/data deletion, data minimization. WCAG AA baselines. Consent-respecting analytics across the funnel.
+        <div class="rounded-2xl" style="border:1px dashed var(--gold);padding:1.2rem 1.5rem;">
+          <p class="ht-kick" style="margin-bottom:.5rem;">Privacy &amp; Compliance</p>
+          <p style="color:var(--ink-soft);font-size:.92rem;line-height:1.55;">
+            Indonesia UU PDP (No. 27/2022): disclosed/consented data use, marketing-consent management, account/data deletion, data minimization. WCAG AA baselines; consent-respecting funnel analytics.
           </p>
         </div>
       </div>
     </div>
 
-    <p class="mt-6 text-sm" style="color:#9A8575;">
-      Edge/empty/error states defined per the states contract for every data-driven screen — offline banners, OTP fallback, sold-out tags, voucher conflicts, payment retry (no double-charge), refund-pending notes.
-    </p>
+    <div class="flex items-center justify-between" style="margin-top:1.2rem;">
+      <span class="ht-kick" style="color:var(--ink-mute);">States contract on every data screen · offline · OTP fallback · retry</span>
+      <span class="ht-serif" style="color:var(--gold);font-size:1.1rem;">14<span style="color:#B7A079;font-size:.78rem;"> / 14</span></span>
+    </div>
   </div>
 </section>
