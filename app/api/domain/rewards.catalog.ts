@@ -91,6 +91,22 @@ export function makeCode(prefix: string): string {
   return `${prefix}${Date.now().toString(36).toUpperCase().slice(-5)}${counter}`;
 }
 
+// Build a wallet Voucher from an admin-config template (Sprint 15).
+export function voucherFromTemplate(t: any, codePrefix = "OFFER"): Voucher {
+  return {
+    id: "v-" + Date.now() + Math.random().toString(36).slice(2, 6),
+    code: makeCode(codePrefix),
+    title: t.title,
+    description: t.description,
+    discountType: t.discountType,
+    discountValue: t.discountValue,
+    minSpend: t.minSpend ?? 0,
+    expiresAt: new Date(Date.now() + (t.validDays ?? 30) * 86400_000).toISOString(),
+    used: false,
+    source: t.source ?? "promo",
+  };
+}
+
 export function welcomeVoucher(): Voucher {
   const expires = new Date(Date.now() + 30 * 86400_000);
   return {

@@ -1,15 +1,18 @@
 import crypto from "node:crypto";
-import { TIERS, tierForBowls, computeCrystals } from "~/lib/domain.types";
+import { TIERS } from "~/lib/domain.types";
 import type { TierKey } from "~/lib/domain.types";
+import { loyaltyConfig } from "./loyalty-config.service";
 
 // ── LoyaltyService (Sprint 7) — the core earn/spend/tier engine ──────────────
 // Pure mutations over a member `profile` bag; the caller persists. Rules live
-// behind small policy objects (EarnRule / BowlsCounter / TierPolicy) so admin
-// (Sprint 13/14) can reconfigure without touching consumer flows.
+// behind small policy objects (EarnRule / BowlsCounter / TierPolicy) that READ
+// the admin-managed LoyaltyConfig (Sprint 14, DIP) — changing a multiplier,
+// threshold, or expiry window needs no code change here.
 
-const YEAR_MS = 365 * 86400_000;
-const BATCH_TTL_MS = YEAR_MS; // per-batch Sugar Crystal expiry (PRD §10)
-const EXPIRY_REMINDER_MS = 7 * 86400_000;
+const DAY_MS = 86400_000;
+const batchTtlMs = () => loyaltyConfig().expiryDays * DAY_MS;
+const bowlsWindowMs = () => loyaltyConfig().bowlsWindowDays * DAY_MS;
+const reminderMs = () => loyaltyConfig().reminderDays * DAY_MS;
 
 export interface CrystalBatch {
   id: string;
@@ -47,30 +50,41 @@ function uid(p: string): string {
   return p + "-" + crypto.randomBytes(5).toString("hex");
 }
 
+// Tier order (seeker→master) is fixed; thresholds/multipliers come from config.
+const TIER_ORDER: TierKey[] = TIERS.map((t) => t.key);
+
 // ── EarnRule ─────────────────────────────────────────────────────────────────
-// 1 crystal per Rp 1.000 of net spend (subtotal after discount, excl. PB1/
-// delivery), times the tier multiplier, floored.
+// `earnRatePerRp` crystals-worth per Rp of net spend × tier multiplier, with
+// configurable rounding. All values read from LoyaltyConfig (admin-tunable).
 const EarnRule = {
   crystals(netSpend: number, multiplier: number): number {
     if (netSpend <= 0) return 0;
-    return computeCrystals(netSpend, multiplier);
+    const cfg = loyaltyConfig();
+    const raw = (netSpend / cfg.earnRatePerRp) * multiplier;
+    return cfg.rounding === "round" ? Math.round(raw) : Math.floor(raw);
   },
 };
 
 // ── TierPolicy ───────────────────────────────────────────────────────────────
 const TierPolicy = {
   forBowls(bowls: number): TierKey {
-    return tierForBowls(bowls).key;
+    const th = loyaltyConfig().tierThresholds;
+    let current: TierKey = TIER_ORDER[0];
+    for (const key of TIER_ORDER) {
+      if (bowls >= (th[key] ?? Infinity)) current = key;
+    }
+    return current;
   },
   multiplier(tier: TierKey): number {
-    return TIERS.find((t) => t.key === tier)?.multiplier ?? 1;
+    return loyaltyConfig().multipliers[tier] ?? 1;
   },
-  // One-tier-max downgrade (month-end). Never drops more than a single step.
+  // Configurable max-step downgrade (month-end). Default one tier.
   stepDown(current: TierKey, target: TierKey): TierKey {
-    const ci = TIERS.findIndex((t) => t.key === current);
-    const ti = TIERS.findIndex((t) => t.key === target);
+    const ci = TIER_ORDER.indexOf(current);
+    const ti = TIER_ORDER.indexOf(target);
     if (ti >= ci) return current; // no downgrade
-    return TIERS[Math.max(ci - 1, ti)].key;
+    const maxSteps = Math.max(1, loyaltyConfig().downgradeMaxSteps);
+    return TIER_ORDER[Math.max(ci - maxSteps, ti)];
   },
 };
 
@@ -95,7 +109,7 @@ export class LoyaltyService {
           amount: legacy,
           remaining: legacy,
           earnedAt: now.toISOString(),
-          expiresAt: new Date(now.getTime() + BATCH_TTL_MS).toISOString(),
+          expiresAt: new Date(now.getTime() + batchTtlMs()).toISOString(),
         });
         profile.ledger.push({
           id: uid("led"),
@@ -116,9 +130,22 @@ export class LoyaltyService {
     return (profile.crystalBatches as CrystalBatch[]).reduce((s, b) => s + Math.max(0, b.remaining), 0);
   }
 
+  /** Config-aware crystal preview for a net spend at a given tier (used by checkout estimate). */
+  static crystalsFor(netSpend: number, tier: TierKey): number {
+    return EarnRule.crystals(netSpend, TierPolicy.multiplier(tier));
+  }
+
+  static isExcludedChannel(channel: string): boolean {
+    return loyaltyConfig().excludedChannels.includes(channel);
+  }
+
+  static isExcludedSku(itemId: string): boolean {
+    return loyaltyConfig().excludedSkus.includes(itemId);
+  }
+
   /** Bowls in the trailing 365-day window (BowlsCounter). */
   static bowlsWindow(profile: Record<string, any>, now: Date = new Date()): number {
-    const cutoff = now.getTime() - YEAR_MS;
+    const cutoff = now.getTime() - bowlsWindowMs();
     return (profile.bowlEvents as BowlEvent[])
       .filter((e) => new Date(e.at).getTime() >= cutoff || e.itemId === "legacy")
       .reduce((s, e) => s + e.qty, 0);
@@ -155,7 +182,7 @@ export class LoyaltyService {
         amount: crystalsEarned,
         remaining: crystalsEarned,
         earnedAt: now.toISOString(),
-        expiresAt: new Date(now.getTime() + BATCH_TTL_MS).toISOString(),
+        expiresAt: new Date(now.getTime() + batchTtlMs()).toISOString(),
       });
       profile.ledger.push({
         id: uid("led"),
@@ -268,7 +295,7 @@ export class LoyaltyService {
   /** Batches expiring within 7 days and not yet reminded. */
   static expiringSoon(profile: Record<string, any>, now: Date = new Date()): CrystalBatch[] {
     LoyaltyService.ensure(profile);
-    const limit = now.getTime() + EXPIRY_REMINDER_MS;
+    const limit = now.getTime() + reminderMs();
     return (profile.crystalBatches as CrystalBatch[]).filter(
       (b) => b.remaining > 0 && !b.reminded && new Date(b.expiresAt).getTime() <= limit,
     );

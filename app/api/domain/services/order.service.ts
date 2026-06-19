@@ -10,7 +10,7 @@ import { LoyaltyService } from "./loyalty.service";
 import { NotificationService } from "./notification.service";
 import { ReferralService } from "./referral.service";
 import { VoucherEngine, type VoucherLine } from "./voucher.engine";
-import { computeCrystals, TIERS } from "~/lib/domain.types";
+import { TIERS } from "~/lib/domain.types";
 import { breakdown, resolveOptions, unitPrice as calcUnitPrice } from "~/lib/price";
 import type { Voucher, CartLine, OrderStatus, SelectedOption } from "~/lib/domain.types";
 
@@ -206,13 +206,18 @@ export class OrderService {
     }
 
     // Projected loyalty (display only). Actual credit happens on completion
-    // (Sprint 7). Third-party-channel orders earn nothing (PRD §10 exclusions).
+    // (Sprint 7). Exclusions (channel / SKU) come from LoyaltyConfig (Sprint 14).
     const profile = LoyaltyService.ensure((user.profile ?? {}) as Record<string, any>);
     const channel = payload.channel || "app";
-    const qualifies = channel !== "third-party" && totals.netSpend > 0;
-    const tier = TIERS.find((t) => t.key === LoyaltyService.effectiveTier(profile))!;
-    const crystalsEarned = qualifies ? computeCrystals(totals.netSpend, tier.multiplier) : 0;
-    const bowlsEarned = qualifies ? lines.reduce((s, l) => s + l.quantity, 0) : 0;
+    const tier = LoyaltyService.effectiveTier(profile);
+    const qualLines = lines.filter((l) => !LoyaltyService.isExcludedSku(l.itemId));
+    const qualNet = LoyaltyService.isExcludedChannel(channel)
+      ? 0
+      : qualLines.reduce((s, l) => s + l.unitPrice * l.quantity, 0) - totals.discount;
+    const crystalsEarned = LoyaltyService.crystalsFor(Math.max(0, qualNet), tier);
+    const bowlsEarned = LoyaltyService.isExcludedChannel(channel)
+      ? 0
+      : qualLines.reduce((s, l) => s + l.quantity, 0);
 
     const now = new Date();
     let order;
@@ -331,10 +336,15 @@ export class OrderService {
 
   /** Credit Sugar Crystals + Bowls + fire referral qualification on completion. */
   private static async creditCompletion(order: any, profile: Record<string, any>, userId: string) {
-    if (order.channel !== "third-party" && order.netSpend > 0) {
+    // Exclusions (channel / SKU) are config-driven (Sprint 14).
+    const channelOk = !LoyaltyService.isExcludedChannel(order.channel ?? "app");
+    const qualLines = (order.lines ?? []).filter((l: any) => !LoyaltyService.isExcludedSku(l.itemId));
+    const qualNet = qualLines.reduce((s: number, l: any) => s + l.unitPrice * l.quantity, 0) - (order.discount ?? 0);
+
+    if (channelOk && qualNet > 0) {
       const result = LoyaltyService.accrue(profile, {
-        netSpend: order.netSpend,
-        bowlItems: (order.lines ?? []).map((l: any) => ({ itemId: l.itemId, qty: l.quantity })),
+        netSpend: Math.max(0, qualNet),
+        bowlItems: qualLines.map((l: any) => ({ itemId: l.itemId, qty: l.quantity })),
       });
       order.crystalsEarned = result.crystalsEarned; // actual (multiplier at completion)
       order.bowlsEarned = result.bowlsEarned;

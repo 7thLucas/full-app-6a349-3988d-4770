@@ -3,8 +3,9 @@ import { PhoneOtpService } from "~/modules/authentication/phone-otp.service";
 import { LoyaltyService } from "./loyalty.service";
 import { NotificationService } from "./notification.service";
 import { RewardsService } from "./rewards.service";
+import { MarketingConfigService } from "./marketing-config.service";
 import type { Voucher } from "~/lib/domain.types";
-import { welcomeVoucher, referralWelcomeVoucher } from "../rewards.catalog";
+import { voucherFromTemplate } from "../rewards.catalog";
 
 function makeError(message: string, statusCode: number): Error {
   return Object.assign(new Error(message), { statusCode });

@@ -39,6 +39,22 @@ export class MenuItem extends CommonTypegooseEntity {
 
   @prop({ type: Number, default: 0 })
   sortOrder!: number;
+
+  // Draft/publish (Sprint 13): draft edits do not appear in the consumer menu.
+  @prop({ type: Boolean, default: true })
+  published!: boolean;
+
+  // Effective-dated per-outlet/country price overrides (Sprint 13 §14.5).
+  // [{ outletId?, country?, price, effectiveFrom (ISO) }]
+  @prop({ type: Object, default: [] })
+  priceOverrides!: any[];
+
+  // Calorie / allergen metadata (Sprint 1/13).
+  @prop({ type: Number, default: null })
+  calories!: number | null;
+
+  @prop({ type: [String], default: [] })
+  allergens!: string[];
 }
 
 export const MenuItemModel = getModelForClass(MenuItem);

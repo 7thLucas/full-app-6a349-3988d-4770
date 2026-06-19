@@ -1,22 +1,48 @@
 import { OutletModel } from "../models/outlet.model";
 import { MenuItemModel } from "../models/menu-item.model";
+import { CategoryModel } from "../models/category.model";
 import { OutletService } from "./outlet.service";
+import { CATEGORIES } from "~/lib/domain.types";
 
 const outletDto = (o: any) => OutletService.toDto(o);
 
-function itemDto(m: any, soldOut = false) {
+/**
+ * Resolve the effective price for an item at an outlet/country (Sprint 13).
+ * Picks the most-specific, currently-effective override; else base price.
+ */
+export function resolvePrice(m: any, outlet?: any): number {
+  const overrides: any[] = Array.isArray(m.priceOverrides) ? m.priceOverrides : [];
+  if (!overrides.length || !outlet) return m.basePrice;
+  const now = Date.now();
+  const applicable = overrides
+    .filter((o) => !o.effectiveFrom || new Date(o.effectiveFrom).getTime() <= now)
+    .filter((o) => (o.outletId ? o.outletId === outlet._id?.toString() : true))
+    .filter((o) => (o.country ? o.country === outlet.country : true));
+  if (!applicable.length) return m.basePrice;
+  // Most specific first: outlet match beats country-only; then latest effective.
+  applicable.sort((a, b) => {
+    const spec = (x: any) => (x.outletId ? 2 : x.country ? 1 : 0);
+    if (spec(b) !== spec(a)) return spec(b) - spec(a);
+    return new Date(b.effectiveFrom ?? 0).getTime() - new Date(a.effectiveFrom ?? 0).getTime();
+  });
+  return Number(applicable[0].price);
+}
+
+function itemDto(m: any, soldOut = false, outlet?: any) {
   return {
     id: m._id.toString(),
     slug: m.slug,
     name: m.name,
     description: m.description,
     category: m.category,
-    basePrice: m.basePrice,
+    basePrice: resolvePrice(m, outlet),
     imageUrl: m.imageUrl,
     tags: m.tags ?? [],
     isSignature: m.isSignature ?? false,
     available: m.available ?? true,
     soldOut,
+    calories: m.calories ?? null,
+    allergens: m.allergens ?? [],
     optionGroups: m.optionGroups ?? [],
     sortOrder: m.sortOrder ?? 0,
   };
@@ -42,17 +68,25 @@ export class CatalogService {
   static async listMenu(outletId?: string) {
     const items = await MenuItemModel.find().sort({ sortOrder: 1 }).lean();
     let soldOutSet = new Set<string>();
+    let outlet: any = null;
     if (outletId) {
-      const outlet = await OutletModel.findById(outletId).lean();
+      outlet = await OutletModel.findById(outletId).lean();
       soldOutSet = new Set((outlet?.soldOutItemIds ?? []).map(String));
     }
     return items
-      .filter((m) => m.available ?? true)
-      .map((m) => itemDto(m, soldOutSet.has(m._id.toString())));
+      .filter((m) => (m.available ?? true) && (m.published ?? true)) // drafts hidden from consumer
+      .map((m) => itemDto(m, soldOutSet.has(m._id.toString()), outlet));
   }
 
   static async menuForOutlet(outletId: string) {
     return CatalogService.listMenu(outletId);
+  }
+
+  /** Categories in admin-defined order; falls back to the static set. */
+  static async listCategories() {
+    const cats = await CategoryModel.find().sort({ sortOrder: 1 }).lean();
+    if (cats.length) return cats.map((c) => ({ key: c.key, name: c.name }));
+    return CATEGORIES;
   }
 
   static async getItem(id: string) {
