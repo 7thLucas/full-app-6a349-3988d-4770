@@ -178,3 +178,45 @@ justified.
   *Note:* native in-app delivery is a **roadmap** item; today delivery runs via
   third-party platforms (GoFood / GrabFood / ShopeeFood) and those orders **do not** earn
   Sugar Crystals.
+
+## 7. Vouchers & Promo Codes
+
+- Each voucher defines: **discount type/value, eligible items/categories, minimum spend,
+  and validity window**.
+- **No stacking:** exactly **one voucher OR one promo code per order**. Vouchers cannot
+  combine with each other, and a voucher cannot combine with a promo code. Applying a new
+  discount **replaces** the current one (it is not added).
+- **Application:** validated at checkout against the current cart and the selected
+  fulfillment mode (pickup / delivery).
+- Vouchers expiring within 7 days surface in red **with a text label** (never color alone);
+  expired / used vouchers collapse into a dimmed section.
+
+## 8. Ordering & Fulfillment Rules
+
+- **Store-first:** store selection is required **before** menu browsing; menu availability
+  and prep times are store-specific.
+- **Hours:** orders cannot be placed when a store is closed or past its last-order cutoff.
+- **ETA transparency:** realistic, dynamic prep-time / ETA estimates are surfaced **before
+  payment** and on the Order Status page — a key design priority under peak load.
+- **Payment methods (Indonesia):** QRIS; e-wallets (GoPay, OVO, DANA, ShopeePay, LinkAja);
+  credit / debit card (Visa / Mastercard).
+- **Locked after payment:** once paid, an order is locked — items, customizations, quantity,
+  store, and fulfillment mode cannot be changed. All editing affordances (edit/delete cart
+  lines, change store/voucher/payment) exist **only** in the pre-payment Cart & Checkout
+  stage. To change anything, the user cancels within the cancellation window and places a
+  new order.
+- **Cancellation:** a clear cancellation window; an order shown as "Cancelled" was
+  auto-cancelled and refunded. If the app already showed an extended wait time during peak
+  hours and the user knowingly proceeded, cancellation on wait-time grounds does not apply.
+- **Refunds:** processed to the original payment method; allow up to **15 working days**
+  depending on the bank / provider.
+
+## 9. Referrals
+
+- Each user has a **unique referral code** (Home / Me → Refer a Friend → Invite Now).
+- Entering a code is **optional** and only **first-time registrants** can apply one
+  (copy-paste recommended to avoid input errors).
+- The **referee** signs up with the code and receives welcome vouchers; the **referrer**
+  earns rewards (free Hong Tang desserts / drinks, discount vouchers, gift items) once the
+  referee successfully registers and meets the requirement (first qualifying purchase).
+- Reward values and **anti-abuse limits** (per-user caps) are set by the active campaign.
