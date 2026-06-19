@@ -1,0 +1,58 @@
+<style>
+  .mode-landscape .sl-tiers { grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .mode-portrait  .sl-tiers { grid-template-columns: repeat(2, minmax(0,1fr)); }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="flex flex-col w-full h-full p-12">
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Tiered Membership</p>
+    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+      Four tiers, set by Bowls — benefits escalate
+    </h2>
+    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
+      Tier-up is real-time the moment Bowls cross a threshold. Downgrades only at month-end recalc (max one tier, one-cycle grace). Each tier inherits all lower benefits.
+    </p>
+
+    <!-- Tier columns -->
+    <div class="sl-tiers grid gap-4 mb-6">
+      <!-- Seeker -->
+      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#F3E6D8,#E4CDB4); border:1px solid #DBC2A6;">
+        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#8A6A4A;">Bronze</span>
+        <h3 class="text-lg font-bold" style="color:#3E2723;">Tang Seeker</h3>
+        <p class="text-sm mb-3" style="color:#7A4E2D;">0–9 Bowls</p>
+        <p class="text-2xl font-bold mb-3" style="color:#3E2723;">1.0×</p>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Auto-enroll floor. Rewards Store, welcome rewards, birthday drink/dessert voucher.</p>
+      </div>
+      <!-- Explorer -->
+      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#EFEFF1,#D2D5DA); border:1px solid #C4C8CF;">
+        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#6E727A;">Silver</span>
+        <h3 class="text-lg font-bold" style="color:#3E2723;">Tang Explorer</h3>
+        <p class="text-sm mb-3" style="color:#6E727A;">10–39 Bowls</p>
+        <p class="text-2xl font-bold mb-3" style="color:#3E2723;">1.25×</p>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">+ Merch birthday voucher, early access to seasonal launches, occasional 2nd-item discount.</p>
+      </div>
+      <!-- Pioneer -->
+      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#F7E7C4,#E3C277); border:1px solid #D9B65F;">
+        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#9A7A2E;">Gold</span>
+        <h3 class="text-lg font-bold" style="color:#3E2723;">Tang Pioneer</h3>
+        <p class="text-sm mb-3" style="color:#9A7A2E;">40–79 Bowls</p>
+        <p class="text-2xl font-bold mb-3" style="color:#3E2723;">1.5×</p>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">+ Premium merch, periodic 15%-off-bill, free-item milestone, exclusive merch redemption.</p>
+      </div>
+      <!-- Master -->
+      <div class="rounded-2xl p-5 flex flex-col" style="background:linear-gradient(160deg,#4E382C,#2C1E17); border:1px solid #5E463A;">
+        <span class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#E9C9A3;">Platinum</span>
+        <h3 class="text-lg font-bold" style="color:#fff;">Tang Master</h3>
+        <p class="text-sm mb-3" style="color:#E9C9A3;">80+ Bowls</p>
+        <p class="text-2xl font-bold mb-3" style="color:#fff;">2.0×</p>
+        <p class="text-sm leading-relaxed" style="color:#F3E7DA;">+ Higher-frequency 15%-off, VIP invites & member-only events, priority concierge support.</p>
+      </div>
+    </div>
+
+    <div class="rounded-2xl p-5 mt-auto" style="background:#3E2723;">
+      <p class="text-base leading-relaxed" style="color:#F3E7DA;">
+        <span class="font-bold" style="color:#E9C9A3;">Welcome offer —</span>
+        new App registrants get ONE set of New User Welcome Rewards in My Vouchers (App-only; Mini Program/H5 excluded; unused vouchers expire, non-extendable). Members' Day specials & VIP events run via the App.
+      </p>
+    </div>
+  </div>
+</section>

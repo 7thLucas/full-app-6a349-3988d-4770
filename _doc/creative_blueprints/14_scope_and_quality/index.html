@@ -1,0 +1,56 @@
+<style>
+  .mode-landscape .sl-sq { flex-direction: row; }
+  .mode-portrait  .sl-sq { flex-direction: column; }
+  .mode-landscape .sl-sq-l { width: 50%; }
+  .mode-portrait  .sl-sq-l { width: 100%; }
+  .mode-landscape .sl-sq-r { width: 50%; }
+  .mode-portrait  .sl-sq-r { width: 100%; }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="flex flex-col w-full h-full p-12">
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Scope, Quality &amp; Roadmap</p>
+    <h2 class="font-bold leading-tight mb-7" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+      What ships, what waits, what must hold
+    </h2>
+
+    <div class="sl-sq flex gap-6 flex-1">
+      <div class="sl-sq-l flex flex-col gap-5">
+        <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#C62828;">Out of Scope (this version)</p>
+          <ul class="space-y-2 text-base leading-relaxed" style="color:#5C463A;">
+            <li>• Native in-app delivery — purchase/fulfillment stays on GoFood / GrabFood / ShopeeFood (those orders earn no crystals/Bowls). In-app "Delivery" = status display only.</li>
+            <li>• In-app social feed / community.</li>
+            <li>• User-generated reviews / ratings.</li>
+            <li>• Web ordering / desktop experience.</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl p-6" style="background:#F5EFE6;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#A86B3C;">Roadmap Items</p>
+          <p class="text-base leading-relaxed" style="color:#5C463A;">Native in-app delivery · Bahasa Indonesia localization (app is currently English).</p>
+        </div>
+      </div>
+
+      <div class="sl-sq-r flex flex-col gap-5">
+        <div class="rounded-2xl p-6 flex-1" style="background:#3E2723;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#E9C9A3;">Non-Functional Requirements</p>
+          <ul class="space-y-2 text-base leading-relaxed" style="color:#F3E7DA;">
+            <li><span style="color:#E9C9A3;">Performance:</span> menu &lt; 2s, 60fps on mid-tier, launch/Members'-Day traffic spikes.</li>
+            <li><span style="color:#E9C9A3;">Reliability:</span> graceful network loss, cached menu, idempotent order placement.</li>
+            <li><span style="color:#E9C9A3;">Security:</span> PCI DSS, TLS + at-rest encryption, OTP rate-limit/lockout, no on-device card data.</li>
+            <li><span style="color:#E9C9A3;">Platform:</span> React Native / Flutter, iOS + Android, current + prior 2 OS versions.</li>
+          </ul>
+        </div>
+        <div class="rounded-2xl p-6" style="background:#fff; border:1px dashed #C8915A;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Privacy &amp; Compliance</p>
+          <p class="text-base leading-relaxed" style="color:#5C463A;">
+            Indonesia UU PDP (No. 27/2022): disclosed/consented data use, marketing-consent management, account/data deletion, data minimization. WCAG AA baselines. Consent-respecting analytics across the funnel.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-6 text-sm" style="color:#9A8575;">
+      Edge/empty/error states defined per the states contract for every data-driven screen — offline banners, OTP fallback, sold-out tags, voucher conflicts, payment retry (no double-charge), refund-pending notes.
+    </p>
+  </div>
+</section>

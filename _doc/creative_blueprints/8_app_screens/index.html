@@ -1,0 +1,59 @@
+<style>
+  .mode-landscape .sl-screens { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .mode-portrait  .sl-screens { grid-template-columns: repeat(1, minmax(0,1fr)); }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="flex flex-col w-full h-full p-12">
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">The App · Screen Map</p>
+    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+      Five tabs, one calm ordering loop
+    </h2>
+    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
+      Persistent bottom nav: <span class="font-semibold" style="color:#3E2723;">Home · Menu · Rewards · Cart · Me</span>.
+      Transactional screens open as bottom-up sheets; drill-downs push left-to-right.
+    </p>
+
+    <div class="sl-screens grid gap-4 flex-1">
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">① Home</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Greeting + QR pass, hero banner carousel, Pickup/Delivery cards, loyalty snapshot, recent-orders strip.</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">② Menu</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Store row + Pickup⇆Delivery toggle, scroll-spy category pills, cut-out item rows with Red "+".</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">③ Product Detail</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Sheet: hero image, segmented Ice/Sugar, topping checklist with surcharges, live-price Add-to-Cart.</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">④ Cart &amp; Checkout</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Fulfillment + prep estimate, editable lines, voucher row, payment picker, price breakdown, Confirm Payment.</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">⑤ Order Status</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Stepper Received → Preparing → Ready → Collected; pickup QR; live push + pull-to-refresh.</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#3E2723;">
+        <h3 class="text-base font-bold mb-1" style="color:#fff;">⑥ Rewards</h3>
+        <p class="text-sm leading-relaxed" style="color:#F3E7DA;">Tilt-reflective membership card, Rewards Store grid + My Vouchers tabs, Sugar Crystals history.</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">⑦ Store Locator</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Map with branded pins + draggable distance-sorted list, hours, directions, "Order from this store".</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">⑧ Me / Profile</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Order history & reorder, personal info, addresses, payment methods, refer-a-friend, settings.</p>
+      </div>
+      <div class="rounded-2xl p-5" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <h3 class="text-base font-bold mb-1" style="color:#3E2723;">⑨ Onboarding / Auth</h3>
+        <p class="text-sm leading-relaxed" style="color:#5C463A;">Country → phone → OTP (SMS/WhatsApp) → optional referral → permissions → minimal profile. Passwordless.</p>
+      </div>
+    </div>
+
+    <p class="mt-6 text-sm" style="color:#9A8575;">
+      Every data-driven screen defines loading, populated, empty, and error states (skeletons first, never bare spinners).
+    </p>
+  </div>
+</section>

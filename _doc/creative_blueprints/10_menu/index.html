@@ -1,0 +1,82 @@
+<style>
+  .mode-landscape .sl-menu { flex-direction: row; }
+  .mode-portrait  .sl-menu { flex-direction: column; }
+  .mode-landscape .sl-menu-l { width: 62%; }
+  .mode-portrait  .sl-menu-l { width: 100%; }
+  .mode-landscape .sl-menu-r { width: 38%; }
+  .mode-portrait  .sl-menu-r { width: 100%; }
+  .mode-landscape .sl-cats { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .mode-portrait  .sl-cats { grid-template-columns: repeat(1, minmax(0,1fr)); }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="flex flex-col w-full h-full p-12">
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">The Menu · Real Catalog</p>
+    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+      Taiwanese cold &amp; Hong Kong warm desserts
+    </h2>
+    <p class="text-base leading-relaxed mb-6" style="color:#5C463A; max-width:52rem;">
+      Items tagged warm vs. cold so users filter by serving temperature. Prices below are reference (Grand Indonesia, Jun 2026) — vary by outlet & promo, maintained centrally in the Admin Panel.
+    </p>
+
+    <div class="sl-menu flex gap-6 flex-1">
+      <div class="sl-menu-l flex flex-col">
+        <div class="sl-cats grid gap-3">
+          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Signatures &amp; Series <span class="text-xs font-normal" style="color:#A86B3C;">Rp 41–54k</span></p>
+            <p class="text-xs leading-relaxed" style="color:#5C463A;">Grass Jelly · Soya · Taro — Signature / Classic / Favorite. Taiwan Ice Pudding (3 Mix).</p>
+          </div>
+          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Durian &amp; Mango <span class="text-xs font-normal" style="color:#A86B3C;">Rp 43–69k</span></p>
+            <p class="text-xs leading-relaxed" style="color:#5C463A;">Durian Coco Pudding, Durian Grassjelly; Mango Soup + pudding/grass jelly/ice cream.</p>
+          </div>
+          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Thai Series <span class="text-xs font-normal" style="color:#A86B3C;">Rp 39–50k</span></p>
+            <p class="text-xs leading-relaxed" style="color:#5C463A;">Thai Mango Coco (choose topping); Thai Coconut Ice — Coco Peach / Mango / Durian.</p>
+          </div>
+          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Classic Warm <span class="text-xs font-normal" style="color:#A86B3C;">Rp 35–39k</span></p>
+            <p class="text-xs leading-relaxed" style="color:#5C463A;">Ginger Soup, Red Bean Soup, Ketan Hitam — Hong Kong-style warm desserts.</p>
+          </div>
+          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Fresh Milk Series <span class="text-xs font-normal" style="color:#A86B3C;">Rp 35k</span></p>
+            <p class="text-xs leading-relaxed" style="color:#5C463A;">Grass Jelly QQ 28, Tiger Pudding, Taro Soy, Ginger Tangyuan.</p>
+          </div>
+          <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+            <p class="text-sm font-bold mb-1" style="color:#3E2723;">Beverages <span class="text-xs font-normal" style="color:#A86B3C;">Rp 19–35k</span></p>
+            <p class="text-xs leading-relaxed" style="color:#5C463A;">Tiger Milk, Royal Milk Tea, Choco Lava, Strawberry Lemonade, Coffee Tiger. + Karaage Curry Rice (savory).</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="sl-menu-r flex flex-col gap-5">
+        <div class="rounded-2xl p-6 flex-1" style="background:#3E2723;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#E9C9A3;">Customization</p>
+          <p class="text-sm leading-relaxed mb-3" style="color:#F3E7DA;">
+            <span style="color:#E9C9A3;">Temperature:</span> Hot / Normal / Less / No Ice<br/>
+            <span style="color:#E9C9A3;">Sugar:</span> 100 / 70 / 50 / 30 / 0%
+          </p>
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#E9C9A3;">Toppings <span class="font-normal" style="color:#F3E7DA;">+Rp 5–8k</span></p>
+          <div class="flex flex-wrap gap-1.5">
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Pearl/Bubble</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Q Ball</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Mochi</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Grass Jelly</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Mango Pudding</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Coconut Pudding</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">3 Mix</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Soya Pudding</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Peanut</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Red Bean</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Ketan</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Ronde</span>
+            <span class="px-2 py-0.5 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Ice Cream</span>
+          </div>
+        </div>
+        <div class="rounded-2xl p-5" style="background:#F5EFE6;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-1" style="color:#A86B3C;">Categories drive the Menu page</p>
+          <p class="text-sm leading-relaxed" style="color:#5C463A;">Sticky pill bar with scroll-spy; sold-out items dimmed ("Habis"), store-unavailable hidden.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

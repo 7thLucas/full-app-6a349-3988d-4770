@@ -1,0 +1,47 @@
+<style>
+  .mode-landscape .sl-adm { grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .mode-portrait  .sl-adm { grid-template-columns: repeat(2, minmax(0,1fr)); }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="flex flex-col w-full h-full p-12">
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Admin Panel · Back-Office Console</p>
+    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+      The operational twin of the app
+    </h2>
+    <p class="text-base leading-relaxed mb-6" style="color:#5C463A; max-width:54rem;">
+      Web console where every customer-facing object is created, configured, monitored & audited. Role-gated (RBAC), fully audit-logged, multi-country / multi-outlet aware. Shares the same backend, loyalty engine, CMS & payment gateway.
+    </p>
+
+    <!-- Roles -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background:#3E2723; color:#F3E7DA;">Super Admin</span>
+      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Ops Manager</span>
+      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Store Manager</span>
+      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Marketing / CRM</span>
+      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Loyalty Manager</span>
+      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Finance</span>
+      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Support / CS</span>
+      <span class="px-3 py-1 rounded-full text-xs font-medium" style="background:#F5EFE6; color:#7A4E2D;">Auditor (read-only)</span>
+    </div>
+
+    <!-- Modules -->
+    <div class="sl-adm grid gap-3 flex-1">
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Dashboard</p><p class="text-xs leading-relaxed" style="color:#5C463A;">KPIs, conversion funnel, loyalty & operational health, drill-down + export.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Order Mgmt</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Live board, state overrides, SLA alerts, cancel/refund, POS resend.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Menu &amp; Catalog</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Items CRUD, option groups, availability matrix, per-outlet pricing, draft/publish.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Outlets</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Hours, last-order cutoff, prep-capacity, fulfillment flags, POS health.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Membership / CRM</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Member directory, loyalty state, audited adjustments, segmentation.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Loyalty Engine</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Crystals rules, Bowls/tier config, thresholds, walk-in scan validation.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Rewards Store</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Catalog CRUD, voucher mapping, tier gating, stock & abuse monitoring.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Vouchers &amp; Promos</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Builder, code generation, welcome-offer config, campaign scheduling, ROI.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Referrals</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Reward config, code registry, attribution funnel, fraud detection.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Content / CMS</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Hero banners, promo rows, FAQ/ToS/Privacy, localized strings.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Notifications</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Transactional templates, campaigns, consent enforcement, delivery analytics.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Payments &amp; Finance</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Txn ledger, refunds workflow, reconciliation, tax/PB1, crystals liability.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Reports &amp; Export</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Sales, loyalty, ROI, retention/cohort, custom builder, scheduled CSV/Excel/API.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">System &amp; Compliance</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Feature flags, RBAC, UU PDP center, global audit log, incident banners.</p></div>
+      <div class="rounded-xl p-4" style="background:#FBEDE3; border:1px solid #ECD6C4;"><p class="text-sm font-bold mb-1" style="color:#3E2723;">Support / CS Tooling</p><p class="text-xs leading-relaxed" style="color:#5C463A;">Member/order lookup, read-only impersonate-view, canned goodwill actions.</p></div>
+      <div class="rounded-xl p-4" style="background:#3E2723;"><p class="text-sm font-bold mb-1" style="color:#E9C9A3;">Maker-Checker</p><p class="text-xs leading-relaxed" style="color:#F3E7DA;">Dual approval on refunds, crystals/tier adjust, data export, deletion, live-config.</p></div>
+    </div>
+  </div>
+</section>

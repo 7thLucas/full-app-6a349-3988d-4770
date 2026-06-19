@@ -1,0 +1,69 @@
+<style>
+  .mode-landscape .sl-ds { flex-direction: row; }
+  .mode-portrait  .sl-ds { flex-direction: column; }
+  .mode-landscape .sl-ds-l { width: 56%; }
+  .mode-portrait  .sl-ds-l { width: 100%; }
+  .mode-landscape .sl-ds-r { width: 44%; }
+  .mode-portrait  .sl-ds-r { width: 100%; }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="flex flex-col w-full h-full p-12">
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Design System</p>
+    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+      Modern Oriental Minimalism
+    </h2>
+    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
+      Calm, crafted, premium, unhurried. One clear primary action per screen. Serif headers, soft shadows, restrained motion — never stark clinical white.
+    </p>
+
+    <div class="sl-ds flex gap-6 flex-1">
+      <div class="sl-ds-l flex flex-col gap-5">
+        <!-- Color -->
+        <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#A86B3C;">Color</p>
+          <div class="flex flex-wrap gap-3">
+            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#FDFBF7; border:1px solid #E0D2C2;"></span><span class="text-sm" style="color:#5C463A;">Cream #FDFBF7</span></div>
+            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#3E2723;"></span><span class="text-sm" style="color:#5C463A;">Brown #3E2723</span></div>
+            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#C62828;"></span><span class="text-sm" style="color:#5C463A;">Hong Tang Red #C62828</span></div>
+            <div class="flex items-center gap-2"><span class="w-6 h-6 rounded-md" style="background:#6F6258;"></span><span class="text-sm" style="color:#5C463A;">Warm grey #6F6258</span></div>
+          </div>
+          <p class="text-sm mt-3 leading-relaxed" style="color:#5C463A;">Cream surface, brown content, red for the single most important action only. Tier metallics on tier surfaces.</p>
+        </div>
+        <!-- Type & layout -->
+        <div class="rounded-2xl p-6" style="background:#F5EFE6;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Typography &amp; Layout</p>
+          <p class="text-sm leading-relaxed" style="color:#5C463A;">
+            Elegant serif display (~28–32pt) + clean sans body (~15–16pt). Tabular figures for crystals/prices.
+            8px grid, card containers, ~16pt padding. Sticky bottom CTAs above safe area. Soft corners (cards 16px, buttons 12px, pills full).
+          </p>
+        </div>
+      </div>
+
+      <div class="sl-ds-r flex flex-col gap-5">
+        <!-- Components -->
+        <div class="rounded-2xl p-6 flex-1" style="background:#3E2723;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-3" style="color:#E9C9A3;">Core Components</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-md text-xs font-semibold" style="background:#C62828; color:#fff;">Primary button</span>
+            <span class="px-3 py-1 rounded-md text-xs font-medium" style="background:transparent; color:#F3E7DA; border:1px solid #8A6E5E;">Ghost</span>
+            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Segmented</span>
+            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Stepper − N +</span>
+            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Chips</span>
+            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Bottom sheet</span>
+            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">OTP boxes</span>
+            <span class="px-3 py-1 rounded-full text-xs" style="background:#4E382C; color:#E9C9A3;">Status stepper</span>
+          </div>
+          <p class="text-sm mt-4 leading-relaxed" style="color:#F3E7DA;">Calm eased motion (cross-fade tabs, spring sheets), micro-interactions (cart-badge bump, card tilt). Honors reduce-motion.</p>
+        </div>
+        <!-- Accessibility -->
+        <div class="rounded-2xl p-6" style="background:#fff; border:1px dashed #C8915A;">
+          <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Accessibility &amp; Localization</p>
+          <p class="text-sm leading-relaxed" style="color:#5C463A;">
+            AA contrast, ≥44×44pt taps, dynamic type, screen-reader labels, no color-only signals (expiry = red + text).
+            IDR "Rp 38.000", WIB/WITA/WIT, ~30% text-expansion headroom for future Bahasa Indonesia.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

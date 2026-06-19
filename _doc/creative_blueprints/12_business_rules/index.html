@@ -1,0 +1,54 @@
+<style>
+  .mode-landscape .sl-rules { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .mode-portrait  .sl-rules { grid-template-columns: repeat(1, minmax(0,1fr)); }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="flex flex-col w-full h-full p-12">
+    <p class="text-sm font-semibold tracking-widest uppercase mb-2" style="color:#A86B3C;">Business Rules &amp; Logic</p>
+    <h2 class="font-bold leading-tight mb-3" style="color:#3E2723; font-size:2.2rem; font-family: Georgia, 'Times New Roman', serif;">
+      The rules that keep money and trust correct
+    </h2>
+    <p class="text-base leading-relaxed mb-7" style="color:#5C463A; max-width:52rem;">
+      Resolved decisions, no open questions at this revision. Idempotent order placement; no double-charge.
+    </p>
+
+    <div class="sl-rules grid gap-5 flex-1">
+      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Vouchers</p>
+        <p class="text-base leading-relaxed" style="color:#5C463A;">
+          No stacking — exactly one voucher OR one promo code per order. Applying a new one replaces the current. Validated at checkout against cart + fulfillment mode.
+        </p>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Order Lock</p>
+        <p class="text-base leading-relaxed" style="color:#5C463A;">
+          No edits after payment — items, customization, store, mode all locked. To change: cancel within the cancellation window (refund to original method), then reorder.
+        </p>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Payments &amp; Refunds</p>
+        <p class="text-base leading-relaxed" style="color:#5C463A;">
+          QRIS, e-wallets (GoPay/OVO/DANA/ShopeePay/LinkAja), Visa/Mastercard. Refunds to original method, up to 15 working days. No card data on-device.
+        </p>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#FBEDE3; border:1px solid #ECD6C4;">
+        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#A86B3C;">Cancellation</p>
+        <p class="text-base leading-relaxed" style="color:#5C463A;">
+          "Cancelled" = system auto-cancel + refund. If extended peak-hour wait was shown and the user knowingly proceeded, wait-time cancellation doesn't apply.
+        </p>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#3E2723;">
+        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#E9C9A3;">Earning Exclusions</p>
+        <p class="text-base leading-relaxed" style="color:#F3E7DA;">
+          No crystals/Bowls on free, Rp 0, trial/tasting, special-discount items — or any order via GoFood / GrabFood / ShopeeFood. Walk-in: member QR must be scanned at the till; no retroactive points.
+        </p>
+      </div>
+      <div class="rounded-2xl p-6" style="background:#3E2723;">
+        <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#E9C9A3;">Referrals</p>
+        <p class="text-base leading-relaxed" style="color:#F3E7DA;">
+          Unique code, optional, first-time registrants only (copy-paste recommended). Referrer earns once referee completes first qualifying purchase; referee keeps welcome vouchers. Anti-abuse caps per campaign.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
