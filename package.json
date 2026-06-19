@@ -45,7 +45,9 @@
     "react-dom": "^19.0.0",
     "react-router": "^7.0.0",
     "tailwind-merge": "^3.6.0",
-    "tsx": "^4.20.6"
+    "tsx": "^4.20.6",
+    "@qb/authentication-google": "file:./app/modules/authentication-google",
+    "@qb/uploader": "file:./app/modules/uploader"
   },
   "devDependencies": {
     "@react-router/dev": "^7.0.0",

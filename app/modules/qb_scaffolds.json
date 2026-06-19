@@ -1,0 +1,14 @@
+[
+  {
+    "name": "authentication-google",
+    "type": "scaffold",
+    "status": "failed",
+    "error_msg": "project package.json not found at /tmp/qb-workspaces/suqjwb1i-4770/app/modules/package.json"
+  },
+  {
+    "name": "uploader",
+    "type": "scaffold",
+    "status": "failed",
+    "error_msg": "project package.json not found at /tmp/qb-workspaces/suqjwb1i-4770/app/modules/package.json"
+  }
+]
