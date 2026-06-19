@@ -19,7 +19,7 @@ type Draft = {
 const EMPTY: Draft = {
   name: "",
   description: "",
-  category: "signatures",
+  category: "signature-promo",
   basePrice: "",
   imageUrl: "",
   isSignature: false,

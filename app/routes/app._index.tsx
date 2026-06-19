@@ -63,7 +63,7 @@ export default function Home() {
   }, [banners.length]);
 
   const signatures = (menu ?? []).filter((m) => m.isSignature);
-  const warm = (menu ?? []).filter((m) => m.category === "warm-desserts");
+  const warm = (menu ?? []).filter((m) => m.category === "classic-warm");
   const favItems = (menu ?? []).filter((m) => member?.favorites?.includes(m.id)).slice(0, 8);
   const recentItems = homePayload?.personalized.recentItems ?? [];
 
@@ -210,7 +210,7 @@ export default function Home() {
         subtitle={config?.promoRows?.[0]?.subtext}
         items={signatures}
         loading={menu === null}
-        onSeeAll={() => navigate("/app/menu?cat=signatures")}
+        onSeeAll={() => navigate("/app/menu?cat=signature-promo")}
         onItem={(id) => navigate(`/app/menu/${id}`)}
       />
 
@@ -220,7 +220,7 @@ export default function Home() {
         subtitle={config?.promoRows?.[1]?.subtext}
         items={warm}
         loading={menu === null}
-        onSeeAll={() => navigate("/app/menu?cat=warm-desserts")}
+        onSeeAll={() => navigate("/app/menu?cat=classic-warm")}
         onItem={(id) => navigate(`/app/menu/${id}`)}
       />
 

@@ -88,13 +88,19 @@ export function nextTier(tier: TierKey): TierDef | null {
 
 // ── Menu ───────────────────────────────────────────────────────────────────
 export type CategoryKey =
-  | "signatures"
-  | "grass-jelly"
-  | "mango-fruit"
-  | "warm-desserts"
-  | "smash-ice"
+  | "signature-promo"
+  | "taiwan-grass-jelly"
+  | "taiwan-soya"
+  | "taro"
+  | "taiwan-ice-pudding"
+  | "durian-dessert"
+  | "mango-dessert"
+  | "thai-mango-coco"
+  | "thai-coconut-ice"
+  | "classic-warm"
+  | "fresh-milk"
   | "beverages"
-  | "seasonal";
+  | "savory";
 
 export interface CategoryDef {
   key: CategoryKey;
@@ -102,13 +108,19 @@ export interface CategoryDef {
 }
 
 export const CATEGORIES: CategoryDef[] = [
-  { key: "signatures", name: "Signatures" },
-  { key: "grass-jelly", name: "Grass Jelly" },
-  { key: "mango-fruit", name: "Mango & Fruit" },
-  { key: "warm-desserts", name: "Warm Desserts" },
-  { key: "smash-ice", name: "Smash Ice & Ice Cream" },
+  { key: "signature-promo", name: "Signature" },
+  { key: "taiwan-grass-jelly", name: "Taiwan Grass Jelly Series" },
+  { key: "taiwan-soya", name: "Taiwan Soya Series" },
+  { key: "taro", name: "Taro" },
+  { key: "taiwan-ice-pudding", name: "Taiwan Ice Pudding Series" },
+  { key: "durian-dessert", name: "Durian Dessert" },
+  { key: "mango-dessert", name: "Mango Dessert" },
+  { key: "thai-mango-coco", name: "Thai Mango Coco" },
+  { key: "thai-coconut-ice", name: "Thai Coconut Ice" },
+  { key: "classic-warm", name: "Classic" },
+  { key: "fresh-milk", name: "Fresh Milk Series" },
   { key: "beverages", name: "Beverages" },
-  { key: "seasonal", name: "Seasonal" },
+  { key: "savory", name: "Savory" },
 ];
 
 export interface OptionChoice {
