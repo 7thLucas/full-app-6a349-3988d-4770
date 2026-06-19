@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import {
   Ticket,
   Gift,
-  Heart,
   Users,
   Copy,
   Check,
@@ -19,17 +18,16 @@ import {
 import { htApi } from "~/lib/ht-api";
 import { useMember } from "~/state/member-context";
 import { useToast } from "~/state/toast";
-import type { MenuItem, TierKey } from "~/lib/domain.types";
-import { TIERS, nextTier, formatIDR } from "~/lib/domain.types";
+import type { TierKey } from "~/lib/domain.types";
+import { TIERS, nextTier } from "~/lib/domain.types";
 import { AppHeader } from "~/components/app/phone-shell";
 import { MembershipCard } from "~/components/app/membership-card";
-import { Card, Skeleton, Button, Sheet, EmptyState } from "~/components/ui/primitives";
+import { Card, Skeleton, Button, Sheet } from "~/components/ui/primitives";
 
 export default function Me() {
   const navigate = useNavigate();
-  const { member, loading, refresh } = useMember();
+  const { member, loading } = useMember();
   const { notify } = useToast();
-  const [menu, setMenu] = useState<MenuItem[] | null>(null);
   const [perksOpen, setPerksOpen] = useState(false);
   const [referOpen, setReferOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -53,12 +51,6 @@ export default function Me() {
     await htApi.logout();
     window.location.href = "/onboarding";
   };
-
-  useEffect(() => {
-    htApi.menu().then((r) => setMenu(r.success && r.data ? r.data : []));
-  }, []);
-
-  const favItems = (menu ?? []).filter((m) => member?.favorites?.includes(m.id));
 
   const copyCode = async () => {
     if (!member) return;
@@ -89,11 +81,6 @@ export default function Me() {
   const logout = async () => {
     await htApi.logout();
     window.location.href = "/onboarding";
-  };
-
-  const unfav = async (itemId: string) => {
-    await htApi.toggleFavorite(itemId);
-    refresh();
   };
 
   if (loading || !member) {
@@ -173,48 +160,6 @@ export default function Me() {
             </span>
           </div>
         </Card>
-
-        {/* Favorites */}
-        <div>
-          <p className="mb-2 px-1 text-sm font-semibold text-foreground">Favorites</p>
-          {menu === null ? (
-            <div className="flex gap-3 overflow-x-auto">
-              {Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-28 w-28 shrink-0 rounded-2xl" />)}
-            </div>
-          ) : favItems.length === 0 ? (
-            <Card className="p-5">
-              <EmptyState
-                icon={<Heart className="h-8 w-8" strokeWidth={1.4} />}
-                title="No favorites yet"
-                subtitle="Tap the heart on any item to save it here."
-              />
-            </Card>
-          ) : (
-            <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
-              {favItems.map((it) => (
-                <div key={it.id} className="w-32 shrink-0">
-                  <button onClick={() => navigate(`/app/menu/${it.id}`)} className="block w-full text-left">
-                    <div className="relative">
-                      <img src={it.imageUrl} alt={it.name} className="h-28 w-32 rounded-2xl object-cover" />
-                      <span
-                        role="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          unfav(it.id);
-                        }}
-                        className="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-background/90 shadow"
-                      >
-                        <Heart className="h-3.5 w-3.5 fill-accent text-accent" />
-                      </span>
-                    </div>
-                    <p className="mt-1.5 line-clamp-1 text-xs font-semibold text-foreground">{it.name}</p>
-                    <p className="text-xs text-muted-foreground tabular-nums">{formatIDR(it.basePrice)}</p>
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
 
         {/* Settings */}
         <Card className="p-4" onClick={() => setSettingsOpen(true)}>

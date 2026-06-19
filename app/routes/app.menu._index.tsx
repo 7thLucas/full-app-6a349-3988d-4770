@@ -7,13 +7,14 @@ import type { MenuItem } from "~/lib/domain.types";
 import { CATEGORIES, formatIDR } from "~/lib/domain.types";
 import type { CategoryDef } from "~/lib/domain.types";
 import { AppHeader } from "~/components/app/phone-shell";
+import { FloatingCartPill } from "~/components/app/floating-cart-pill";
 import { Skeleton, Badge, Pill, EmptyState, Button } from "~/components/ui/primitives";
 import { cn } from "~/lib/utils";
 
 export default function MenuList() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
-  const { outlet } = useAppStore();
+  const { outlet, cartCount } = useAppStore();
   const [menu, setMenu] = useState<MenuItem[] | null>(null);
   const [categories, setCategories] = useState<CategoryDef[]>(CATEGORIES);
   const [query, setQuery] = useState("");
@@ -98,7 +99,7 @@ export default function MenuList() {
       </div>
 
       {/* Grid */}
-      <div className="px-4 py-2">
+      <div className={cn("px-4 py-2", cartCount > 0 && "pb-28")}>
         {menu === null ? (
           <div className="grid grid-cols-2 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
@@ -157,6 +158,8 @@ export default function MenuList() {
         )}
       </div>
       <div className="h-4" />
+
+      <FloatingCartPill />
     </div>
   );
 }

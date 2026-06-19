@@ -76,7 +76,7 @@ export default function Checkout() {
       idemRef.current = "";
       clearCart();
       refresh();
-      navigate(`/app/orders/${res.data.id}`, { replace: true });
+      navigate(`/app/order-received/${res.data.id}`, { replace: true });
     } else {
       idemRef.current = ""; // allow a fresh charge on the next attempt
       notify("Payment failed", res.message ?? "Please try again");

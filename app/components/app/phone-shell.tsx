@@ -16,7 +16,7 @@ export function BottomNav() {
   const { cartCount } = useAppStore();
   const location = useLocation();
   // Hide nav on full-screen flows
-  const hidden = /\/app\/(cart|checkout|menu\/[^/]+|orders\/[^/]+|outlets)/.test(location.pathname);
+  const hidden = /\/app\/(cart|checkout|order-received\/[^/]+|menu\/[^/]+|orders\/[^/]+|outlets)/.test(location.pathname);
   if (hidden) return null;
 
   return (

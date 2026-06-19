@@ -1,24 +1,29 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router";
-import { MapPin, ChevronRight, Sparkles, Ticket } from "lucide-react";
+import { Heart, MapPin, ChevronRight, Sparkles, Ticket, RefreshCw } from "lucide-react";
 import { useConfigurables } from "~/modules/configurables";
 import { useMember } from "~/state/member-context";
 import { useAppStore } from "~/state/app-store";
+import { useToast } from "~/state/toast";
 import { htApi } from "~/lib/ht-api";
+import type { HomePayload } from "~/lib/ht-api";
 import type { MenuItem } from "~/lib/domain.types";
 import { CATEGORIES, formatIDR } from "~/lib/domain.types";
 import { Card, Skeleton, Badge, Pill } from "~/components/ui/primitives";
 import { MembershipCard } from "~/components/app/membership-card";
+import { FloatingCartPill } from "~/components/app/floating-cart-pill";
 import { cn } from "~/lib/utils";
 
 export default function Home() {
   const { config } = useConfigurables();
   const { member } = useMember();
-  const { outlet, setOutlet } = useAppStore();
+  const { outlet, setOutlet, addToCart, cartCount } = useAppStore();
+  const { notify } = useToast();
   const navigate = useNavigate();
 
   const [menu, setMenu] = useState<MenuItem[] | null>(null);
   const [bannerIdx, setBannerIdx] = useState(0);
+  const [homePayload, setHomePayload] = useState<HomePayload | null>(null);
   const [cmsBanners, setCmsBanners] = useState<
     { imageUrl: string; title: string; subtitle?: string; deepLink?: string }[] | null
   >(null);
@@ -29,6 +34,7 @@ export default function Home() {
     // Scheduled, priority-ordered CMS banners (Sprint 11).
     htApi.home().then((r) => {
       if (r.success && r.data) {
+        setHomePayload(r.data);
         setCmsBanners(
           r.data.banners.map((b) => ({ imageUrl: b.imageUrl, title: b.title, subtitle: b.caption, deepLink: b.deepLink })),
         );
@@ -58,6 +64,22 @@ export default function Home() {
 
   const signatures = (menu ?? []).filter((m) => m.isSignature);
   const warm = (menu ?? []).filter((m) => m.category === "warm-desserts");
+  const favItems = (menu ?? []).filter((m) => member?.favorites?.includes(m.id)).slice(0, 8);
+  const recentItems = homePayload?.personalized.recentItems ?? [];
+
+  const quickReorder = (item: HomePayload["personalized"]["recentItems"][number]) => {
+    addToCart({
+      itemId: item.itemId,
+      name: item.name,
+      imageUrl: item.imageUrl,
+      basePrice: item.unitPrice - item.options.reduce((s: number, o: any) => s + (o.priceDelta ?? 0), 0),
+      quantity: 1,
+      options: item.options,
+      unitPrice: item.unitPrice,
+    });
+    notify("Added to cart", item.name);
+    navigate("/app/cart");
+  };
 
   return (
     <div className="ht-stagger">
@@ -158,6 +180,19 @@ export default function Home() {
         </Card>
       </div>
 
+      {(recentItems.length > 0 || favItems.length > 0 || homePayload === null) && (
+        <FastOrderRow
+          title={recentItems.length > 0 ? "Order again" : "Favorites"}
+          subtitle={recentItems.length > 0 ? "Your usuals, one tap back to cart." : "Saved items for faster ordering."}
+          loading={homePayload === null && menu === null}
+          recentItems={recentItems}
+          favoriteItems={favItems}
+          onRecent={quickReorder}
+          onFavorite={(id) => navigate(`/app/menu/${id}`)}
+          onSeeAll={() => navigate(recentItems.length > 0 ? "/app/orders" : "/app/menu")}
+        />
+      )}
+
       {/* Category quick chips */}
       <div className="mt-6">
         <div className="px-4 flex gap-2 overflow-x-auto pb-1">
@@ -189,7 +224,69 @@ export default function Home() {
         onItem={(id) => navigate(`/app/menu/${id}`)}
       />
 
-      <div className="h-6" />
+      <div className={cartCount > 0 ? "h-28" : "h-6"} />
+      <FloatingCartPill />
+    </div>
+  );
+}
+
+function FastOrderRow({
+  title,
+  subtitle,
+  loading,
+  recentItems,
+  favoriteItems,
+  onRecent,
+  onFavorite,
+  onSeeAll,
+}: {
+  title: string;
+  subtitle: string;
+  loading: boolean;
+  recentItems: HomePayload["personalized"]["recentItems"];
+  favoriteItems: MenuItem[];
+  onRecent: (item: HomePayload["personalized"]["recentItems"][number]) => void;
+  onFavorite: (id: string) => void;
+  onSeeAll: () => void;
+}) {
+  return (
+    <div className="mt-6">
+      <div className="px-4 flex items-end justify-between">
+        <div>
+          <h2 className="font-serif-display text-lg font-semibold text-foreground">{title}</h2>
+          <p className="text-xs text-muted-foreground">{subtitle}</p>
+        </div>
+        <button onClick={onSeeAll} className="text-xs font-semibold text-accent">See all</button>
+      </div>
+      <div className="mt-3 flex gap-3 overflow-x-auto px-4 pb-1">
+        {loading ? (
+          Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-28 w-48 shrink-0 rounded-2xl" />)
+        ) : recentItems.length > 0 ? (
+          recentItems.slice(0, 8).map((it) => (
+            <button key={`${it.itemId}-${it.name}`} onClick={() => onRecent(it)} className="ht-press flex w-56 shrink-0 items-center gap-3 rounded-2xl border border-[#EFE6D8] bg-card p-3 text-left">
+              <img src={it.imageUrl} alt={it.name} className="h-16 w-16 shrink-0 rounded-xl object-cover" />
+              <span className="min-w-0 flex-1">
+                <span className="line-clamp-2 text-sm font-semibold leading-tight text-foreground">{it.name}</span>
+                <span className="mt-1 flex items-center gap-1 text-xs font-semibold text-accent">
+                  <RefreshCw className="h-3.5 w-3.5" /> Reorder
+                </span>
+              </span>
+            </button>
+          ))
+        ) : (
+          favoriteItems.map((it) => (
+            <button key={it.id} onClick={() => onFavorite(it.id)} className="ht-press flex w-56 shrink-0 items-center gap-3 rounded-2xl border border-[#EFE6D8] bg-card p-3 text-left">
+              <img src={it.imageUrl} alt={it.name} className="h-16 w-16 shrink-0 rounded-xl object-cover" />
+              <span className="min-w-0 flex-1">
+                <span className="line-clamp-2 text-sm font-semibold leading-tight text-foreground">{it.name}</span>
+                <span className="mt-1 flex items-center gap-1 text-xs font-semibold text-accent">
+                  <Heart className="h-3.5 w-3.5 fill-accent" /> Favorite
+                </span>
+              </span>
+            </button>
+          ))
+        )}
+      </div>
     </div>
   );
 }

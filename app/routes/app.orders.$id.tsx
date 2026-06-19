@@ -248,7 +248,7 @@ export default function OrderDetail() {
           </div>
         </Card>
 
-        {(order.status === "received" || order.status === "preparing") && (
+        {order.status === "received" && (
           <button onClick={cancel} className="w-full py-2 text-sm font-medium text-accent">
             Cancel order
           </button>
