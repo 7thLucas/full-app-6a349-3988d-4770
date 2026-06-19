@@ -1,0 +1,50 @@
+<style>
+  .mode-landscape .sl-cover { flex-direction: row; }
+  .mode-portrait  .sl-cover { flex-direction: column; }
+  .mode-landscape .sl-visual { width: 42%; height: 100%; }
+  .mode-portrait  .sl-visual { width: 100%; height: 38%; }
+  .mode-landscape .sl-content { width: 58%; }
+  .mode-portrait  .sl-content { width: 100%; }
+</style>
+<section class="w-full h-full overflow-auto bg-white">
+  <div class="sl-cover flex w-full h-full">
+    <!-- Content column -->
+    <div class="sl-content flex flex-col justify-between p-12">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center justify-center w-11 h-11 rounded-full" style="background:#3A2A22;">
+          <span class="text-lg font-semibold" style="color:#E9C9A3;">红糖</span>
+        </div>
+        <span class="text-sm font-semibold tracking-widest uppercase" style="color:#A86B3C;">Hong Tang</span>
+      </div>
+
+      <div class="mt-8">
+        <p class="text-sm font-semibold tracking-widest uppercase mb-5" style="color:#A86B3C;">Oriental Dessert Culture, Now in Your Pocket</p>
+        <h1 class="font-bold leading-tight" style="color:#3A2A22; font-size:3.4rem; letter-spacing:-0.01em;">
+          The Hong Tang<br/>Mobile App
+        </h1>
+        <p class="mt-6 text-xl leading-relaxed" style="color:#5C463A; max-width:34rem;">
+          A calm, crafted digital home for Indonesia's leading oriental dessert brand —
+          where premium desserts are ordered ahead, queues disappear, and loyalty is felt.
+        </p>
+      </div>
+
+      <div class="mt-8">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full" style="background:#F5EFE6;">
+          <span class="w-2 h-2 rounded-full" style="background:#A86B3C;"></span>
+          <span class="text-sm font-medium" style="color:#7A4E2D;">Healthy Asian Desserts since 2012 · Upscale malls nationwide</span>
+        </div>
+        <div class="mt-6">
+          <data-attribution />
+        </div>
+      </div>
+    </div>
+
+    <!-- Visual column -->
+    <div class="sl-visual relative overflow-hidden" style="background:#F5EFE6;">
+      <img class="w-full h-full object-cover"
+           src="https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=premium%20minimalist%20still%20life%20of%20Taiwanese%20shaved%20ice%20dessert%20and%20Hong%20Kong%20warm%20dessert%20with%20brown%20sugar%2C%20soft%20natural%20light%2C%20modern%20oriental%20minimalism%2C%20warm%20cream%20background%2C%20editorial%20food%20photography"
+           alt="Hong Tang oriental desserts" />
+      <div class="absolute inset-0" style="background:linear-gradient(120deg, rgba(58,42,34,0.18), rgba(58,42,34,0));"></div>
+    </div>
+  </div>
+</section>
