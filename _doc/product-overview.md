@@ -82,3 +82,54 @@ campaigns, exclusive drops, collectible merch — layers on top of this core loo
 - **Structure:** tiered membership with tier progression; exclusive drops and
   collectible merchandise for engaged members.
 - **Purpose:** convert occasional mall visits into a repeat habit and lift order frequency.
+
+## 5. Brand & Design Language — *Modern Oriental Minimalism*
+
+This is the visual and interaction contract every screen inherits; deviations must be
+justified.
+
+- **Design ethos:** calm, crafted, premium, unhurried. Ample whitespace; let imagery and
+  dessert craft breathe. **One clear primary action per screen** — reduce competing CTAs
+  and visual noise.
+- **Voice:** warm, concise, confident. Dessert-forward language ("Bowls", "Sugar
+  Crystals", "Loyal-Tang"). Avoid hype / exclamation overload. Bahasa Indonesia copy keeps
+  the same calm register.
+- **Color identity:**
+  - Background — textured cream **#FDFBF7** (never pure white for large surfaces).
+  - Primary text & structure — deep brown-sugar **#3E2723**.
+  - Accent / primary CTA / alert — **Hong Tang Red #C62828**, reserved for the single most
+    important action, active states, and badges (do not overuse).
+  - Secondary / meta text — warm grey **#6F6258**.
+  - Tier metallics — Bronze → Silver → Gold → Platinum gradients (Seeker → Master).
+  - Semantic colors always pair with a text label — never color alone (e.g. expiry).
+- **Typography:** elegant **serif** for display/headers; clean modern **sans-serif** for
+  body/UI. Tabular figures for Sugar Crystals balances, prices, and totals. Support OS
+  dynamic type without breaking layout.
+- **Shape, elevation & motion:** soft rounded corners (cards ~16px, buttons ~12px, chips
+  fully rounded); subtle low-spread shadows; calm, eased, restrained motion that honors
+  the OS "reduce motion" setting.
+- **Layout:** 8px base grid; generous gutters; cards as the primary container; primary CTA
+  anchored to a sticky bottom footer for one-thumb reach.
+- **Accessibility:** AA contrast minimum, tap targets ≥ 44×44pt, dynamic type, screen-reader
+  labels, no information by color alone.
+- **Localization:** IDR formatting ("Rp 38.000"); WIB/WITA/WIT time handling; layouts
+  absorb ~30% text expansion for Bahasa Indonesia with no CTA truncation; all copy
+  externalized for translation.
+
+## 6. Key User Journeys
+
+- **Order & Pickup (the morning routine):** pick the outlet near you → reorder a favorite
+  from Recent/Favorites, adjust sugar → apply a voucher, pay (e-wallet / QRIS) → receive
+  confirmation + ETA → "your order is ready" push → walk in, skip the queue, collect →
+  Sugar Crystals balance and tier progress update.
+- **Redeeming a reward:** expiry nudge (push/email) → Rewards Store → exchange Sugar
+  Crystals for a voucher (e.g. Buy-1-Get-1) → voucher saved to "My Vouchers" for the next
+  checkout.
+- **First-time onboarding:** phone number + OTP (SMS/WhatsApp) → grant notification /
+  optional location, complete a minimal profile → land on Home with a welcome voucher
+  already in the wallet and a prompt to place the first order.
+- **Delivery (where supported / roadmap):** toggle to Delivery, confirm a saved address →
+  build a multi-item order, apply a voucher → review fee + ETA, pay → track to delivered.
+  *Note:* native in-app delivery is a **roadmap** item; today delivery runs via
+  third-party platforms (GoFood / GrabFood / ShopeeFood) and those orders **do not** earn
+  Sugar Crystals.
