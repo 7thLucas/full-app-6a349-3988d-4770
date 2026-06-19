@@ -15,6 +15,12 @@ export type Permission =
   | "referral.manage"
   | "banners.manage"
   | "campaigns.manage"
+  | "finance.view"
+  | "finance.manage"
+  | "reports.view"
+  | "reports.manage"
+  | "compliance.manage"
+  | "settings.manage"
   | "audit.view"
   | "rbac.manage";
 
@@ -24,12 +30,14 @@ export type AdminRole =
   | "store_manager"
   | "auditor"
   | "loyalty_manager"
-  | "marketing";
+  | "marketing"
+  | "finance";
 
 const ALL: Permission[] = [
   "dashboard.view", "orders.view", "orders.manage", "catalog.manage", "outlets.manage",
   "loyalty.manage", "rewards.manage", "vouchers.manage", "referral.manage", "banners.manage",
-  "campaigns.manage", "audit.view", "rbac.manage",
+  "campaigns.manage", "finance.view", "finance.manage", "reports.view", "reports.manage",
+  "compliance.manage", "settings.manage", "audit.view", "rbac.manage",
 ];
 
 // Role → granted permissions.
@@ -39,9 +47,10 @@ export const ROLE_PERMISSIONS: Record<AdminRole, Permission[]> = {
   // Store managers: read their board, override states, toggle availability/hours
   // for their own outlet(s) only (scope enforced separately).
   store_manager: ["dashboard.view", "orders.view", "orders.manage", "outlets.manage", "catalog.manage"],
-  auditor: ["dashboard.view", "orders.view", "audit.view"], // read-only
+  auditor: ["dashboard.view", "orders.view", "finance.view", "reports.view", "audit.view"], // read-only
   loyalty_manager: ["dashboard.view", "loyalty.manage", "rewards.manage", "audit.view"],
-  marketing: ["dashboard.view", "vouchers.manage", "referral.manage", "banners.manage", "campaigns.manage", "audit.view"],
+  marketing: ["dashboard.view", "vouchers.manage", "referral.manage", "banners.manage", "campaigns.manage", "reports.view", "audit.view"],
+  finance: ["dashboard.view", "finance.view", "finance.manage", "reports.view", "reports.manage", "audit.view"],
 };
 
 // Auditor is strictly read-only — no mutating permission ever applies.

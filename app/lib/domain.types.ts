@@ -225,6 +225,58 @@ export interface Order {
   statusHistory: { status: OrderStatus; at: string }[];
 }
 
+// ── Admin finance / reporting / platform ────────────────────────────────────
+export interface FinanceTransaction {
+  id: string;
+  orderId: string;
+  outletId: string | null;
+  outletName: string;
+  pickupCode: string;
+  method: string;
+  amount: number;
+  status: "authorized" | "paid" | "failed" | "refunded" | string;
+  gatewayRef: string | null;
+  refundStatus: "none" | "pending" | "approved" | "rejected" | string;
+  refundReason: string | null;
+  createdAt: string;
+}
+
+export interface ReconciliationRow {
+  id: string;
+  settlementDate: string;
+  outletId: string | null;
+  appTotal: number;
+  posTotal: number;
+  gatewayTotal: number;
+  status: "matched" | "mismatch" | "resolved" | string;
+  mismatchFlags: string[];
+  resolvedBy?: string | null;
+}
+
+export interface ReportDefinition {
+  key: string;
+  name: string;
+  description: string;
+}
+
+export interface ReportResult {
+  key: string;
+  rows: Record<string, any>[];
+  totals?: Record<string, number>;
+}
+
+export interface PlatformOverview {
+  banners: any[];
+  contentPages: any[];
+  templates: any[];
+  campaigns: any[];
+  compliance: any[];
+  featureFlags: Record<string, any>;
+  marketConfig: Record<string, any>;
+  otpPolicy: Record<string, any>;
+  incidents: any[];
+}
+
 // ── Vouchers ───────────────────────────────────────────────────────────────
 export type DiscountType = "percent" | "fixed" | "bogo";
 

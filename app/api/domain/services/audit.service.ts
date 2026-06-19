@@ -25,11 +25,12 @@ export class AuditService {
     });
   }
 
-  static async list(opts: { entity?: string; entityId?: string; actorId?: string; limit?: number } = {}) {
+  static async list(opts: { entity?: string; entityId?: string; actorId?: string; action?: string; limit?: number } = {}) {
     const q: Record<string, any> = {};
     if (opts.entity) q.entity = opts.entity;
     if (opts.entityId) q.entityId = opts.entityId;
     if (opts.actorId) q.actorId = opts.actorId;
+    if (opts.action) q.action = { $regex: opts.action, $options: "i" };
     const logs = await AuditLogModel.find(q).sort({ createdAt: -1 }).limit(opts.limit ?? 100).lean();
     return logs.map((l) => ({
       id: l._id.toString(),

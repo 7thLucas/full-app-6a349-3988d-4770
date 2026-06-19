@@ -1,13 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import { parseJwtFromCookieHeader, verifyJwt } from "./authentication.server";
 import { AuthService } from "./authentication.service";
-import type { PublicUser } from "./authentication.types";
 import { UserRole } from "./authentication.types";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: PublicUser;
+      user?: import("~/modules/authentication/authentication.types").PublicUser;
     }
   }
 }
@@ -28,7 +27,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
       return;
     }
 
-    req.user = user;
+    req.user = user as import("~/modules/authentication/authentication.types").PublicUser;
     next();
   } catch {
     res.status(401).json({ success: false, message: "Authentication required" });
@@ -63,7 +62,7 @@ export async function optionalAuth(req: Request, res: Response, next: NextFuncti
     if (token) {
       const payload = verifyJwt(token);
       const user = await AuthService.getUserById(payload.sub);
-      if (user && user.is_active) req.user = user;
+      if (user && user.is_active) req.user = user as import("~/modules/authentication/authentication.types").PublicUser;
     }
   } catch {
     // ignore — auth is optional

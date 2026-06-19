@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router";
-import { LayoutGrid, UtensilsCrossed, Store, LogOut, Loader2 } from "lucide-react";
+import { LayoutGrid, UtensilsCrossed, Store, LogOut, Loader2, CreditCard, BarChart3, ShieldCheck } from "lucide-react";
 import { useAuth } from "~/modules/authentication/use-authentication";
 import { htApi } from "~/lib/ht-api";
 import { cn } from "~/lib/utils";
@@ -25,6 +25,9 @@ export default function ConsoleLayout() {
     { to: "/console", label: "Order Board", icon: LayoutGrid, end: true },
     { to: "/console/menu", label: "Menu & Catalog", icon: UtensilsCrossed },
     { to: "/console/outlets", label: "Outlets", icon: Store },
+    { to: "/console/finance", label: "Finance", icon: CreditCard },
+    { to: "/console/reports", label: "Reports", icon: BarChart3 },
+    { to: "/console/platform", label: "Growth & Compliance", icon: ShieldCheck },
   ];
 
   const logout = async () => {

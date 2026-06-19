@@ -63,6 +63,7 @@ router.get("/admin/orders/search", permissionGuard("orders.view"), a.adminSearch
 router.post("/admin/orders/:id/override", permissionGuard("orders.manage"), a.adminOverrideOrder);
 router.post("/admin/orders/:id/cancel-refund", permissionGuard("orders.manage"), a.adminCancelRefund);
 router.get("/admin/audit", permissionGuard("audit.view"), a.listAudit);
+router.get("/admin/audit/export", permissionGuard("audit.view"), a.exportAuditCsv);
 router.post("/admin/users/:id/role", permissionGuard("rbac.manage"), a.assignRole);
 
 // ── Admin Console — Catalog + Outlets (Sprint 13) ─────────────────────────────
@@ -109,5 +110,31 @@ router.post("/admin/banners", permissionGuard("banners.manage"), a.adminCreateBa
 router.put("/admin/banners/:id", permissionGuard("banners.manage"), a.adminUpdateBanner);
 router.delete("/admin/banners/:id", permissionGuard("banners.manage"), a.adminDeleteBanner);
 router.post("/admin/campaigns/send", permissionGuard("campaigns.manage"), a.sendCampaign);
+
+// ── Admin Console — Payments / Finance + Reports (Sprint 17) ────────────────
+router.get("/admin/finance/transactions", permissionGuard("finance.view"), a.financeLedger);
+router.get("/admin/finance/transactions/:id", permissionGuard("finance.view"), a.financeTransaction);
+router.post("/admin/finance/transactions/:id/refund", permissionGuard("finance.manage"), a.requestRefund);
+router.post("/admin/finance/transactions/:id/refund/approval", permissionGuard("finance.manage"), a.approveRefund);
+router.get("/admin/finance/reconciliations", permissionGuard("finance.view"), a.listReconciliations);
+router.post("/admin/finance/reconciliations/run", permissionGuard("finance.manage"), a.runReconciliation);
+router.post("/admin/finance/reconciliations/:id/resolve", permissionGuard("finance.manage"), a.resolveReconciliation);
+router.get("/admin/reports/definitions", permissionGuard("reports.view"), a.reportDefinitions);
+router.post("/admin/reports/:key/run", permissionGuard("reports.view"), a.runReport);
+router.get("/admin/reports/:key/export", permissionGuard("reports.view"), a.exportReportCsv);
+router.get("/admin/reports/saved/list", permissionGuard("reports.view"), a.savedReports);
+router.post("/admin/reports/saved", permissionGuard("reports.manage"), a.saveReport);
+
+// ── Admin Console — Compliance, CMS, notifications, settings (Sprint 18) ────
+router.get("/admin/platform", permissionGuard("campaigns.manage"), a.adminPlatformOverview);
+router.put("/admin/platform/content/:key", permissionGuard("banners.manage"), a.upsertContent);
+router.put("/admin/platform/templates/:key", permissionGuard("campaigns.manage"), a.upsertTemplate);
+router.post("/admin/platform/campaigns", permissionGuard("campaigns.manage"), a.createAdminCampaign);
+router.post("/admin/platform/campaigns/:id/send", permissionGuard("campaigns.manage"), a.sendAdminCampaign);
+router.get("/admin/platform/compliance", permissionGuard("compliance.manage"), a.complianceQueue);
+router.post("/admin/platform/compliance", permissionGuard("compliance.manage"), a.createComplianceRequest);
+router.post("/admin/platform/compliance/:id/process", permissionGuard("compliance.manage"), a.processCompliance);
+router.put("/admin/platform/settings", permissionGuard("settings.manage"), a.updatePlatformSettings);
+router.post("/admin/platform/incidents", permissionGuard("settings.manage"), a.upsertIncident);
 
 export default router;

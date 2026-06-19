@@ -1,4 +1,5 @@
-import { prop, getModelForClass, modelOptions, Ref } from "@typegoose/typegoose";
+import { prop, getModelForClass, modelOptions } from "@typegoose/typegoose";
+import type { Ref } from "@typegoose/typegoose";
 import { Types } from "mongoose";
 import { CommonTypegooseEntity } from "~/api/models/base/common-typegoose.entity";
 import { User } from "~/modules/authentication/authentication.model";

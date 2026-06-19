@@ -6,6 +6,11 @@ import type {
   Voucher,
   RewardProduct,
   CartLine,
+  FinanceTransaction,
+  ReconciliationRow,
+  ReportDefinition,
+  ReportResult,
+  PlatformOverview,
 } from "~/lib/domain.types";
 
 export interface Address {
@@ -186,4 +191,55 @@ export const htApi = {
   adminOutletOrders: (id: string) => apiGet<Order[]>(`/api/admin/outlets/${id}/orders`),
   adminAdvanceOrder: (id: string, status?: string) =>
     apiRequest<Order>(`/api/admin/orders/${id}/advance`, { method: "POST", data: { status } }),
+
+  // finance + reports (Sprint 17)
+  adminTransactions: (filters?: Record<string, string>) => {
+    const q = new URLSearchParams(filters ?? {});
+    return apiGet<FinanceTransaction[]>(`/api/admin/finance/transactions${q.toString() ? `?${q}` : ""}`);
+  },
+  adminRequestRefund: (id: string, reason: string) =>
+    apiRequest<FinanceTransaction>(`/api/admin/finance/transactions/${id}/refund`, { method: "POST", data: { reason } }),
+  adminApproveRefund: (id: string, approve = true) =>
+    apiRequest<FinanceTransaction>(`/api/admin/finance/transactions/${id}/refund/approval`, { method: "POST", data: { approve } }),
+  adminReconciliations: (filters?: { date?: string; outletId?: string }) => {
+    const q = new URLSearchParams();
+    if (filters?.date) q.set("date", filters.date);
+    if (filters?.outletId) q.set("outletId", filters.outletId);
+    return apiGet<ReconciliationRow[]>(`/api/admin/finance/reconciliations${q.toString() ? `?${q}` : ""}`);
+  },
+  adminRunReconciliation: (data: { settlementDate: string; outletId?: string; posTotal?: number; gatewayTotal?: number }) =>
+    apiRequest<ReconciliationRow>("/api/admin/finance/reconciliations/run", { method: "POST", data }),
+  adminResolveReconciliation: (id: string) =>
+    apiRequest<ReconciliationRow>(`/api/admin/finance/reconciliations/${id}/resolve`, { method: "POST" }),
+  adminReportDefinitions: () => apiGet<ReportDefinition[]>("/api/admin/reports/definitions"),
+  adminRunReport: (key: string, filters?: Record<string, any>) =>
+    apiRequest<ReportResult>(`/api/admin/reports/${key}/run`, { method: "POST", data: { filters: filters ?? {} } }),
+  adminSavedReports: () => apiGet<any[]>("/api/admin/reports/saved/list"),
+  adminSaveReport: (data: { name: string; reportKey: string; filters?: any; schedule?: string | null; deliverTo?: string | null }) =>
+    apiRequest<any>("/api/admin/reports/saved", { method: "POST", data }),
+
+  // compliance + CMS + campaign admin (Sprint 18)
+  adminPlatform: () => apiGet<PlatformOverview>("/api/admin/platform"),
+  adminUpsertContent: (key: string, data: any) =>
+    apiRequest<any>(`/api/admin/platform/content/${key}`, { method: "PUT", data }),
+  adminUpsertTemplate: (key: string, data: any) =>
+    apiRequest<any>(`/api/admin/platform/templates/${key}`, { method: "PUT", data }),
+  adminCreateCampaign: (data: any) =>
+    apiRequest<any>("/api/admin/platform/campaigns", { method: "POST", data }),
+  adminSendCampaign: (id: string) =>
+    apiRequest<any>(`/api/admin/platform/campaigns/${id}/send`, { method: "POST" }),
+  adminCreateComplianceRequest: (data: { userId: string; type: "deletion" | "export"; reason?: string }) =>
+    apiRequest<any>("/api/admin/platform/compliance", { method: "POST", data }),
+  adminProcessCompliance: (id: string) =>
+    apiRequest<any>(`/api/admin/platform/compliance/${id}/process`, { method: "POST" }),
+  adminUpdatePlatformSettings: (data: any) =>
+    apiRequest<any>("/api/admin/platform/settings", { method: "PUT", data }),
+  adminUpsertIncident: (data: any) =>
+    apiRequest<any>("/api/admin/platform/incidents", { method: "POST", data }),
+  adminAudit: (filters?: { entity?: string; action?: string }) => {
+    const q = new URLSearchParams();
+    if (filters?.entity) q.set("entity", filters.entity);
+    if (filters?.action) q.set("action", filters.action);
+    return apiGet<any[]>(`/api/admin/audit${q.toString() ? `?${q}` : ""}`);
+  },
 };

@@ -11,6 +11,8 @@ import { VoucherAdminService } from "../services/voucher-admin.service";
 import { MarketingConfigService } from "../services/marketing-config.service";
 import { MerchandisingService } from "../services/merchandising.service";
 import { CampaignService } from "../services/campaign.service";
+import { FinanceService, ReportingService } from "../services/finance.service";
+import { PlatformAdminService } from "../services/platform-admin.service";
 
 function ok(res: Response, data: any) {
   res.json({ success: true, data });
@@ -58,7 +60,21 @@ export const listAudit = wrap(async (req, res) =>
   ok(res, await AuditService.list({
     entity: req.query.entity ? String(req.query.entity) : undefined,
     entityId: req.query.entityId ? String(req.query.entityId) : undefined,
+    action: req.query.action ? String(req.query.action) : undefined,
   })));
+export const exportAuditCsv = wrap(async (req, res) => {
+  const logs = await AuditService.list({
+    entity: req.query.entity ? String(req.query.entity) : undefined,
+    entityId: req.query.entityId ? String(req.query.entityId) : undefined,
+    action: req.query.action ? String(req.query.action) : undefined,
+    limit: 5000,
+  });
+  const header = "id,at,actorId,actorRole,action,entity,entityId,reason";
+  const rows = logs.map((l) => [l.id, l.at, l.actorId, l.actorRole, l.action, l.entity, l.entityId ?? "", l.reason ?? ""].map((v) => JSON.stringify(String(v ?? ""))).join(","));
+  res.setHeader("Content-Type", "text/csv");
+  res.setHeader("Content-Disposition", "attachment; filename=audit-log.csv");
+  res.send([header, ...rows].join("\n"));
+});
 export const assignRole = wrap(async (req, res) => {
   const user = await UserModel.findById(String(req.params.id));
   if (!user) return fail(res, { statusCode: 404, message: "User not found" });
@@ -136,3 +152,44 @@ export const adminCreateBanner = wrap(async (req, res) => ok(res, await Merchand
 export const adminUpdateBanner = wrap(async (req, res) => ok(res, await MerchandisingService.update(String(req.params.id), req.body, actor(req))));
 export const adminDeleteBanner = wrap(async (req, res) => ok(res, await MerchandisingService.remove(String(req.params.id), actor(req))));
 export const sendCampaign = wrap(async (req, res) => ok(res, await CampaignService.send(actor(req), req.body ?? {})));
+
+// ── Payments / finance + reports (Sprint 17) ─────────────────────────────────
+export const financeLedger = wrap(async (req, res) =>
+  ok(res, await FinanceService.ledger(req.admin!, {
+    status: req.query.status ? String(req.query.status) : undefined,
+    method: req.query.method ? String(req.query.method) : undefined,
+    outletId: req.query.outletId ? String(req.query.outletId) : undefined,
+    from: req.query.from ? String(req.query.from) : undefined,
+    to: req.query.to ? String(req.query.to) : undefined,
+  })));
+export const financeTransaction = wrap(async (req, res) => ok(res, await FinanceService.detail(req.admin!, String(req.params.id))));
+export const requestRefund = wrap(async (req, res) =>
+  ok(res, await FinanceService.requestRefund(actor(req), String(req.params.id), String(req.body?.reason ?? ""))));
+export const approveRefund = wrap(async (req, res) =>
+  ok(res, await FinanceService.approveRefund(actor(req), String(req.params.id), req.body?.approve !== false)));
+export const listReconciliations = wrap(async (req, res) =>
+  ok(res, await FinanceService.reconciliations(req.admin!, req.query.date ? String(req.query.date) : undefined, req.query.outletId ? String(req.query.outletId) : undefined)));
+export const runReconciliation = wrap(async (req, res) => ok(res, await FinanceService.runReconciliation(actor(req), req.body ?? {})));
+export const resolveReconciliation = wrap(async (req, res) => ok(res, await FinanceService.resolveReconciliation(actor(req), String(req.params.id))));
+export const reportDefinitions = wrap(async (_req, res) => ok(res, ReportingService.definitions()));
+export const runReport = wrap(async (req, res) => ok(res, await ReportingService.run(req.admin!, String(req.params.key), req.body?.filters ?? req.query ?? {})));
+export const exportReportCsv = wrap(async (req, res) => {
+  const result = await ReportingService.run(req.admin!, String(req.params.key), req.query ?? {});
+  res.setHeader("Content-Type", "text/csv");
+  res.setHeader("Content-Disposition", `attachment; filename=${String(req.params.key)}.csv`);
+  res.send(ReportingService.toCsv(result));
+});
+export const saveReport = wrap(async (req, res) => ok(res, await ReportingService.save(actor(req), req.body ?? {})));
+export const savedReports = wrap(async (_req, res) => ok(res, await ReportingService.saved()));
+
+// ── Compliance, CMS, notifications, settings (Sprint 18) ─────────────────────
+export const adminPlatformOverview = wrap(async (_req, res) => ok(res, await PlatformAdminService.overview()));
+export const upsertContent = wrap(async (req, res) => ok(res, await PlatformAdminService.upsertContent(actor(req), String(req.params.key), req.body ?? {})));
+export const upsertTemplate = wrap(async (req, res) => ok(res, await PlatformAdminService.upsertTemplate(actor(req), String(req.params.key), req.body ?? {})));
+export const createAdminCampaign = wrap(async (req, res) => ok(res, await PlatformAdminService.createCampaign(actor(req), req.body ?? {})));
+export const sendAdminCampaign = wrap(async (req, res) => ok(res, await PlatformAdminService.sendCampaign(actor(req), String(req.params.id))));
+export const complianceQueue = wrap(async (_req, res) => ok(res, await PlatformAdminService.complianceQueue()));
+export const createComplianceRequest = wrap(async (req, res) => ok(res, await PlatformAdminService.createComplianceRequest(actor(req), req.body ?? {})));
+export const processCompliance = wrap(async (req, res) => ok(res, await PlatformAdminService.processCompliance(actor(req), String(req.params.id))));
+export const updatePlatformSettings = wrap(async (req, res) => ok(res, await PlatformAdminService.updateSettings(actor(req), req.body ?? {})));
+export const upsertIncident = wrap(async (req, res) => ok(res, await PlatformAdminService.upsertIncident(actor(req), req.body ?? {})));
