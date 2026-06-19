@@ -6,11 +6,23 @@ import { CATEGORIES } from "~/lib/domain.types";
 
 const logger = createLogger("CatalogSeed");
 
-const IMG = (prompt: string) =>
-  `https://api.qb-deck.quantumbyte.ai/common/image-generation?prompt=${encodeURIComponent(prompt)}`;
+const menuAsset = (fileName: string) => `/images/menu/${fileName}`;
 
-const productImage = (name: string, detail = "") =>
-  IMG(`${name} ${detail}, Hong Tang Indonesia oriental dessert product photography, cream background, soft light`);
+const CATEGORY_IMAGES: Record<string, string> = {
+  "signature-promo": menuAsset("grassjelly-signature.jpg"),
+  "taiwan-grass-jelly": menuAsset("grassjelly-signature.jpg"),
+  "taiwan-soya": menuAsset("soya-classic.jpg"),
+  taro: menuAsset("taro-favorite.jpg"),
+  "taiwan-ice-pudding": menuAsset("q-ball-ice-signature.jpg"),
+  "durian-dessert": menuAsset("durian-sago.jpg"),
+  "mango-dessert": menuAsset("mango-sago.jpg"),
+  "thai-mango-coco": menuAsset("mango-monster.jpg"),
+  "thai-coconut-ice": menuAsset("cendol-monster.jpg"),
+  "classic-warm": menuAsset("purple-rice-durian.jpg"),
+  "fresh-milk": menuAsset("q-ball-ice-signature.jpg"),
+  beverages: menuAsset("grassjelly-q-ball.jpg"),
+  savory: menuAsset("collectible-sticker-banner.jpg"),
+};
 
 const iceGroup = {
   id: "ice",
@@ -92,6 +104,7 @@ type MenuSeed = {
   description: string;
   category: string;
   basePrice: number;
+  imageUrl: string;
   tags?: string[];
   isSignature?: boolean;
   optionGroups?: any[];
@@ -122,6 +135,7 @@ function menu(
     description,
     category,
     basePrice,
+    imageUrl: extra.imageUrl ?? CATEGORY_IMAGES[category] ?? menuAsset("grassjelly-signature.jpg"),
     tags: extra.tags ?? (warm ? ["Warm"] : []),
     isSignature: extra.isSignature ?? /signature/i.test(name),
     optionGroups:
@@ -143,8 +157,8 @@ const MENU: MenuSeed[] = [
   menu("Taro Signature", "signature-promo", 54450, "Promo signature taro dessert.", 3, { isSignature: true, tags: ["Signature", "Promo"] }),
 
   menu("Grassjelly Signature", "taiwan-grass-jelly", 50000, "Taiwan cingcau with pearl, Q Ball, and ice cream.", 10, { isSignature: true }),
-  menu("Grassjelly Classic", "taiwan-grass-jelly", 41000, "Taiwan cingcau with pearl, peanut, and red bean.", 11),
-  menu("Grassjelly Favorite", "taiwan-grass-jelly", 42000, "Taiwan cingcau with pearl, mochi, and pudding.", 12, { tags: ["Favorite"] }),
+  menu("Grassjelly Classic", "taiwan-grass-jelly", 41000, "Taiwan cingcau with pearl, peanut, and red bean.", 11, { imageUrl: menuAsset("grassjelly-q-ball.jpg") }),
+  menu("Grassjelly Favorite", "taiwan-grass-jelly", 42000, "Taiwan cingcau with pearl, mochi, and pudding.", 12, { imageUrl: menuAsset("grassjelly-favorite.jpg"), tags: ["Favorite"] }),
 
   menu("Soya Signature", "taiwan-soya", 50000, "Soya pudding with pearl, Q Ball, and ice cream.", 20, { slug: "taiwan-soya-signature", isSignature: true }),
   menu("Soya Classic", "taiwan-soya", 41000, "Soya pudding with peanut and red bean.", 21),
@@ -156,16 +170,16 @@ const MENU: MenuSeed[] = [
 
   menu("Ice Puding Signature", "taiwan-ice-pudding", 43000, "3 Mix Pudding with ice cream.", 40, { isSignature: true }),
   menu("Ice Puding Classic", "taiwan-ice-pudding", 41000, "3 Mix Pudding with mango.", 41),
-  menu("Ice Puding Fav", "taiwan-ice-pudding", 43000, "3 Mix Pudding with durian.", 42, { tags: ["Favorite"] }),
+  menu("Ice Puding Fav", "taiwan-ice-pudding", 43000, "3 Mix Pudding with durian.", 42, { imageUrl: menuAsset("purple-rice-durian.jpg"), tags: ["Favorite"] }),
 
-  menu("Durian Coco Pudding", "durian-dessert", 69000, "Durian soup with coconut pudding.", 50),
+  menu("Durian Coco Pudding", "durian-dessert", 69000, "Durian soup with coconut pudding.", 50, { imageUrl: menuAsset("durian-28.jpg") }),
   menu("Durian Grassjelly", "durian-dessert", 67000, "Durian soup with grass jelly.", 51),
-  menu("Durian Soup + Ice Cream", "durian-dessert", 52800, "Durian soup served with ice cream.", 52),
-  menu("Durian Juice", "durian-dessert", 44000, "Durian juice with grass jelly.", 53),
+  menu("Durian Soup + Ice Cream", "durian-dessert", 52800, "Durian soup served with ice cream.", 52, { imageUrl: menuAsset("durian-28.jpg") }),
+  menu("Durian Juice", "durian-dessert", 44000, "Durian juice with grass jelly.", 53, { imageUrl: menuAsset("durian-28.jpg") }),
 
-  menu("Mango Soup + Coconut Pudding", "mango-dessert", 43000, "Mango soup with coconut pudding.", 60),
+  menu("Mango Soup + Coconut Pudding", "mango-dessert", 43000, "Mango soup with coconut pudding.", 60, { imageUrl: menuAsset("mango-monster.jpg") }),
   menu("Mango Soup + Grass Jelly", "mango-dessert", 43000, "Mango soup with grass jelly.", 61),
-  menu("Mango Soup + Ice Cream", "mango-dessert", 43000, "Mango soup with ice cream.", 62),
+  menu("Mango Soup + Ice Cream", "mango-dessert", 43000, "Mango soup with ice cream.", 62, { imageUrl: menuAsset("mango-monster.jpg") }),
   menu("Mango Soup + Mango Pudding", "mango-dessert", 43000, "Mango soup with mango pudding.", 63),
 
   menu("Mango Coco", "thai-mango-coco", 39000, "Thai mango coco with a choice of topping.", 70),
@@ -174,24 +188,24 @@ const MENU: MenuSeed[] = [
   menu("Coco Mango", "thai-coconut-ice", 41000, "Coconut ice with mango.", 81),
   menu("Coco Durian", "thai-coconut-ice", 50000, "Coconut ice with durian.", 82),
 
-  menu("Ginger Soup", "classic-warm", 38500, "Warm ginger soup.", 90),
-  menu("Red Bean Soup", "classic-warm", 35200, "Warm red bean soup.", 91),
+  menu("Ginger Soup", "classic-warm", 38500, "Warm ginger soup.", 90, { imageUrl: menuAsset("q-ball-ice-signature.jpg") }),
+  menu("Red Bean Soup", "classic-warm", 35200, "Warm red bean soup.", 91, { imageUrl: menuAsset("soya-classic.jpg") }),
   menu("Ketan Hitam", "classic-warm", 35200, "Warm black glutinous rice soup.", 92),
 
-  menu("Grass Jelly QQ 28", "fresh-milk", 35000, "Fresh milk with grass jelly, Q Ball, mochi, and bubble.", 100),
+  menu("Grass Jelly QQ 28", "fresh-milk", 35000, "Fresh milk with grass jelly, Q Ball, mochi, and bubble.", 100, { imageUrl: menuAsset("grassjelly-q-ball.jpg") }),
   menu("Tiger Pudding", "fresh-milk", 35000, "Brown sugar milk with grass jelly, caramel pudding, chocolate pudding, and bubble.", 101, { tags: ["Brown Sugar"] }),
-  menu("Taro Soy", "fresh-milk", 35000, "Taro milk with soya pudding, peanut, coconut jelly, and red bean.", 102),
-  menu("Coco Peach Fresh Milk", "fresh-milk", 35000, "Coconut soup with coconut pudding, mochi, peach, and bubble.", 103, { slug: "fresh-milk-coco-peach" }),
-  menu("Ginger Tangyuan", "fresh-milk", 35000, "Ginger soup with ronde, red bean, peanut, and bubble.", 104, { tags: ["Warm"] }),
+  menu("Taro Soy", "fresh-milk", 35000, "Taro milk with soya pudding, peanut, coconut jelly, and red bean.", 102, { imageUrl: menuAsset("taro-favorite.jpg") }),
+  menu("Coco Peach Fresh Milk", "fresh-milk", 35000, "Coconut soup with coconut pudding, mochi, peach, and bubble.", 103, { slug: "fresh-milk-coco-peach", imageUrl: menuAsset("cendol-monster.jpg") }),
+  menu("Ginger Tangyuan", "fresh-milk", 35000, "Ginger soup with ronde, red bean, peanut, and bubble.", 104, { imageUrl: menuAsset("q-ball-ice-signature.jpg"), tags: ["Warm"] }),
 
-  menu("Tiger Milk", "beverages", 35000, "Fresh milk, brown sugar, and bubble.", 110, { tags: ["Brown Sugar"] }),
-  menu("Choco Lava", "beverages", 35000, "Fresh milk with chocolate cream.", 111),
-  menu("Strawberry Lemonade", "beverages", 35000, "Strawberry syrup and lemon syrup.", 112),
-  menu("Blackpinky Choco Lava", "beverages", 35000, "Blackpinky choco lava beverage.", 113),
-  menu("Blackpinky Macchiato", "beverages", 35000, "Blackpinky macchiato beverage.", 114),
-  menu("Taro Genji", "beverages", 19000, "Taro Genji beverage.", 115),
-  menu("Coffee Tiger", "beverages", 19000, "Coffee Tiger beverage.", 116),
-  menu("Royal Milk Tea", "beverages", 19000, "Royal milk tea.", 117),
+  menu("Tiger Milk", "beverages", 35000, "Fresh milk, brown sugar, and bubble.", 110, { imageUrl: menuAsset("grassjelly-q-ball.jpg"), tags: ["Brown Sugar"] }),
+  menu("Choco Lava", "beverages", 35000, "Fresh milk with chocolate cream.", 111, { imageUrl: menuAsset("soya-classic.jpg") }),
+  menu("Strawberry Lemonade", "beverages", 35000, "Strawberry syrup and lemon syrup.", 112, { imageUrl: menuAsset("mango-monster.jpg") }),
+  menu("Blackpinky Choco Lava", "beverages", 35000, "Blackpinky choco lava beverage.", 113, { imageUrl: menuAsset("purple-rice-durian.jpg") }),
+  menu("Blackpinky Macchiato", "beverages", 35000, "Blackpinky macchiato beverage.", 114, { imageUrl: menuAsset("purple-rice-durian.jpg") }),
+  menu("Taro Genji", "beverages", 19000, "Taro Genji beverage.", 115, { imageUrl: menuAsset("taro-favorite.jpg") }),
+  menu("Coffee Tiger", "beverages", 19000, "Coffee Tiger beverage.", 116, { imageUrl: menuAsset("grassjelly-q-ball.jpg") }),
+  menu("Royal Milk Tea", "beverages", 19000, "Royal milk tea.", 117, { imageUrl: menuAsset("soya-classic.jpg") }),
 
   menu("Karaage Curry Rice", "savory", 43000, "Savory karaage curry rice.", 130, { optionGroups: [], tags: ["Savory"] }),
 ];
@@ -442,7 +456,7 @@ export async function seedCatalog(): Promise<void> {
               description: m.description,
               category: m.category,
               basePrice: m.basePrice,
-              imageUrl: productImage(m.name, m.description),
+              imageUrl: m.imageUrl,
               tags: m.tags ?? [],
               isSignature: m.isSignature ?? false,
               available: true,
